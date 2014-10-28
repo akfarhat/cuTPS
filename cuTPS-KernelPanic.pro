@@ -22,9 +22,12 @@ SOURCES += main.cpp \
            Entity/Textbook.cpp \
            Entity/User.cpp \
            Entity/SellableItem.cpp \
-    Entity/Chapter.cpp
+           Entity/Chapter.cpp \
+           Server/Server.cpp
+
 
 HEADERS  += mainwindow.h \
+            Utils.h \
             Entity/ContentManager.h \
             Entity/Course.h \
             Entity/DeliveryInfo.h \
@@ -33,6 +36,7 @@ HEADERS  += mainwindow.h \
             Entity/Textbook.h \
             Entity/User.h \
             Entity/SellableItem.h \
-    Entity/Chapter.h
+            Entity/Chapter.h \
+            Server/Server.h
 
 FORMS    += mainwindow.ui
