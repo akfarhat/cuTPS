@@ -13,3 +13,7 @@ Textbook* Chapter::getParentTextbook() {
 int Chapter::getChapterNumber() {
     return chNumber;
 }
+
+QString Chapter::getType() {
+    return "Chapter";
+}

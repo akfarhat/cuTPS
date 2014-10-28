@@ -23,7 +23,8 @@ SOURCES += main.cpp \
            Entity/User.cpp \
            Entity/SellableItem.cpp \
            Entity/Chapter.cpp \
-           Server/Server.cpp
+           Server/Server.cpp \
+    Entity/Section.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -37,6 +38,7 @@ HEADERS  += mainwindow.h \
             Entity/User.h \
             Entity/SellableItem.h \
             Entity/Chapter.h \
-            Server/Server.h
+            Server/Server.h \
+    Entity/Section.h
 
 FORMS    += mainwindow.ui
