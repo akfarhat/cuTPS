@@ -14,6 +14,8 @@ class ContentManager: public User {
         ContentManager(QString, QString);
         ~ContentManager();
         QString getEmailAddress();
+
+        QString getType();
 };
 
 #endif // CONTENTMANAGER_H
