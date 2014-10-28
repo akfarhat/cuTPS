@@ -3,6 +3,7 @@
 
 #include "SellableItem.h"
 #include "Textbook.h"
+#include <QString>
 
 class Chapter: public SellableItem {
 
@@ -16,6 +17,8 @@ class Chapter: public SellableItem {
         ~Chapter();
         Textbook* getParentTextbook();
         int getChapterNumber();
+
+        QString getType();
 
 };
 

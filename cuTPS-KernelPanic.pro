@@ -26,7 +26,8 @@ SOURCES += main.cpp \
            Entity/CreditcardInfo.cpp \
            Entity/Order.cpp \
            Entity/Chapter.cpp \
-           Server/Server.cpp
+           Server/Server.cpp \
+    Entity/Section.cpp
 
 HEADERS  += mainwindow.h \
             Utils.h \
@@ -42,6 +43,7 @@ HEADERS  += mainwindow.h \
             Entity/CreditcardInfo.h \
             Entity/Order.h \
             Entity/Chapter.h \
-            Server/Server.h
+            Server/Server.h \
+    Entity/Section.h
 
 FORMS    += mainwindow.ui
