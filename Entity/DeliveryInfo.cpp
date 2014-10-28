@@ -1,6 +1,6 @@
 #include "DeliveryInfo.h"
 
-DeliveryInfo::DeliveryInfo(email) : emailAddress(email) {
+DeliveryInfo::DeliveryInfo(QString email) : emailAddress(email) {
 
 }
 

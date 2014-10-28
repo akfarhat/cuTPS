@@ -9,3 +9,7 @@ ContentManager::~ContentManager() {}
 QString ContentManager::getEmailAddress() {
     return emailAddress;
 }
+
+QString ContentManager::getType() {
+    return "Content Manager";
+}

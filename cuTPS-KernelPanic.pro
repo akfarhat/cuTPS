@@ -12,13 +12,27 @@ TARGET = cuTPS-KernelPanic
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-           mainwindow.cpp\
-           Entity/*.cpp
+SOURCES += main.cpp \
+           mainwindow.cpp \
+           Entity/ContentManager.cpp \
+           Entity/Course.cpp \
+           Entity/DeliveryInfo.cpp \
+           Entity/ShoppingCart.cpp \
+           Entity/Student.cpp \
+           Entity/Textbook.cpp \
+           Entity/User.cpp \
+           Entity/SellableItem.cpp
 
-HEADERS  += mainwindow.h\
-            Entity/*.h\
-            Server/*.h \
-    Utils.h
+HEADERS  += mainwindow.h \
+            Utils.h \
+            Entity/ContentManager.h \
+            Entity/Course.h \
+            Entity/DeliveryInfo.h \
+            Entity/ShoppingCart.h \
+            Entity/Student.h \
+            Entity/Textbook.h \
+            Entity/User.h \
+            Entity/SellableItem.h \
+            Server/Server.h
 
 FORMS    += mainwindow.ui
