@@ -1,6 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <QObject>
 #include <QString>
 
 #include "Utils.h"
@@ -8,37 +9,37 @@
 #include "Entity/Textbook.h"
 #include "Entity/Order.h"
 
-using namespace std;
+class Server : public QObject
+{
+    Q_OBJECT
+public:
+    explicit Server(QObject *parent = 0);
+    ~Server();
 
-class Server {
+    //createSession() must be called first to establish a session,
+    // it returns a ServerResponse struct which contains a sessionID
+    ServerResponse createSession();
 
-    private:
+    //All Server API functions except createSession() take sessionID
+    // as the first parameter
 
+    // All Users
+    ServerResponse authenticateUser(int, UserCredentials);
 
-    public:
-        Server();
-        ~Server();
+    // Content Managers
+    ServerResponse addCourse(int, Course);
+    ServerResponse addTextbook(int, Textbook);
+    ServerResponse addChapter(int, Chapter);
+    ServerResponse addSection(int, Section);
 
-        //createSession() must be called first to establish a session,
-        // it returns a ServerResponse struct which contains a sessionID
-        ServerResponse createSession();
+    // Students
+    ServerResponse getRequiredTextbooks(int, int);
+    ServerResponse getTextbookDetails(int, int);
+    ServerResponse submitOrder(int, Order);
 
-        //All Server API functions except createSession() take sessionID
-        // as the first parameter
+signals:
 
-        // All Users
-        ServerResponse authenticateUser(int, UserCredentials);
-
-        // Content Managers
-        ServerResponse addCourse(int, Course);
-        ServerResponse addTextbook(int, Textbook);
-        ServerResponse addChapter(int, Chapter);
-        ServerResponse addSection(int, Section);
-
-        // Students
-        ServerResponse getRequiredTextbooks(int, int);
-        ServerResponse getTextbookDetails(int, int);
-        ServerResponse submitOrder(int, Order);
+public slots:
 
 };
 
