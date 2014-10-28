@@ -22,10 +22,12 @@ SOURCES += main.cpp \
            Entity/Textbook.cpp \
            Entity/User.cpp \
            Entity/SellableItem.cpp \
+           Entity/BillingInfo.cpp \
+           Entity/CreditcardInfo.cpp \
+           Entity/Order.cpp \
            Entity/Chapter.cpp \
            Server/Server.cpp \
     Entity/Section.cpp
-
 
 HEADERS  += mainwindow.h \
             Utils.h \
@@ -37,6 +39,9 @@ HEADERS  += mainwindow.h \
             Entity/Textbook.h \
             Entity/User.h \
             Entity/SellableItem.h \
+            Entity/BillingInfo.h \
+            Entity/CreditcardInfo.h \
+            Entity/Order.h \
             Entity/Chapter.h \
             Server/Server.h \
     Entity/Section.h
