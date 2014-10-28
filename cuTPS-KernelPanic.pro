@@ -27,7 +27,7 @@ SOURCES += main.cpp \
            Entity/Order.cpp \
            Entity/Chapter.cpp \
            Server/Server.cpp \
-    Entity/Section.cpp
+           Entity/Section.cpp
 
 HEADERS  += mainwindow.h \
             Utils.h \
@@ -44,6 +44,6 @@ HEADERS  += mainwindow.h \
             Entity/Order.h \
             Entity/Chapter.h \
             Server/Server.h \
-    Entity/Section.h
+            Entity/Section.h
 
 FORMS    += mainwindow.ui
