@@ -17,6 +17,7 @@ SOURCES += main.cpp\
            Entity/*.cpp
 
 HEADERS  += mainwindow.h\
-            Entity/*.h
+            Entity/*.h\
+            Server/*.h
 
 FORMS    += mainwindow.ui
