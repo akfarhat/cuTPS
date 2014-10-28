@@ -21,7 +21,8 @@ SOURCES += main.cpp \
            Entity/Student.cpp \
            Entity/Textbook.cpp \
            Entity/User.cpp \
-           Entity/SellableItem.cpp
+           Entity/SellableItem.cpp \
+    Entity/Chapter.cpp
 
 HEADERS  += mainwindow.h \
             Entity/ContentManager.h \
@@ -31,6 +32,7 @@ HEADERS  += mainwindow.h \
             Entity/Student.h \
             Entity/Textbook.h \
             Entity/User.h \
-            Entity/SellableItem.h
+            Entity/SellableItem.h \
+    Entity/Chapter.h
 
 FORMS    += mainwindow.ui

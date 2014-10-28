@@ -11,12 +11,12 @@ class ShoppingCart
         ShoppingCart();
         ~ShoppingCart();
         void addItem(SellableItem *);
-        QVector<SellableItem> getItems();
+        QVector<SellableItem*> getItems();
 
     private:
         // Members
         int totalPrice;
-        QVector<SellableItem> *items;
+        QVector<SellableItem*> *items;
 };
 
 #endif // SHOPPINGCART_H
