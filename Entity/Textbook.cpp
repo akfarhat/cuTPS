@@ -1,5 +1,4 @@
 #include "Textbook.h"
 
-Textbook::Textbook()
-{
+Textbook::Textbook() {
 }
