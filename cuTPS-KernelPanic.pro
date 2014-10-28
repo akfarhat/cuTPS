@@ -28,7 +28,8 @@ SOURCES += main.cpp \
            Entity/Chapter.cpp \
            Server/Server.cpp \
            Entity/Section.cpp \
-           Client/LoginWindow.cpp
+           Client/LoginWindow.cpp \
+           Entity/Section.cpp
 
 HEADERS  += mainwindow.h \
             Utils.h \
@@ -46,6 +47,7 @@ HEADERS  += mainwindow.h \
             Entity/Chapter.h \
             Server/Server.h \
             Entity/Section.h \
-            Client/LoginWindow.h
+            Client/LoginWindow.h \
+            Entity/Section.h
 
 FORMS    += mainwindow.ui
