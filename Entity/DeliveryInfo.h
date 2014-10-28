@@ -8,7 +8,7 @@ class DeliveryInfo {
         QString emailAddress;
 
     public:
-        DeliveryInfo(string);
+        DeliveryInfo(QString);
         ~DeliveryInfo();
         QString getEmailAddress();
 
