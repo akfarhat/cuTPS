@@ -16,3 +16,5 @@ ServerResponse Server::authenticateUser(int sessionID, UserCredentials creds)
 {
 
 }
+
+Server::~Server() {}

@@ -9,6 +9,8 @@
 #include "Entity/Course.h"
 #include "Entity/Textbook.h"
 #include "Entity/Order.h"
+#include "Entity/Chapter.h"
+#include "Entity/Section.h"
 
 class Server : public QObject
 {

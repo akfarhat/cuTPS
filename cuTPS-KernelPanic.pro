@@ -22,8 +22,14 @@ SOURCES += main.cpp \
            Entity/Textbook.cpp \
            Entity/User.cpp \
            Entity/SellableItem.cpp \
-    Server/Server.cpp \
-    Server/DatabaseManager.cpp
+           Entity/BillingInfo.cpp \
+           Entity/CreditcardInfo.cpp \
+           Entity/Order.cpp \
+           Entity/Chapter.cpp \
+           Entity/Section.cpp \
+           Server/Server.cpp \
+           Server/DatabaseManager.cpp \
+           Client/LoginWindow.cpp
 
 HEADERS  += mainwindow.h \
             Utils.h \
@@ -35,7 +41,13 @@ HEADERS  += mainwindow.h \
             Entity/Textbook.h \
             Entity/User.h \
             Entity/SellableItem.h \
-    Server/Server.h \
-    Server/DatabaseManager.h
+            Entity/BillingInfo.h \
+            Entity/CreditcardInfo.h \
+            Entity/Order.h \
+            Entity/Chapter.h \
+            Entity/Section.h \
+            Server/DatabaseManager.h \
+            Server/Server.h \
+            Client/LoginWindow.h 
 
-FORMS    += mainwindow.ui
+FORMS    += Client/LoginWindow.ui
