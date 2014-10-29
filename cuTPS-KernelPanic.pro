@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,7 +22,8 @@ SOURCES += main.cpp \
            Entity/Textbook.cpp \
            Entity/User.cpp \
            Entity/SellableItem.cpp \
-    Server/Server.cpp
+    Server/Server.cpp \
+    Server/DatabaseManager.cpp
 
 HEADERS  += mainwindow.h \
             Utils.h \
@@ -34,6 +35,7 @@ HEADERS  += mainwindow.h \
             Entity/Textbook.h \
             Entity/User.h \
             Entity/SellableItem.h \
-    Server/Server.h
+    Server/Server.h \
+    Server/DatabaseManager.h
 
 FORMS    += mainwindow.ui

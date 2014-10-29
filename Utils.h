@@ -4,6 +4,7 @@
 struct ServerResponse {
     int session_id;
     int code;
+
 };
 
 struct UserCredentials {
