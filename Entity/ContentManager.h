@@ -13,7 +13,9 @@ class ContentManager: public User {
     public:
         ContentManager(QString, QString);
         ~ContentManager();
+
         QString getEmailAddress();
+        void setEmailAddress(QString);
 
         QString getType();
 };

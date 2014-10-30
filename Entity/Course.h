@@ -9,17 +9,21 @@ using namespace std;
 
 class Course {
 
+    private:
+        QString code;
+        QVector<Textbook> *requiredBooks;
+
     public:
         Course(QString);
         Course(QString, QVector<Textbook>);
         ~Course();
 
+        QString getCourseCode();
+        void setCourseCode(QString);
+
         void addRequiredText(Textbook *);
         QVector<Textbook> getRequiredTexts();
 
-    private:
-        QString courseCode;
-        QVector<Textbook> *requiredBooks;
 
 };
 

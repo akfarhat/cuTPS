@@ -7,13 +7,18 @@
 class Section: public SellableItem {
     private:
         Chapter* parentChapter;
-        int sectionNumber;
+        float number;
 
     public:
+        Section(int, Chapter*, int, QString, float, bool);
         Section(Chapter*, int, QString, float);
         ~Section();
+
         Chapter* getParentChapter();
-        int getSectionNumber();
+        void setParentChapter(Chapter*);
+
+        float getSectionNumber();
+        void setSectionNumber(float);
 
         QString getType();
 };

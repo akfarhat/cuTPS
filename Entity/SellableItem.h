@@ -13,13 +13,16 @@ class SellableItem {
 
 
     public:
+        SellableItem(int, QString, float, bool);
         SellableItem(QString, float);
         ~SellableItem();
         int getId();
+        void setId(int);
         QString getName();
+        void setName(QString);
         float getPrice();
+        void setPrice(float);
         bool getAvailability();
-
         void setAvailability(bool);
 
         virtual QString getType() = 0;

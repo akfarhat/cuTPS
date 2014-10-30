@@ -1,12 +1,12 @@
 #include "Course.h"
 
 Course::Course(QString course) {
-    courseCode = course;
+    code = course;
     requiredBooks = new QVector<Textbook>();
 }
 
 Course::Course(QString course, QVector<Textbook> books) {
-    courseCode = course;
+    code = course;
     requiredBooks = new QVector<Textbook>();
 
     for (int i=0; i<books.size(); i++) {
@@ -16,6 +16,14 @@ Course::Course(QString course, QVector<Textbook> books) {
 
 Course::~Course() {
     delete requiredBooks;
+}
+
+QString Course::getCourseCode() {
+    return code;
+}
+
+void Course::setCourseCode(QString newCode) {
+    code = newCode;
 }
 
 void Course::addRequiredText(Textbook *book) {

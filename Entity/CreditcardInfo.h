@@ -6,19 +6,25 @@
 
 class CreditCardInfo : public BillingInfo {
 
-    public:
-        CreditCardInfo(QString name, QString email, QString addr, QString pnumber,
-                       QString provider, QString cnumber, QString expiry, QString sCode);
-        QString getProvider();
-        QString getCardNumber();
-        QString getExpiry();
-        virtual QString getPaymentDetails();
-
     private:
         QString cardProvider;
         QString cardNumber;
         QString cardExpiry;
         QString securityCode;
+
+    public:
+        CreditCardInfo(QString name, QString email, QString addr, QString pnumber,
+                       QString provider, QString cnumber, QString expiry, QString sCode);
+
+        QString getProvider();
+        void setProvider(QString);
+        QString getCardNumber();
+        void setCardNumber(QString);
+        QString getExpiry();
+        void setExpiry(QString);
+
+        virtual QString getPaymentDetails();
+
 };
 
 #endif // CREDITCARDINFO_H

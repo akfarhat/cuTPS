@@ -9,14 +9,19 @@ class Chapter: public SellableItem {
 
     private:
         Textbook* parentTextbook;
-        int chNumber;
+        int number;
 
 
     public:
+        Chapter(int, Textbook*, int, QString, float);
         Chapter(Textbook*, int, QString, float);
         ~Chapter();
+
         Textbook* getParentTextbook();
+        void setParentTextbook(Textbook*);
+
         int getChapterNumber();
+        void setChapterNumber(int);
 
         QString getType();
 

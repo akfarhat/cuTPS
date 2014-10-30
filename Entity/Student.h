@@ -19,8 +19,12 @@ class Student: public User {
     public:
         Student(QString, QString);
         ~Student();
+
         int getStudentNumber();
+        void setStudentNumber(int);
+
         QString getEmailAddress();
+        void setEmailAddress(QString);
 
         QString getType();
 };

@@ -13,12 +13,24 @@ QString CreditCardInfo::getProvider() {
     return cardProvider;
 }
 
+void CreditCardInfo::setProvider(QString newProvider) {
+    cardProvider = newProvider;
+}
+
 QString CreditCardInfo::getCardNumber() {
     return cardNumber;
 }
 
+void CreditCardInfo::setCardNumber(QString newNumber) {
+    cardNumber = newNumber;
+}
+
 QString CreditCardInfo::getExpiry() {
     return cardExpiry;
+}
+
+void CreditCardInfo::setExpiry(QString newExpiry) {
+    cardExpiry = newExpiry;
 }
 
 QString CreditCardInfo::getPaymentDetails() {

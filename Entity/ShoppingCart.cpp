@@ -9,6 +9,10 @@ ShoppingCart::~ShoppingCart() {
     delete items;
 }
 
+int ShoppingCart::getTotalPrice() {
+    return totalPrice;
+}
+
 void ShoppingCart::addItem(SellableItem *newItem) {
     items->append(newItem);
 }

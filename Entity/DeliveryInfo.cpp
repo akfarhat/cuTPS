@@ -11,3 +11,7 @@ QString DeliveryInfo::getEmailAddress() {
     return emailAddress;
 }
 
+void DeliveryInfo::setEmailAddress(QString newEmail) {
+    emailAddress = newEmail;
+}
+

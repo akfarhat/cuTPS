@@ -10,6 +10,10 @@ QString ContentManager::getEmailAddress() {
     return emailAddress;
 }
 
+void ContentManager::setEmailAddress(QString newEmail) {
+    emailAddress = newEmail;
+}
+
 QString ContentManager::getType() {
     return "Content Manager";
 }

@@ -11,6 +11,7 @@ class DeliveryInfo {
         DeliveryInfo(QString);
         ~DeliveryInfo();
         QString getEmailAddress();
+        void setEmailAddress(QString);
 
 };
 
