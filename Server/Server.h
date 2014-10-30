@@ -7,6 +7,7 @@
 #include <QSqlDatabase>
 
 #include "Utils.h"
+#include "Server/DatabaseManager.h"
 #include "Entity/Course.h"
 #include "Entity/Textbook.h"
 #include "Entity/Order.h"
@@ -29,13 +30,13 @@ public:
     // as the first parameter
 
     // All Users
-    ServerResponse authenticateUser(int, UserCredentials);
+    ServerResponse authenticateUser(QUuid, UserCredentials);
 
     // Content Managers
-    ServerResponse addCourse(int, Course);
-    ServerResponse addTextbook(int, Textbook);
-    ServerResponse addChapter(int, Chapter);
-    ServerResponse addSection(int, Section);
+    ServerResponse addCourse(QUuid, Course);
+    ServerResponse addTextbook(QUuid, Textbook);
+    ServerResponse addChapter(QUuid, Chapter);
+    ServerResponse addSection(QUuid, Section);
 
     // Students
     ServerResponse getRequiredTextbooks(int, int);
@@ -47,11 +48,11 @@ signals:
 public slots:
 
 private:
-    QVector<int> openSessions;
+    QVector<QUuid> openSessions;
+    DatabaseManager* dbManager;
 
-    QSqlDatabase db;
-
-
+private:
+    int generateSessionID(QString*);
 };
 
 #endif // SERVER_H

@@ -25,3 +25,11 @@ QSqlError DatabaseManager::getLastError()
 {
     return db.lastError();
 }
+
+QSqlQuery DatabaseManager::runQuery(const QString &queryString)
+{
+    QSqlQuery query(queryString);
+    query.exec();
+    return query;
+}
+

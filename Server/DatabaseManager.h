@@ -15,6 +15,8 @@ public:
     bool openDB();
     bool closeDB();
     QSqlError getLastError();
+    QSqlQuery runQuery(const QString& queryString);
+
 
 
 private:

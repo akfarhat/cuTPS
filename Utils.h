@@ -3,10 +3,15 @@
 
 #include <QString>
 
-struct ServerResponse {
-    int session_id;
-    int code;
+enum ResponseCode {
+    Success,
+    Fail
+};
 
+struct ServerResponse {
+    int sessionID;
+    ResponseCode code;
+    QString message;
 };
 
 struct UserCredentials {
@@ -16,7 +21,7 @@ struct UserCredentials {
 
 struct SessionCredentials {
     QString username;
-    int session_id;
+    int sessionID;
 };
 
 #endif // UTILS_H
