@@ -2,6 +2,7 @@
 #define LOGINWINDOW_H
 
 #include <QMainWindow>
+#include <QString>
 
 namespace Ui {
 class LoginWindow;
@@ -20,6 +21,7 @@ private:
 
 private slots:
     void cancelButtonClickHandler();
+    void loginButtonClickHandler();
 };
 
 #endif // LOGINWINDOW_H

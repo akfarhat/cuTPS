@@ -21,7 +21,7 @@ QString CreditCardInfo::getExpiry() {
     return cardExpiry;
 }
 
-QString CreditCardInfo::getPaymentInfo() {
+QString CreditCardInfo::getPaymentDetails() {
     return QString( cardProvider + ": " + billingName + "|"
                   + cardNumber + "|" + securityCode + "|"
                   + cardExpiry );

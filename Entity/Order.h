@@ -9,7 +9,7 @@
 class Order {
 
     public:
-        Order(QVector<SellableItem*> *, BillingInfo &, DeliveryInfo &);
+        Order(QVector<SellableItem*> *, BillingInfo *, DeliveryInfo *);
         ~Order();
 
         BillingInfo *getBillingInfo();
@@ -18,8 +18,8 @@ class Order {
 
     private:
         QVector<SellableItem*> items;
-        BillingInfo &billingInfo;
-        DeliveryInfo &deliveryInfo;
+        BillingInfo *billingInfo;
+        DeliveryInfo *deliveryInfo;
 };
 
 #endif // ORDER_H

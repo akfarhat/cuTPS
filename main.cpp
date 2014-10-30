@@ -1,14 +1,16 @@
 #include "Client/LoginWindow.h"
+#include "Client/Tests.h"
 #include <QApplication>
-
-#include <Entity/Course.h>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    LoginWindow w;
 
-    w.show();
+    Tests testWindow;
+    testWindow.show();
+
+    // LoginWindow w;
+    //w.show();
 
     return a.exec();
 }

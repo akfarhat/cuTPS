@@ -11,9 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = cuTPS-KernelPanic
 TEMPLATE = app
 
-
 SOURCES += main.cpp \
-           mainwindow.cpp \
            Entity/ContentManager.cpp \
            Entity/Course.cpp \
            Entity/DeliveryInfo.cpp \
@@ -28,10 +26,12 @@ SOURCES += main.cpp \
            Entity/Chapter.cpp \
            Entity/Section.cpp \
            Server/Server.cpp \
-           Client/LoginWindow.cpp
+           Client/LoginWindow.cpp \
+           Client/Tests.cpp \
+    Client/ClientNetworkHandler.cpp \
+    Server/ServerNetworkHandler.cpp
 
-HEADERS  += mainwindow.h \
-            Utils.h \
+HEADERS  += Utils.h \
             Entity/ContentManager.h \
             Entity/Course.h \
             Entity/DeliveryInfo.h \
@@ -47,5 +47,9 @@ HEADERS  += mainwindow.h \
             Entity/Section.h \
             Server/Server.h \
             Client/LoginWindow.h \
+            Client/Tests.h \
+    Client/ClientNetworkHandler.h \
+    Server/ServerNetworkHandler.h
 
-FORMS    += Client/LoginWindow.ui
+FORMS    += Client/LoginWindow.ui \
+            Client/Tests.ui

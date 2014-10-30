@@ -12,7 +12,7 @@ class CreditCardInfo : public BillingInfo {
         QString getProvider();
         QString getCardNumber();
         QString getExpiry();
-        QString getPaymentInfo();
+        virtual QString getPaymentDetails();
 
     private:
         QString cardProvider;
