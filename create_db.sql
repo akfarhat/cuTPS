@@ -1,34 +1,34 @@
 create table if not exists User (
-    id int primary key not null,
+    id integer primary key not null,
     name text not null,
     password text not null
 );
 
 create table if not exists Student(
-    user_id int primary key not null,
+    user_id integer primary key not null,
     student_num int not null,
     email char(255),
     foreign key(user_id) references User(id)
 );
 
 create table if not exists ContentManager(
-    user_id int primary key not null,
+    user_id integer primary key not null,
     foreign key(user_id) references User(id)
 );
 
 create table if not exists Administrator(
-    user_id int primary key not null,
+    user_id integer primary key not null,
     foreign key(user_id) references User(id)
 );
 
 create table if not exists DeliveryInfo(
-    user_id int primary key not null,
+    user_id integer primary key not null,
     email char(255) not null,
     foreign key(user_id) references User(id)
 );
 
 create table if not exists BillingInfo(
-    user_id int primary key not null,
+    user_id integer primary key not null,
     credit_card_num char(19) not null,
     foreign key(user_id) references User(id)
 );
@@ -42,7 +42,7 @@ create table if not exists User_Course(
 );
 
 create table if not exists Course(
-    id int primary key not null,
+    id integer primary key not null,
     code char(10) not null,
     name text not null
 );
@@ -56,13 +56,13 @@ create table if not exists Course_Textbook(
 );
 
 create table if not exists Textbook(
-    id int primary key not null,
+    id integer primary key not null,
     name text not null,
     available int not null
 );
 
 create table if not exists Chapter(
-    id int primary key not null,
+    id integer primary key not null,
     textbook_id int not null,
     name text not null,
     available int not null,
@@ -70,7 +70,7 @@ create table if not exists Chapter(
 );
 
 create table if not exists Section(
-    id int primary key not null,
+    id integer primary key not null,
     chapter_id int not null,
     name text not null,
     available int not null,
@@ -78,7 +78,7 @@ create table if not exists Section(
 );
 
 create table if not exists Report(
-    id int primary key not null,
+    id integer primary key not null,
     name text not null,
     script text not null
 );

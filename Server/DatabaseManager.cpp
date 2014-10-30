@@ -26,10 +26,12 @@ QSqlError DatabaseManager::getLastError()
     return db.lastError();
 }
 
-QSqlQuery DatabaseManager::runQuery(const QString &queryString)
+bool DatabaseManager::runQuery(const QString &queryString, QSqlQuery* returnQuery)
 {
     QSqlQuery query(queryString);
-    query.exec();
-    return query;
+    bool result = query.exec();
+
+    *returnQuery = query;
+    return result;
 }
 
