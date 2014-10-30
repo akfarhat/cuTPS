@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QString>
+#include <QVector>
+#include <QSqlDatabase>
 
 #include "Utils.h"
 #include "Entity/Course.h"
@@ -20,6 +22,7 @@ public:
 
     //createSession() must be called first to establish a session,
     // it returns a ServerResponse struct which contains a sessionID
+    // and a return code
     ServerResponse createSession();
 
     //All Server API functions except createSession() take sessionID
@@ -42,6 +45,12 @@ public:
 signals:
 
 public slots:
+
+private:
+    QVector<int> openSessions;
+
+    QSqlDatabase db;
+
 
 };
 

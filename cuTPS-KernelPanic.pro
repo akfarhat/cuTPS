@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,10 +26,11 @@ SOURCES += main.cpp \
            Entity/Chapter.cpp \
            Entity/Section.cpp \
            Server/Server.cpp \
+           Server/DatabaseManager.cpp \
+           Server/ServerNetworkHandler.cpp \
            Client/LoginWindow.cpp \
            Client/Tests.cpp \
-    Client/ClientNetworkHandler.cpp \
-    Server/ServerNetworkHandler.cpp
+           Client/ClientNetworkHandler.cpp
 
 HEADERS  += Utils.h \
             Entity/ContentManager.h \
@@ -46,10 +47,11 @@ HEADERS  += Utils.h \
             Entity/Chapter.h \
             Entity/Section.h \
             Server/Server.h \
+            Server/DatabaseManager.h \
+            Server/ServerNetworkHandler.h \
             Client/LoginWindow.h \
             Client/Tests.h \
-    Client/ClientNetworkHandler.h \
-    Server/ServerNetworkHandler.h
+            Client/ClientNetworkHandler.h
 
 FORMS    += Client/LoginWindow.ui \
             Client/Tests.ui
