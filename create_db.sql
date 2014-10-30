@@ -55,26 +55,34 @@ create table if not exists Course_Textbook(
     foreign key(textbook_id) references Textbook(id)
 );
 
+create table if not exists SellableItem(
+   id integer primary key not null,
+   price_cents integer not null
+);
+
 create table if not exists Textbook(
-    id integer primary key not null,
+    item_id integer primary key not null,
     name text not null,
     available int not null
+    foreign key(item_id) references SellableItem(id)
 );
 
 create table if not exists Chapter(
-    id integer primary key not null,
+    item_id integer primary key not null,
     textbook_id int not null,
     name text not null,
     available int not null,
     foreign key(textbook_id) references Textbook(id)
+    foreign key(item_id) references SellableItem(id)
 );
 
 create table if not exists Section(
-    id integer primary key not null,
+    item_id integer primary key not null,
     chapter_id int not null,
     name text not null,
     available int not null,
     foreign key(chapter_id) references Chapter(id)
+    foreign key(item_id) references SellableItem(id)
 );
 
 create table if not exists Report(
