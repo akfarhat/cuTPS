@@ -13,7 +13,8 @@ class Chapter: public SellableItem {
 
 
     public:
-        Chapter(int, Textbook*, int, QString, float);
+        Chapter();
+        Chapter(int, Textbook*, int, QString, float, bool);
         Chapter(Textbook*, int, QString, float);
         ~Chapter();
 

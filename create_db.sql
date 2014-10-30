@@ -28,9 +28,13 @@ create table if not exists DeliveryInfo(
     foreign key(user_id) references User(id)
 );
 
-create table if not exists BillingInfo(
+create table if not exists CreditCardInfo(
     user_id integer primary key not null,
-    credit_card_num char(19) not null,
+    type text not null,
+    holder_name text not null,
+    number char(19) not null,
+    expiry_date text not null,
+    security_code text not null,
     foreign key(user_id) references User(id)
 );
 

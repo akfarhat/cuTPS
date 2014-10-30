@@ -18,6 +18,14 @@ Course::~Course() {
     delete requiredBooks;
 }
 
+int Course::getCourseId() {
+    return id;
+}
+
+void Course::setCourseId(int newId) {
+    id = newId;
+}
+
 QString Course::getCourseCode() {
     return code;
 }

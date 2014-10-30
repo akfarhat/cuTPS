@@ -10,8 +10,9 @@ class Section: public SellableItem {
         float number;
 
     public:
-        Section(int, Chapter*, int, QString, float, bool);
-        Section(Chapter*, int, QString, float);
+        Section();
+        Section(int, Chapter*, float, QString, float, bool);
+        Section(Chapter*, float, QString, float);
         ~Section();
 
         Chapter* getParentChapter();

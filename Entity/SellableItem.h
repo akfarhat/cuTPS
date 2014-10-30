@@ -13,6 +13,7 @@ class SellableItem {
 
 
     public:
+        SellableItem();
         SellableItem(int, QString, float, bool);
         SellableItem(QString, float);
         ~SellableItem();

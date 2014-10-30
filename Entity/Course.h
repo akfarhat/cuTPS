@@ -10,6 +10,7 @@ using namespace std;
 class Course {
 
     private:
+        int id;
         QString code;
         QVector<Textbook> *requiredBooks;
 
@@ -17,6 +18,9 @@ class Course {
         Course(QString);
         Course(QString, QVector<Textbook>);
         ~Course();
+
+        int getCourseId();
+        void setCourseId(int);
 
         QString getCourseCode();
         void setCourseCode(QString);

@@ -1,40 +1,40 @@
 #include "CreditcardInfo.h"
 
 CreditCardInfo::CreditCardInfo(QString name, QString email, QString addr, QString pnumber,
-                               QString provider, QString cnumber, QString expiry, QString sCode)
+                               QString ctype, QString cnumber, QString expiry, QString sCode)
                                : BillingInfo(name, email, addr, pnumber) {
-    cardProvider = provider;
-    cardNumber = cnumber;
-    cardExpiry = expiry;
+    type = ctype;
+    number = cnumber;
+    expiryDate = expiry;
     securityCode = sCode;
 }
 
-QString CreditCardInfo::getProvider() {
-    return cardProvider;
+QString CreditCardInfo::getCardType() {
+    return type;
 }
 
-void CreditCardInfo::setProvider(QString newProvider) {
-    cardProvider = newProvider;
+void CreditCardInfo::setCardType(QString newCardType) {
+    type = newCardType;
 }
 
 QString CreditCardInfo::getCardNumber() {
-    return cardNumber;
+    return number;
 }
 
 void CreditCardInfo::setCardNumber(QString newNumber) {
-    cardNumber = newNumber;
+    number = newNumber;
 }
 
 QString CreditCardInfo::getExpiry() {
-    return cardExpiry;
+    return expiryDate;
 }
 
 void CreditCardInfo::setExpiry(QString newExpiry) {
-    cardExpiry = newExpiry;
+    expiryDate = newExpiry;
 }
 
 QString CreditCardInfo::getPaymentDetails() {
-    return QString( cardProvider + ": " + billingName + "|"
-                  + cardNumber + "|" + securityCode + "|"
-                  + cardExpiry );
+    return QString( type + ": " + billingName + "|"
+                  + number + "|" + securityCode + "|"
+                  + expiryDate );
 }

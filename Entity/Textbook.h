@@ -8,7 +8,8 @@ class Textbook: public SellableItem {
     private:
         QString ISBN;
     public:
-        Textbook(int, QString, float);
+        Textbook();
+        Textbook(int, QString, float, bool);
         Textbook(QString, float);
         ~Textbook();
         QString getISBN();

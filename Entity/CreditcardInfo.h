@@ -7,17 +7,17 @@
 class CreditCardInfo : public BillingInfo {
 
     private:
-        QString cardProvider;
-        QString cardNumber;
-        QString cardExpiry;
+        QString type;
+        QString number;
+        QString expiryDate;
         QString securityCode;
 
     public:
         CreditCardInfo(QString name, QString email, QString addr, QString pnumber,
-                       QString provider, QString cnumber, QString expiry, QString sCode);
+                       QString ctype, QString cnumber, QString expiry, QString sCode);
 
-        QString getProvider();
-        void setProvider(QString);
+        QString getCardType();
+        void setCardType(QString);
         QString getCardNumber();
         void setCardNumber(QString);
         QString getExpiry();
