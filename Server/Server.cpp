@@ -19,10 +19,10 @@ Server::~Server()
     dbManager->closeDB();
 }
 
-QUuid Server::generateSessionID(QString* errorMessage)
+QUuid Server::generateSessionID(QString& errorMessage)
 {
     if (openSessions.size() >= MAX_SESSIONS) {
-        *errorMessage = "Exceeded maximum number of open sessions";
+        errorMessage = "Exceeded maximum number of open sessions";
         return 0;
     }
 
