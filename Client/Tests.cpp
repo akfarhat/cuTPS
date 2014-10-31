@@ -21,7 +21,7 @@ Tests::Tests(QWidget *parent) :
     userCreds.password = "alamepassword";
 
     sessCreds.username = "joesmith";
-    sessCreds.session_id = 0;
+    sessCreds.sessionID = 0;
 }
 
 Tests::~Tests() {
@@ -41,8 +41,8 @@ void Tests::setResult(ServerResponse *s) {
 
     QString resMsg = QString("response code: ") +
                      QString(s->code) +
-                     QString(", sessiong id: ") +
-                     QString(s->session_id);
+                     QString(", sessiongID: ") +
+                     QString(s->sessionID);
 
     updateResults(resMsg);
 
@@ -81,8 +81,8 @@ void Tests::on_viewBookDetailsButton_clicked() {
     clearResults();
     updateResults("View book details:");
 
-    Textbook aBook;
-    ServerResponse res = network.getBookDetails(&sessCreds, &aBook);
+    Textbook *aBook;
+    ServerResponse res = network.getBookDetails(&sessCreds, aBook);
 
     setResult(&res);
 }
@@ -91,10 +91,10 @@ void Tests::on_submitOrderButton_clicked() {
     clearResults();
     updateResults("Submit order:");
 
-    Textbook book;
+    Textbook *book;
 
-    Chapter c1(&book, 1, "someItem", 1.54f);
-    Chapter c2(&book, 2, "anotherItem", 99.42f);
+    Chapter c1(book, 1, "someItem", 1.54f);
+    Chapter c2(book, 2, "anotherItem", 99.42f);
     QVector<SellableItem*> items;
 
     items.append(&c1);
@@ -128,9 +128,9 @@ void Tests::on_addBookButton_clicked() {
     clearResults();
     updateResults("Add book:");
 
-    Textbook textbook;
+    Textbook *textbook;
 
-    ServerResponse res = network.addBook(&sessCreds, &textbook);
+    ServerResponse res = network.addBook(&sessCreds, textbook);
 
     setResult(&res);
 }

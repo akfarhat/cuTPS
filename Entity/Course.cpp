@@ -2,12 +2,12 @@
 
 Course::Course(QString course) {
     code = course;
-    requiredBooks = new QVector<Textbook>();
+    requiredBooks = new QVector<Textbook*>();
 }
 
-Course::Course(QString course, QVector<Textbook> books) {
+Course::Course(QString course, QVector<Textbook*> books) {
     code = course;
-    requiredBooks = new QVector<Textbook>();
+    requiredBooks = new QVector<Textbook*>();
 
     for (int i=0; i<books.size(); i++) {
         requiredBooks->append(books[i]);
@@ -35,10 +35,10 @@ void Course::setCourseCode(QString newCode) {
 }
 
 void Course::addRequiredText(Textbook *book) {
-    requiredBooks->append(*book);
+    requiredBooks->append(book);
 }
 
-QVector<Textbook> Course::getRequiredTexts() {
+QVector<Textbook*> Course::getRequiredTexts() {
     // Return a copy of the vector
-    return QVector<Textbook>( *(this->requiredBooks) );
+    return QVector<Textbook*>( *(this->requiredBooks) );
 }

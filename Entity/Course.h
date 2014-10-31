@@ -12,11 +12,11 @@ class Course {
     private:
         int id;
         QString code;
-        QVector<Textbook> *requiredBooks;
+        QVector<Textbook*> *requiredBooks;
 
     public:
         Course(QString);
-        Course(QString, QVector<Textbook>);
+        Course(QString, QVector<Textbook*>);
         ~Course();
 
         int getCourseId();
@@ -26,7 +26,7 @@ class Course {
         void setCourseCode(QString);
 
         void addRequiredText(Textbook *);
-        QVector<Textbook> getRequiredTexts();
+        QVector<Textbook*> getRequiredTexts();
 
 
 };
