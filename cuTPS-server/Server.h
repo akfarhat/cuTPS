@@ -7,7 +7,7 @@
 #include <QSqlDatabase>
 
 #include "Utils.h"
-#include "Server/DatabaseManager.h"
+#include "DatabaseManager.h"
 #include "Entity/Course.h"
 #include "Entity/Textbook.h"
 #include "Entity/Order.h"
