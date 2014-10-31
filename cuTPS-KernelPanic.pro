@@ -30,7 +30,12 @@ SOURCES += main.cpp \
            Server/ServerNetworkHandler.cpp \
            Client/LoginWindow.cpp \
            Client/Tests.cpp \
-           Client/ClientNetworkHandler.cpp
+           Client/ClientNetworkHandler.cpp \
+           Client/ViewRequiredBooksControl.cpp \
+           Client/ViewBookDetailsControl.cpp \
+           Client/SubmitOrderControl.cpp \
+           Client/AddCourseControl.cpp \
+           Client/AddBookControl.cpp
 
 HEADERS  += Utils.h \
             Entity/ContentManager.h \
@@ -51,7 +56,12 @@ HEADERS  += Utils.h \
             Server/ServerNetworkHandler.h \
             Client/LoginWindow.h \
             Client/Tests.h \
-            Client/ClientNetworkHandler.h
+            Client/ClientNetworkHandler.h \
+            Client/ViewRequiredBooksControl.h \
+            Client/ViewBookDetailsControl.h \
+            Client/SubmitOrderControl.h \
+            Client/AddCourseControl.h \
+            Client/AddBookControl.h
 
 FORMS    += Client/LoginWindow.ui \
             Client/Tests.ui

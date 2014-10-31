@@ -1,7 +1,14 @@
 #include "Tests.h"
 #include "ui_Tests.h"
 
+#include "ViewRequiredBooksControl.h"
+#include "ViewBookDetailsControl.h"
+#include "SubmitOrderControl.h"
+#include "AddCourseControl.h"
+#include "AddBookControl.h"
+
 #include "Entity/SellableItem.h"
+#include "Entity/Textbook.h"
 #include "Entity/Chapter.h"
 #include "Entity/CreditcardInfo.h"
 #include "Entity/DeliveryInfo.h"
@@ -41,8 +48,13 @@ void Tests::setResult(ServerResponse *s) {
 
     QString resMsg = QString("response code: ") +
                      QString(s->code) +
-                     QString(", sessiongID: ") +
-                     QString(s->sessionID);
+                     QString(", sessionID: ") +
+                     QString(s->sessionID) +
+                     QString(", Message: ") +
+                     QString(s->message);
+
+    // Clear the response from memory
+    delete s;
 
     updateResults(resMsg);
 
@@ -63,18 +75,27 @@ void Tests::on_loginButton_clicked() {
     clearResults();
     updateResults("Logging in as Joe:");
 
-    ServerResponse res = network.login(&userCreds);
+    ServerResponse *res = new ServerResponse();
 
-    setResult(&res);
+    res = network.login(&userCreds);
+
+    setResult(res);
 }
 
 void Tests::on_viewReqTextsButton_clicked() {
     clearResults();
     updateResults("View required textbooks:");
 
-    ServerResponse res = network.getRequiredBooks(&sessCreds);
+    ViewRequiredBooksControl *ViewRequiredBooksCtrl = new ViewRequiredBooksControl();
 
-    setResult(&res);
+    ServerResponse *res = new ServerResponse();
+
+    ViewRequiredBooksCtrl->getRequiredBooks(&sessCreds, res);
+
+    delete ViewRequiredBooksCtrl;
+
+
+    setResult(res);
 }
 
 void Tests::on_viewBookDetailsButton_clicked() {
@@ -82,9 +103,16 @@ void Tests::on_viewBookDetailsButton_clicked() {
     updateResults("View book details:");
 
     Textbook *aBook;
-    ServerResponse res = network.getBookDetails(&sessCreds, aBook);
+    ServerResponse *res = new ServerResponse();
 
-    setResult(&res);
+    ViewBookDetailsControl *viewBookDetailsCtrl = new ViewBookDetailsControl();
+
+    viewBookDetailsCtrl->getBookDetails(&sessCreds, aBook, res);
+
+    delete viewBookDetailsCtrl;
+
+
+    setResult(res);
 }
 
 void Tests::on_submitOrderButton_clicked() {
@@ -108,9 +136,15 @@ void Tests::on_submitOrderButton_clicked() {
 
     Order order(&items, &creditInfo, &deliveryInfo);
 
-    ServerResponse res = network.submitOrder(&sessCreds, &order);
+    ServerResponse *res = new ServerResponse();
 
-    setResult(&res);
+    SubmitOrderControl *submitOrderCtrl = new SubmitOrderControl();
+
+    submitOrderCtrl->submitOrder(&sessCreds, &order, res);
+
+    delete submitOrderCtrl;
+
+    setResult(res);
 }
 
 void Tests::on_addCourseButton_clicked() {
@@ -119,9 +153,15 @@ void Tests::on_addCourseButton_clicked() {
 
     Course c("COMP3004");
 
-    ServerResponse res = network.addCourse(&sessCreds, &c);
+    ServerResponse *res = new ServerResponse();
 
-    setResult(&res);
+    AddCourseControl *addCourseCtrl = new AddCourseControl();
+
+    addCourseCtrl->addCourse(&sessCreds, &c, res);
+
+    delete addCourseCtrl;
+
+    setResult(res);
 }
 
 void Tests::on_addBookButton_clicked() {
@@ -130,7 +170,11 @@ void Tests::on_addBookButton_clicked() {
 
     Textbook *textbook;
 
-    ServerResponse res = network.addBook(&sessCreds, textbook);
+    ServerResponse *res = new ServerResponse();
 
-    setResult(&res);
+    AddBookControl *addBookCtrl = new AddBookControl();
+
+    addBookCtrl->addBook(&sessCreds, textbook, res);
+
+    setResult(res);
 }

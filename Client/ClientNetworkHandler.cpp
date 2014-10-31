@@ -4,26 +4,26 @@ ClientNetworkHandler::ClientNetworkHandler() {
 
 }
 
-ServerResponse ClientNetworkHandler::login(UserCredentials *cred) {
+ServerResponse *ClientNetworkHandler::login(UserCredentials *cred) {
 
 }
 
-ServerResponse ClientNetworkHandler::getRequiredBooks(SessionCredentials *) {
+ServerResponse *ClientNetworkHandler::getRequiredBooks(SessionCredentials *) {
 
 }
 
-ServerResponse ClientNetworkHandler::getBookDetails(SessionCredentials *, Textbook *) {
+ServerResponse *ClientNetworkHandler::getBookDetails(SessionCredentials *, Textbook *) {
 
 }
 
-ServerResponse ClientNetworkHandler::submitOrder(SessionCredentials *, Order *) {
+ServerResponse *ClientNetworkHandler::submitOrder(SessionCredentials *, Order *) {
 
 }
 
-ServerResponse ClientNetworkHandler::addCourse(SessionCredentials *, Course *) {
+ServerResponse *ClientNetworkHandler::addCourse(SessionCredentials *, Course *) {
 
 }
 
-ServerResponse ClientNetworkHandler::addBook(SessionCredentials *, Textbook *) {
+ServerResponse *ClientNetworkHandler::addBook(SessionCredentials *, Textbook *) {
 
 }
