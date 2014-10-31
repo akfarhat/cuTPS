@@ -17,7 +17,7 @@ void TPSServerAsync::StartServer()
     }
 }
 
-void TPSServerAsync::incomingConnection(qintptr handle)
+void TPSServerAsync::incomingConnection(int handle)
 {
     TPSClient *client = new TPSClient(this);
     client->SetSocket(handle);

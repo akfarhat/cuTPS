@@ -6,7 +6,7 @@ TPSClient::TPSClient(QObject *parent) :
     QThreadPool::globalInstance()->setMaxThreadCount(15); // BAD: TODO: shouldn't be called every time a new client is created + make dynamic thread count
 }
 
-void TPSClient::SetSocket(qintptr sockdescriptor)
+void TPSClient::SetSocket(int sockdescriptor)
 {
     socket = new QTcpSocket(this);
 

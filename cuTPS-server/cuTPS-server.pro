@@ -20,7 +20,7 @@ SOURCES += main.cpp \
     TPSWorkerTask.cpp \
     DatabaseManager.cpp \
     ServerNetworkHandler.cpp \
-    Server.cpp
+    #Server.cpp
 
 HEADERS += \
     TPSServerAsync.h \
@@ -28,7 +28,7 @@ HEADERS += \
     TPSWorkerTask.h \
     DatabaseManager.h \
     ServerNetworkHandler.h \
-    Server.h
+    #Server.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/release/ -lcutps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/debug/ -lcutps

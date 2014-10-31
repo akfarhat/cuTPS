@@ -17,7 +17,7 @@ public:
     void StartServer();
 
 protected:
-    void incomingConnection(qintptr handle);
+    void incomingConnection(int handle);
 
 signals:
 
