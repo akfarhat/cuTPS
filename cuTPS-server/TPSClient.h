@@ -12,7 +12,7 @@ class TPSClient : public QObject
     Q_OBJECT
 public:
     explicit TPSClient(QObject *parent = 0);
-    void SetSocket(qintptr sockdescriptor);
+    void SetSocket(int sockdescriptor);
 signals:
 
 public slots:
