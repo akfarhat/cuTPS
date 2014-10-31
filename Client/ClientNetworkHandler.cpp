@@ -1,29 +1,35 @@
 #include "ClientNetworkHandler.h"
+#include <QString>
 
 ClientNetworkHandler::ClientNetworkHandler() {
 
 }
 
-ServerResponse *ClientNetworkHandler::login(UserCredentials *cred) {
+void ClientNetworkHandler::login(UserCredentials *cred, ServerResponse *res) {
+    // TODO: Serialize the data, make the request, read the result, fill out res
+
+    // Dummy data for testing
+    res->code = Success;
+    res->sessionID = 0;
+    res->message = QString("Log in successful");
+}
+
+void ClientNetworkHandler::getRequiredBooks(SessionCredentials *cred, ServerResponse *res) {
 
 }
 
-ServerResponse *ClientNetworkHandler::getRequiredBooks(SessionCredentials *) {
+void ClientNetworkHandler::getBookDetails(SessionCredentials *cred, Textbook *text, ServerResponse *res) {
 
 }
 
-ServerResponse *ClientNetworkHandler::getBookDetails(SessionCredentials *, Textbook *) {
+void ClientNetworkHandler::submitOrder(SessionCredentials *cred, Order *, ServerResponse *res) {
 
 }
 
-ServerResponse *ClientNetworkHandler::submitOrder(SessionCredentials *, Order *) {
+void ClientNetworkHandler::addCourse(SessionCredentials *cred, Course *course, ServerResponse *res) {
 
 }
 
-ServerResponse *ClientNetworkHandler::addCourse(SessionCredentials *, Course *) {
-
-}
-
-ServerResponse *ClientNetworkHandler::addBook(SessionCredentials *, Textbook *) {
+void ClientNetworkHandler::addBook(SessionCredentials *cred, Textbook * text, ServerResponse *res) {
 
 }

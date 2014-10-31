@@ -14,12 +14,12 @@ class ClientNetworkHandler {
         ClientNetworkHandler();
         // These methods should serialize the data and
         // send it to the ServerNetworkHandler
-        ServerResponse *login(UserCredentials *);
-        ServerResponse *getRequiredBooks(SessionCredentials *);
-        ServerResponse *getBookDetails(SessionCredentials *, Textbook *);
-        ServerResponse *submitOrder(SessionCredentials *, Order *);
-        ServerResponse *addCourse(SessionCredentials *, Course *);
-        ServerResponse *addBook(SessionCredentials *, Textbook *);
+        void login(UserCredentials *, ServerResponse *);
+        void getRequiredBooks(SessionCredentials *, ServerResponse *);
+        void getBookDetails(SessionCredentials *, Textbook *, ServerResponse *);
+        void submitOrder(SessionCredentials *, Order *, ServerResponse *);
+        void addCourse(SessionCredentials *, Course *, ServerResponse *);
+        void addBook(SessionCredentials *, Textbook *, ServerResponse *);
 };
 
 #endif // CLIENTNETWORKHANDLER_H

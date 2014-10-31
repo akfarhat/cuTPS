@@ -12,7 +12,9 @@
 #include "Entity/Chapter.h"
 #include "Entity/CreditcardInfo.h"
 #include "Entity/DeliveryInfo.h"
+
 #include <QVector>
+#include <QTextStream>
 
 Tests::Tests(QWidget *parent) :
     QDialog(parent),
@@ -46,21 +48,15 @@ void Tests::clearResults() {
 
 void Tests::setResult(ServerResponse *s) {
 
-    QString resMsg = QString("response code: ") +
-                     QString(s->code) +
-                     QString(", sessionID: ") +
-                     QString(s->sessionID) +
-                     QString(", Message: ") +
-                     QString(s->message);
+    QString resMsg;
 
-    // Clear the response from memory
-    delete s;
+    QTextStream(&resMsg) << "response code: " << s->code
+                         << ", \nsessionID: " << s->sessionID
+                         << "\nMessage: " << s->message;
 
     updateResults(resMsg);
 
-    // TODO: maybe create a dictionary or enum for pass/fail codes
-    // for now, 0 = success, otherwise failed
-    if (s->code == 0) {
+    if (s->code == Success) {
         this->ui->passFailInput->setText("Passed");
     } else {
         this->ui->passFailInput->setText("Failed");
@@ -75,27 +71,26 @@ void Tests::on_loginButton_clicked() {
     clearResults();
     updateResults("Logging in as Joe:");
 
-    ServerResponse *res = new ServerResponse();
+    ServerResponse res;
 
-    res = network.login(&userCreds);
+    network.login(&userCreds, &res);
 
-    setResult(res);
+    setResult(&res);
 }
 
 void Tests::on_viewReqTextsButton_clicked() {
     clearResults();
     updateResults("View required textbooks:");
 
+    ServerResponse res;
+
     ViewRequiredBooksControl *ViewRequiredBooksCtrl = new ViewRequiredBooksControl();
 
-    ServerResponse *res = new ServerResponse();
-
-    ViewRequiredBooksCtrl->getRequiredBooks(&sessCreds, res);
+    ViewRequiredBooksCtrl->getRequiredBooks(&sessCreds, &res);
 
     delete ViewRequiredBooksCtrl;
 
-
-    setResult(res);
+    setResult(&res);
 }
 
 void Tests::on_viewBookDetailsButton_clicked() {
@@ -103,16 +98,16 @@ void Tests::on_viewBookDetailsButton_clicked() {
     updateResults("View book details:");
 
     Textbook *aBook;
-    ServerResponse *res = new ServerResponse();
+
+    ServerResponse res;
 
     ViewBookDetailsControl *viewBookDetailsCtrl = new ViewBookDetailsControl();
 
-    viewBookDetailsCtrl->getBookDetails(&sessCreds, aBook, res);
+    viewBookDetailsCtrl->getBookDetails(&sessCreds, aBook, &res);
 
     delete viewBookDetailsCtrl;
 
-
-    setResult(res);
+    setResult(&res);
 }
 
 void Tests::on_submitOrderButton_clicked() {
@@ -136,15 +131,15 @@ void Tests::on_submitOrderButton_clicked() {
 
     Order order(&items, &creditInfo, &deliveryInfo);
 
-    ServerResponse *res = new ServerResponse();
+    ServerResponse res;
 
     SubmitOrderControl *submitOrderCtrl = new SubmitOrderControl();
 
-    submitOrderCtrl->submitOrder(&sessCreds, &order, res);
+    submitOrderCtrl->submitOrder(&sessCreds, &order, &res);
 
     delete submitOrderCtrl;
 
-    setResult(res);
+    setResult(&res);
 }
 
 void Tests::on_addCourseButton_clicked() {
@@ -153,15 +148,15 @@ void Tests::on_addCourseButton_clicked() {
 
     Course c("COMP3004");
 
-    ServerResponse *res = new ServerResponse();
+    ServerResponse res;
 
     AddCourseControl *addCourseCtrl = new AddCourseControl();
 
-    addCourseCtrl->addCourse(&sessCreds, &c, res);
+    addCourseCtrl->addCourse(&sessCreds, &c, &res);
 
     delete addCourseCtrl;
 
-    setResult(res);
+    setResult(&res);
 }
 
 void Tests::on_addBookButton_clicked() {
@@ -170,11 +165,11 @@ void Tests::on_addBookButton_clicked() {
 
     Textbook *textbook;
 
-    ServerResponse *res = new ServerResponse();
+    ServerResponse res;
 
     AddBookControl *addBookCtrl = new AddBookControl();
 
-    addBookCtrl->addBook(&sessCreds, textbook, res);
+    addBookCtrl->addBook(&sessCreds, textbook, &res);
 
-    setResult(res);
+    setResult(&res);
 }

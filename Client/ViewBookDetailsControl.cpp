@@ -9,5 +9,5 @@ ViewBookDetailsControl::~ViewBookDetailsControl() {
 }
 
 void ViewBookDetailsControl::getBookDetails(SessionCredentials *sessionCreds, Textbook *book, ServerResponse *response) {
-    response = network.getBookDetails(sessionCreds, book);
+    network.getBookDetails(sessionCreds, book, response);
 }

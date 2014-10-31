@@ -9,5 +9,5 @@ AddCourseControl::~AddCourseControl() {
 }
 
 void AddCourseControl::addCourse(SessionCredentials *sessionCreds, Course *newCourse, ServerResponse *response) {
-    response = network.addCourse(sessionCreds, newCourse);
+    network.addCourse(sessionCreds, newCourse, response);
 }
