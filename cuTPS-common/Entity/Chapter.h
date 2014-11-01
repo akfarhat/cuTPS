@@ -8,7 +8,6 @@
 class Chapter: public SellableItem {
 
     private:
-        int id;
         Textbook* parentTextbook;
         int number;
 
@@ -25,9 +24,6 @@ class Chapter: public SellableItem {
         void setChapterNumber(int);
 
         QString getType();
-
-        int getChapterId() const;
-        void setChapterId(int value);
 };
 
 #endif // CHAPTER_H

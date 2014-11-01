@@ -20,8 +20,8 @@ class Course {
         Course(QString, QVector<Textbook*>);
         ~Course();
 
-        int getCourseId();
-        void setCourseId(int);
+        int getId();
+        void setId(int);
 
         QString getCourseCode();
         void setCourseCode(QString);

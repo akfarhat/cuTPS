@@ -43,9 +43,9 @@ public:
     ServerResponse addSection(QUuid, Section);
 
     // Students
-    ServerResponse getRequiredTextbooks(int, int);
-    ServerResponse getTextbookDetails(int, int);
-    ServerResponse submitOrder(int, Order);
+    ServerResponse getRequiredTextbooks(QUuid, int);
+    ServerResponse getTextbookDetails(QUuid, int);
+    ServerResponse submitOrder(QUuid, Order);
 
 signals:
 
@@ -57,6 +57,7 @@ private:
 
 private:
     bool generateSessionID(QUuid&, QString&);
+    bool validateOrder(Order&, QString&);
 };
 
 #endif // SERVER_H
