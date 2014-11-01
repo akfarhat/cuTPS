@@ -63,7 +63,7 @@ QUuid ClientNetworkHandler::login(UserCredentials& credentials)
     {
         qDebug() << "error: invocation attempt on invalid socket";
         // TODO: Throw an exception
-        return QUuid::QUuid(); // null QUuid
+        return QUuid(); // null QUuid
     }
 
     QUuid requestId = QUuid::createUuid();
