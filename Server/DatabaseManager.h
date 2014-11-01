@@ -13,7 +13,7 @@ public:
 
 public:
     bool openDB();
-    bool closeDB();
+    void closeDB();
     QSqlError getLastError();
     bool runQuery(const QString& queryString, QSqlQuery*);
 

@@ -12,6 +12,7 @@ class Course {
     private:
         int id;
         QString code;
+        QString name;
         QVector<Textbook*> *requiredBooks;
 
     public:
@@ -29,6 +30,8 @@ class Course {
         QVector<Textbook*> getRequiredTexts();
 
 
+        QString getCourseName() const;
+        void setCourseName(const QString &value);
 };
 
 #endif // COURSE_H

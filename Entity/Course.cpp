@@ -42,3 +42,13 @@ QVector<Textbook*> Course::getRequiredTexts() {
     // Return a copy of the vector
     return QVector<Textbook*>( *(this->requiredBooks) );
 }
+
+QString Course::getCourseName() const
+{
+    return name;
+}
+
+void Course::setCourseName(const QString &value)
+{
+    name = value;
+}

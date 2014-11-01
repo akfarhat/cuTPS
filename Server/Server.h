@@ -5,6 +5,7 @@
 #include <QString>
 #include <QVector>
 #include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include "Utils.h"
 #include "Server/DatabaseManager.h"
@@ -17,6 +18,9 @@
 class Server : public QObject
 {
     Q_OBJECT
+public:
+    static const int MAX_SESSIONS = 10;
+
 public:
     explicit Server(QObject *parent = 0);
     ~Server();
@@ -52,7 +56,7 @@ private:
     DatabaseManager* dbManager;
 
 private:
-    int generateSessionID(QString*);
+    bool generateSessionID(QUuid&, QString&);
 };
 
 #endif // SERVER_H

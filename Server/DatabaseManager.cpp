@@ -16,7 +16,7 @@ bool DatabaseManager::openDB()
     return db.open();
 }
 
-bool DatabaseManager::closeDB()
+void DatabaseManager::closeDB()
 {
     db.close();
 }
