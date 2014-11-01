@@ -1,6 +1,8 @@
 #include "Server.h"
 
 #include <QSqlError>
+#include <QRegExp>
+
 #include <iostream>
 
 Server::Server(QObject *parent) :
@@ -229,9 +231,44 @@ ServerResponse Server::addSection(QUuid sessionID, Section section)
     return response;
 }
 
-bool Server::validateOrder(Order& order, QString& errorMessage)
+bool Server::validateBillingInfo(BillingInfo *billingInfo)
 {
-    // TODO : complete this function
+    if (billingInfo == NULL)
+        return false;
+
+    // Could potentially call a validator API from the billing system
+    return true;
+}
+
+bool Server::validateDeliveryInfo(DeliveryInfo *deliveryInfo)
+{
+    if (deliveryInfo == NULL)
+        return false;
+
+    // Validate the delivery email address
+    QRegExp re( QString("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}") );
+    re.setCaseSensitivity(Qt::CaseInsensitive);
+
+    return re.exactMatch(deliveryInfo->getEmailAddress());
+}
+
+bool Server::validateOrder(Order& order, QString *errorMessage)
+{
+    if (! validateBillingInfo(order.getBillingInfo())) {
+        *errorMessage = QString("Invalid billing information");
+        return false;
+    }
+
+    if (! validateDeliveryInfo(order.getDeliveryInfo())) {
+        *errorMessage = QString("Invalid delivery information");
+        return false;
+    }
+
+    if (! order.getOrder().size() > 0) {
+        *errorMessage = QString("Order must have at least one item");
+        return false;
+    }
+
     return true;
 }
 
@@ -240,7 +277,7 @@ ServerResponse Server::submitOrder(QUuid sessionID, Order order)
     ServerResponse response;
     response.sessionID = sessionID;
 
-    bool result = validateOrder(order, response.message);
+    bool result = validateOrder(order, &(response.message));
 
     if (result) {
         response.code = Success;

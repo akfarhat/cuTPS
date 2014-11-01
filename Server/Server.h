@@ -56,8 +56,10 @@ private:
     DatabaseManager* dbManager;
 
 private:
-    bool generateSessionID(QUuid&, QString&);
-    bool validateOrder(Order&, QString&);
+    bool generateSessionID(QUuid &, QString &);
+    bool validateBillingInfo(BillingInfo *);
+    bool validateDeliveryInfo(DeliveryInfo *);
+    bool validateOrder(Order &, QString *);
 };
 
 #endif // SERVER_H
