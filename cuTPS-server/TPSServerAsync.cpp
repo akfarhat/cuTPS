@@ -17,7 +17,11 @@ void TPSServerAsync::StartServer()
     }
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
 void TPSServerAsync::incomingConnection(int handle)
+#else
+void TPSServerAsync::incomingConnection(qintptr handle)
+#endif
 {
     TPSClient *client = new TPSClient(this);
     client->SetSocket(handle);
