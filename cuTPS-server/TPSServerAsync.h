@@ -17,7 +17,12 @@ public:
     void StartServer();
 
 protected:
+
+#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
     void incomingConnection(int handle);
+#else
+    void incomingConnection(qintptr handle);
+#endif
 
 signals:
 
