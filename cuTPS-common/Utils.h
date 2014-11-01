@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include <QString>
+#include <QUuid>
 
 enum ResponseCode {
     Success,
@@ -9,7 +10,7 @@ enum ResponseCode {
 };
 
 struct ServerResponse {
-    int sessionID;
+    QUuid sessionID;
     ResponseCode code;
     QString message;
 };

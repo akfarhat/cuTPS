@@ -1,9 +1,9 @@
 #include "Chapter.h"
 
-Chapter::Chapter(int id, Textbook* textbook, int chNumber, QString name, float price, bool isAvailable) : parentTextbook(textbook), number(chNumber), SellableItem(id, name, price, isAvailable) {
+Chapter::Chapter(int id, Textbook* textbook, int chNumber, QString name, float price, bool isAvailable) : SellableItem(id, name, price, isAvailable), parentTextbook(textbook), number(chNumber) {
 }
 
-Chapter::Chapter(Textbook* textbook, int chNumber, QString name, float price) : parentTextbook(textbook), number(chNumber), SellableItem(name, price) {
+Chapter::Chapter(Textbook* textbook, int chNumber, QString name, float price) :  SellableItem(name, price), parentTextbook(textbook), number(chNumber) {
 }
 
 Chapter::~Chapter() {
@@ -27,4 +27,14 @@ void Chapter::setChapterNumber(int newNumber) {
 
 QString Chapter::getType() {
     return "Chapter";
+}
+
+int Chapter::getChapterId() const
+{
+    return id;
+}
+
+void Chapter::setChapterId(int value)
+{
+    id = value;
 }

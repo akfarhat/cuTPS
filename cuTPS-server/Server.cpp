@@ -19,42 +19,45 @@ Server::~Server()
     dbManager->closeDB();
 }
 
-QUuid Server::generateSessionID(QString& errorMessage)
+bool Server::generateSessionID(QUuid& sessionID, QString& errorMessage)
 {
     if (openSessions.size() >= MAX_SESSIONS) {
         errorMessage = "Exceeded maximum number of open sessions";
-        return 0;
+        return false;
     }
 
-    QUuid sessionID = QUuid.createUuid();
+    QUuid id = QUuid::createUuid();
     int i = 1;
 
     // attempt to generate a UUID at most 10 times
-    while(openSessions.contains(sessionID) && i < 10) {
-        sessionID = QUuid.createUuid();
+    while(openSessions.contains(id) && i < 10) {
+        id = QUuid::createUuid();
         i++;
     }
 
     if (i < 10) {
-        openSessions.append(sessionID);
-        return sessionID;
+        openSessions.append(id);
+        sessionID = id;
+        return true;
     }
     else {
-        return 0;
+        return false;
     }
 }
 
 ServerResponse Server::createSession()
 {
     ServerResponse response;
-    response.sessionID = generateSessionID(response.message);
+    bool result = generateSessionID(response.sessionID, response.message);
 
-    if (response.sessionID) {
-        response.code = ResponseCode::Success;
+    if (result) {
+        response.code = Success;
     }
     else {
-        response.code = ResponseCode::Fail;
+        response.code = Fail;
     }
+
+    return response;
 }
 
 ServerResponse Server::authenticateUser(QUuid sessionID, UserCredentials creds)
@@ -69,16 +72,16 @@ ServerResponse Server::authenticateUser(QUuid sessionID, UserCredentials creds)
 
     if (result) {
         if (query.first()) {
-            response.code = ResponseCode::Success;
+            response.code = Success;
             response.message = "";
         }
         else {
-            response.code = ResponseCode::Fail;
+            response.code = Fail;
             response.message = "Invalid credentials, user not found.";
         }
     }
     else {
-        response.code = ResponseCode::Fail;
+        response.code = Fail;
         response.message = query.lastError().text();
     }
 
@@ -90,34 +93,37 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
     ServerResponse response;
     response.sessionID = sessionID;
 
-    SqlQuery query;
-    bool result = dbManager->runQuery("insert into Course (code, name) " +
-                                      " values (" +
+    QSqlQuery query;
+    bool result = dbManager->runQuery("insert into Course (code, name) values (" +
                                       course.getCourseCode() + ", " +
                                       course.getCourseName() + ")" +
                                       ";", &query);
 
     if (result) {
-        response.code = ResponseCode::Success;
+        response.code = Success;
         response.message = "";
     }
     else {
-        response.code = ResponseCode::Fail;
+        response.code = Fail;
         response.message = query.lastError().text();
         return response;
     }
 
-    foreach (textbook, course.getRequiredTexts()) {
-        result = dbManager->runQuery("insert into Course_Textbook (course_id, textbook_id) " +
-                                     "values (" + course.getID() + ", " + textbook.getID() +
-                                     ");", &query);
+    foreach (Textbook* textbook, course.getRequiredTexts()) {
+        QString queryString = "insert into Course_Textbook (course_id, textbook_id) values (";
+        queryString += course.getCourseId();
+        queryString += ", ";
+        queryString += textbook->getTextbookId();
+        queryString += ");";
+
+        result = dbManager->runQuery(queryString, &query);
 
         if (result) {
-            response.code = ResponseCode::Success;
+            response.code = Success;
             response.message = "";
         }
         else {
-            response.code = ResponseCode::Fail;
+            response.code = Fail;
             response.message = query.lastError().text();
             return response;
         }
@@ -131,19 +137,33 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
     ServerResponse response;
     response.sessionID = sessionID;
 
-    SqlQuery query;
-    bool result = dbManager->runQuery("insert into Textbook (name, available) " +
-                                      " values (" +
+    QSqlQuery query;
+    bool result = dbManager->runQuery("insert into SellableItem (available) values (" +
                                       textbook.getName() + ", " +
-                                      textbook.getAvailable() + ")" +
+                                      textbook.getAvailability() + ")" +
                                       ";", &query);
 
     if (result) {
-        response.code = ResponseCode::Success;
+        response.code = Success;
         response.message = "";
     }
     else {
-        response.code = ResponseCode::Fail;
+        response.code = Fail;
+        response.message = query.lastError().text();
+        return response;
+    }
+
+    result = dbManager->runQuery("insert into Textbook (name, available) values (" +
+                                 textbook.getName() + ", " +
+                                 textbook.getAvailability() + ")" +
+                                 ";", &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
         response.message = query.lastError().text();
         return response;
     }
@@ -156,20 +176,23 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter chapter)
     ServerResponse response;
     response.sessionID = sessionID;
 
-    SqlQuery query;
-    bool result = dbManager->runQuery("insert into Chapter (textbook_id, name, available) " +
-                                      " values (" +
-                                      chapter.getTextbook().getID() + ", " +
-                                      chapter.getName() + ", " +
-                                      chapter.getAvailable() + ")" +
-                                      ";", &query);
+    QSqlQuery query;
+    QString queryString = "insert into Chapter (textbook_id, name, available) values (";
+    queryString += chapter.getParentTextbook()->getTextbookId();
+    queryString += ", ";
+    queryString += chapter.getName();
+    queryString += ", ";
+    queryString += chapter.getAvailability();
+    queryString += ");";
+
+    bool result = dbManager->runQuery(queryString, &query);
 
     if (result) {
-        response.code = ResponseCode::Success;
+        response.code = Success;
         response.message = "";
     }
     else {
-        response.code = ResponseCode::Fail;
+        response.code = Fail;
         response.message = query.lastError().text();
         return response;
     }
@@ -182,20 +205,23 @@ ServerResponse Server::addSection(QUuid sessionID, Section section)
     ServerResponse response;
     response.sessionID = sessionID;
 
-    SqlQuery query;
-    bool result = dbManager->runQuery("insert into Section (chapter_id, name, available) " +
-                                      " values (" +
-                                      section.getChapter().getID() + ", " +
-                                      section.getName() + ", " +
-                                      section.getAvailable() + ")" +
-                                      ";", &query);
+    QSqlQuery query;
+    QString queryString = "insert into Section (chapter_id, name, available) values (";
+    queryString += section.getParentChapter()->getChapterId();
+    queryString += ", ";
+    queryString += section.getName();
+    queryString += ", ";
+    queryString += section.getAvailability();
+    queryString += ");";
+
+    bool result = dbManager->runQuery(queryString, &query);
 
     if (result) {
-        response.code = ResponseCode::Success;
+        response.code = Success;
         response.message = "";
     }
     else {
-        response.code = ResponseCode::Fail;
+        response.code = Fail;
         response.message = query.lastError().text();
         return response;
     }
