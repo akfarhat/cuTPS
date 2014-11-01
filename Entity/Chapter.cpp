@@ -28,13 +28,3 @@ void Chapter::setChapterNumber(int newNumber) {
 QString Chapter::getType() {
     return "Chapter";
 }
-
-int Chapter::getChapterId() const
-{
-    return id;
-}
-
-void Chapter::setChapterId(int value)
-{
-    id = value;
-}

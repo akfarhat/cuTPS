@@ -111,9 +111,9 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
 
     foreach (Textbook* textbook, course.getRequiredTexts()) {
         QString queryString = "insert into Course_Textbook (course_id, textbook_id) values (";
-        queryString += course.getCourseId();
+        queryString += course.getId();
         queryString += ", ";
-        queryString += textbook->getTextbookId();
+        queryString += textbook->getId();
         queryString += ");";
 
         result = dbManager->runQuery(queryString, &query);
@@ -178,7 +178,7 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter chapter)
 
     QSqlQuery query;
     QString queryString = "insert into Chapter (textbook_id, name, available) values (";
-    queryString += chapter.getParentTextbook()->getTextbookId();
+    queryString += chapter.getParentTextbook()->getId();
     queryString += ", ";
     queryString += chapter.getName();
     queryString += ", ";
@@ -207,7 +207,7 @@ ServerResponse Server::addSection(QUuid sessionID, Section section)
 
     QSqlQuery query;
     QString queryString = "insert into Section (chapter_id, name, available) values (";
-    queryString += section.getParentChapter()->getChapterId();
+    queryString += section.getParentChapter()->getId();
     queryString += ", ";
     queryString += section.getName();
     queryString += ", ";
@@ -224,6 +224,30 @@ ServerResponse Server::addSection(QUuid sessionID, Section section)
         response.code = Fail;
         response.message = query.lastError().text();
         return response;
+    }
+
+    return response;
+}
+
+bool Server::validateOrder(Order& order, QString& errorMessage)
+{
+    // TODO : complete this function
+    return true;
+}
+
+ServerResponse Server::submitOrder(QUuid sessionID, Order order)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    bool result = validateOrder(order, response.message);
+
+    if (result) {
+        response.code = Success;
+        // submit order to external system
+    }
+    else {
+        response.code = Fail;
     }
 
     return response;

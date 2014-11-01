@@ -18,11 +18,11 @@ Course::~Course() {
     delete requiredBooks;
 }
 
-int Course::getCourseId() {
+int Course::getId() {
     return id;
 }
 
-void Course::setCourseId(int newId) {
+void Course::setId(int newId) {
     id = newId;
 }
 
