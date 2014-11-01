@@ -9,6 +9,16 @@ enum ResponseCode {
     Fail
 };
 
+enum InvocationDescriptor {
+    Login,
+    GetRequiredBooks,
+    GetBookDetails,
+    SubmitOrder,
+    AddCourse,
+    AddBook,
+    Goodbye
+};
+
 struct ServerResponse {
     QUuid sessionID;
     ResponseCode code;
