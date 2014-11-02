@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     AddCourseControl.cpp \
     SubmitOrderControl.cpp \
     ViewBookDetailsControl.cpp \
-    ViewRequiredBooksControl.cpp
+    ViewRequiredBooksControl.cpp \
+    LoginControl.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -30,7 +31,8 @@ HEADERS  += \
     AddCourseControl.h \
     SubmitOrderControl.h \
     ViewBookDetailsControl.h \
-    ViewRequiredBooksControl.h
+    ViewRequiredBooksControl.h \
+    LoginControl.h
 
 FORMS    += \
     Tests.ui \

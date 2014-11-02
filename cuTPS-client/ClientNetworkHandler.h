@@ -6,6 +6,7 @@
 #include <QTcpSocket>
 #include <QUuid>
 #include <QVector>
+#include <QDataStream>
 
 #include "Utils.h"
 #include "Entity/Textbook.h"

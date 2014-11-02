@@ -8,6 +8,6 @@ AddBookControl::~AddBookControl() {
 
 }
 
-void AddBookControl::addBook(SessionCredentials *sessionCreds, Textbook *newTextbook, ServerResponse *response) {
-    network.addBook(sessionCreds, newTextbook, response);
+void AddBookControl::addBook(QUuid &reqId, Textbook &newTextbook) {
+    reqId = network.addBook(newTextbook);
 }

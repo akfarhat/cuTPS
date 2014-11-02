@@ -14,7 +14,7 @@ class ViewBookDetailsControl{
         ViewBookDetailsControl();
         ~ViewBookDetailsControl();
 
-        void getBookDetails(SessionCredentials *, Textbook *, ServerResponse *);
+        void getBookDetails(QUuid &, Textbook &);
 };
 
 #endif // VIEWBOOKDETAILSCONTROL_H

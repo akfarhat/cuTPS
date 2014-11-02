@@ -8,6 +8,6 @@ AddCourseControl::~AddCourseControl() {
 
 }
 
-void AddCourseControl::addCourse(SessionCredentials *sessionCreds, Course *newCourse, ServerResponse *response) {
-    network.addCourse(sessionCreds, newCourse, response);
+void AddCourseControl::addCourse(QUuid &reqId, Course &newCourse) {
+    reqId = network.addCourse(newCourse);
 }

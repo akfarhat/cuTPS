@@ -8,6 +8,6 @@ ViewBookDetailsControl::~ViewBookDetailsControl() {
 
 }
 
-void ViewBookDetailsControl::getBookDetails(SessionCredentials *sessionCreds, Textbook *book, ServerResponse *response) {
-    network.getBookDetails(sessionCreds, book, response);
+void ViewBookDetailsControl::getBookDetails(QUuid &reqId, Textbook &book) {
+    reqId = network.getBookDetails(book);
 }

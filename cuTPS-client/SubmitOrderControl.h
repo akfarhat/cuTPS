@@ -14,7 +14,7 @@ class SubmitOrderControl {
         SubmitOrderControl();
         ~SubmitOrderControl();
 
-        void submitOrder(SessionCredentials *, Order *, ServerResponse *);
+        void submitOrder(QUuid &, Order &);
 };
 
 #endif // SUBMITORDERCONTROL_H

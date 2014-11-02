@@ -15,7 +15,7 @@ class AddBookControl {
         AddBookControl();
         ~AddBookControl();
 
-        void addBook(SessionCredentials *, Textbook *, ServerResponse *);
+        void addBook(QUuid &, Textbook &);
 
 };
 

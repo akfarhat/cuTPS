@@ -1,6 +1,7 @@
 #include "Tests.h"
 #include "ui_Tests.h"
 
+#include "LoginControl.h"
 #include "ViewRequiredBooksControl.h"
 #include "ViewBookDetailsControl.h"
 #include "SubmitOrderControl.h"
@@ -50,9 +51,7 @@ void Tests::setResult(ServerResponse *s) {
 
     QString resMsg;
 
-    QTextStream(&resMsg) << "response code: " << s->code
-                         << ", \nsessionID: " << s->sessionID
-                         << "\nMessage: " << s->message;
+    QTextStream(&resMsg) << "response code: " << s->code << ", \nsessionID: " << (s->sessionID).toString() << "\nMessage: " << s->message;
 
     updateResults(resMsg);
 
@@ -71,43 +70,47 @@ void Tests::on_loginButton_clicked() {
     clearResults();
     updateResults("Logging in as Joe:");
 
-    ServerResponse res;
+    LoginControl *loginCtrl = new LoginControl();
 
-    network.login(&userCreds, &res);
+    loginCtrl->login(userCreds);
 
-    setResult(&res);
+    delete loginCtrl;
 }
 
 void Tests::on_viewReqTextsButton_clicked() {
     clearResults();
     updateResults("View required textbooks:");
 
-    ServerResponse res;
+    //ServerResponse res;
 
     ViewRequiredBooksControl *ViewRequiredBooksCtrl = new ViewRequiredBooksControl();
 
-    ViewRequiredBooksCtrl->getRequiredBooks(&sessCreds, &res);
+    QUuid requestId;
+
+    ViewRequiredBooksCtrl->getRequiredBooks(requestId);
 
     delete ViewRequiredBooksCtrl;
 
-    setResult(&res);
+    //setResult(&res);
 }
 
 void Tests::on_viewBookDetailsButton_clicked() {
     clearResults();
     updateResults("View book details:");
 
-    Textbook *aBook;
+    Textbook aBook("Software Engineering", 199.99);
 
-    ServerResponse res;
+    //ServerResponse res;
 
     ViewBookDetailsControl *viewBookDetailsCtrl = new ViewBookDetailsControl();
 
-    viewBookDetailsCtrl->getBookDetails(&sessCreds, aBook, &res);
+    QUuid requestId;
+
+    viewBookDetailsCtrl->getBookDetails(requestId, aBook);
 
     delete viewBookDetailsCtrl;
 
-    setResult(&res);
+    //setResult(&res);
 }
 
 void Tests::on_submitOrderButton_clicked() {
@@ -131,15 +134,17 @@ void Tests::on_submitOrderButton_clicked() {
 
     Order order(&items, &creditInfo, &deliveryInfo);
 
-    ServerResponse res;
+    //ServerResponse res;
 
     SubmitOrderControl *submitOrderCtrl = new SubmitOrderControl();
 
-    submitOrderCtrl->submitOrder(&sessCreds, &order, &res);
+    QUuid requestId;
+
+    submitOrderCtrl->submitOrder(requestId, order);
 
     delete submitOrderCtrl;
 
-    setResult(&res);
+    //setResult(&res);
 }
 
 void Tests::on_addCourseButton_clicked() {
@@ -148,28 +153,32 @@ void Tests::on_addCourseButton_clicked() {
 
     Course c("COMP3004");
 
-    ServerResponse res;
+    //ServerResponse res;
 
     AddCourseControl *addCourseCtrl = new AddCourseControl();
 
-    addCourseCtrl->addCourse(&sessCreds, &c, &res);
+    QUuid requestId;
+
+    addCourseCtrl->addCourse(requestId, c);
 
     delete addCourseCtrl;
 
-    setResult(&res);
+    //setResult(&res);
 }
 
 void Tests::on_addBookButton_clicked() {
     clearResults();
     updateResults("Add book:");
 
-    Textbook *textbook;
+    Textbook textbook("Introduction to Calculus", 120);
 
-    ServerResponse res;
+    //ServerResponse res;
 
     AddBookControl *addBookCtrl = new AddBookControl();
 
-    addBookCtrl->addBook(&sessCreds, textbook, &res);
+    QUuid requestId;
 
-    setResult(&res);
+    addBookCtrl->addBook(requestId, textbook);
+
+    //setResult(&res);
 }

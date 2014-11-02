@@ -14,7 +14,7 @@ class AddCourseControl {
         AddCourseControl();
         ~AddCourseControl();
 
-        void addCourse(SessionCredentials *, Course *, ServerResponse *);
+        void addCourse(QUuid &, Course &);
 };
 
 #endif // ADDCOURSECONTROL_H

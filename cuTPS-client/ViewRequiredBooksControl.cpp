@@ -8,6 +8,6 @@ ViewRequiredBooksControl::~ViewRequiredBooksControl() {
 
 }
 
-void ViewRequiredBooksControl::getRequiredBooks(SessionCredentials *sessionCreds, ServerResponse *response) {
-    network.getRequiredBooks(sessionCreds, response);
+void ViewRequiredBooksControl::getRequiredBooks(QUuid &reqId) {
+    reqId = network.getRequiredBooks();
 }

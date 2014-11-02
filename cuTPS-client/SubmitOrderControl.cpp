@@ -8,8 +8,8 @@ SubmitOrderControl::~SubmitOrderControl() {
 
 }
 
-void SubmitOrderControl::submitOrder(SessionCredentials *sessionCreds, Order *newOrder, ServerResponse *response) {
-    network.submitOrder(sessionCreds, newOrder, response);
+void SubmitOrderControl::submitOrder(QUuid &reqId, Order &newOrder) {
+    reqId = network.submitOrder(newOrder);
 }
 
 

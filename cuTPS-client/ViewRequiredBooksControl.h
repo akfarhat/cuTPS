@@ -13,7 +13,7 @@ class ViewRequiredBooksControl {
         ViewRequiredBooksControl();
         ~ViewRequiredBooksControl();
 
-        void getRequiredBooks(SessionCredentials *, ServerResponse *);
+        void getRequiredBooks(QUuid &);
 
 };
 
