@@ -1,3 +1,9 @@
+// Class: LoginWindow
+// Type: User Interface
+// Description:
+//     This class provides the UI window for the
+//     login option
+
 #ifndef LOGINWINDOW_H
 #define LOGINWINDOW_H
 
@@ -20,6 +26,7 @@ private:
     Ui::LoginWindow *ui;
 
 private slots:
+    // Event handlers for button clicks
     void cancelButtonClickHandler();
     void loginButtonClickHandler();
 };

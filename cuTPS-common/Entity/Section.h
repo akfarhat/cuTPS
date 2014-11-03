@@ -1,3 +1,10 @@
+// Class: Section
+// Type: Entity
+// Description:
+//     Entity object representing a section that
+//     the system has available for purchase
+
+
 #ifndef SECTION_H
 #define SECTION_H
 

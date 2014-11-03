@@ -1,3 +1,9 @@
+// Class: Order
+// Type: Entity
+// Description:
+//     Represents a list of items being purchased by a student user
+
+
 #ifndef ORDER_H
 #define ORDER_H
 

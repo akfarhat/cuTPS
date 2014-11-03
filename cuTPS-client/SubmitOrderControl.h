@@ -1,3 +1,10 @@
+// Class: SubmitOrderControl
+// Type: Control
+// Description:
+//     This class is responsible for invoking the client
+//     side API method in the network handler for submitting
+//     an order to the server
+
 #ifndef SUBMITORDERCONTROL_H
 #define SUBMITORDERCONTROL_H
 
@@ -14,6 +21,7 @@ class SubmitOrderControl {
         SubmitOrderControl(ClientNetworkHandler &);
         ~SubmitOrderControl();
 
+        // Submit the order and return a request identifier
         void submitOrder(QUuid &, Order &);
 };
 

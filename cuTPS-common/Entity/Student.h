@@ -1,3 +1,10 @@
+// Class: Student
+// Type: Entity
+// Description:
+//     Represents the type of user that can browse
+//     and order the content offered in the system for
+//     courses that they are registed in.
+
 #ifndef STUDENT_H
 #define STUDENT_H
 

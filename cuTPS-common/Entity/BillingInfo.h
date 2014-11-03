@@ -1,3 +1,9 @@
+// Class: BillingInfo
+// Type: Entity
+// Description:
+//     Abstract class representing billing information for
+//     a student user
+
 #ifndef BILLINGINFO_H
 #define BILLINGINFO_H
 

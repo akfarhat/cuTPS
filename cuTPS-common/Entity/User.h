@@ -1,3 +1,10 @@
+// Class: User
+// Type: Entity
+// Description:
+//     Abstract class representing commonalities for
+//     a user in the cuTPS system
+
+
 #ifndef USER_H
 #define USER_H
 

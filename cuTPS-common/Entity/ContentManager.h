@@ -1,3 +1,10 @@
+// Class: ContentManager
+// Type: Entity
+// Description:
+//     Represents the type of user that can modify
+//     content available in the system
+
+
 #ifndef CONTENTMANAGER_H
 #define CONTENTMANAGER_H
 

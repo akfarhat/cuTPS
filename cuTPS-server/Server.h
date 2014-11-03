@@ -1,3 +1,10 @@
+// Class: Server
+// Type: Control
+// Description:
+//     This class provides the server API for possible requests
+//     for all user types in the cuTPS system. Most of these
+//     requests will result in selecting from, or updating the database.
+
 #ifndef SERVER_H
 #define SERVER_H
 
@@ -36,15 +43,25 @@ public:
     // All Users
     ServerResponse authenticateUser(QUuid, UserCredentials);
 
-    // Content Managers
+    // Content Manager request API. Each of these requests
+    // adds some content into the system availability
+
     ServerResponse addCourse(QUuid, Course);
     ServerResponse addTextbook(QUuid, Textbook);
     ServerResponse addChapter(QUuid, Chapter);
     ServerResponse addSection(QUuid, Section);
 
-    // Students
+    // Student request API.
+
+    // Get the list of required textbooks for a user
     ServerResponse getRequiredTextbooks(QUuid, int);
+
+    // Get the details for a particular textbook.
+    // I.e. the sections and chapters that it contains,
+    // as well as metadata
     ServerResponse getTextbookDetails(QUuid, int);
+
+    // submit a student's order to the billing system
     ServerResponse submitOrder(QUuid, Order);
 
 signals:

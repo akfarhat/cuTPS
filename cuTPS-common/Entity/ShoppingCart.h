@@ -1,3 +1,10 @@
+// Class: ShoppingCart
+// Type: Entity
+// Description:
+//     Represents a list of items for sale in the system
+//     that are ready to be ordered by a user for a
+//     particular session
+
 #ifndef SHOPPINGCART_H
 #define SHOPPINGCART_H
 
