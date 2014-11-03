@@ -70,7 +70,6 @@ create table if not exists Textbook(
     item_id integer primary key not null,
     name text not null,
     isbn text,
-    available int not null,
     foreign key(item_id) references SellableItem(id)
 );
 
@@ -79,7 +78,6 @@ create table if not exists Chapter(
     textbook_id int not null,
     name text not null,
     chapter_num int not null,
-    available int not null,
     foreign key(textbook_id) references Textbook(id),
     foreign key(item_id) references SellableItem(id)
 );
@@ -89,7 +87,6 @@ create table if not exists Section(
     chapter_id int not null,
     name text not null,
     section_num float not null,
-    available int not null,
     foreign key(chapter_id) references Chapter(id),
     foreign key(item_id) references SellableItem(id)
 );
