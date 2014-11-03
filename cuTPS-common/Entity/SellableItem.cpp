@@ -3,7 +3,7 @@
 SellableItem::SellableItem(int i, QString n, int p, bool isAvailable) : id(i), name(n), priceCents(p), availableForSale(isAvailable) {
 }
 
-SellableItem::SellableItem(QString n, int p) : name(n), price(p), availableForSale(false) {
+SellableItem::SellableItem(QString n, int p) : name(n), priceCents(p), availableForSale(false) {
 }
 
 SellableItem::~SellableItem() {}
@@ -24,8 +24,8 @@ void SellableItem::setName(QString newName) {
     name = newName;
 }
 
-float SellableItem::getPriceCents() {
-    return price;
+int SellableItem::getPriceCents() {
+    return priceCents;
 }
 
 void SellableItem::setPriceCents(int newPriceCents) {

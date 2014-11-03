@@ -21,14 +21,14 @@ class SellableItem {
 
     public:
         SellableItem();
-        SellableItem(int, QString, float, bool);
-        SellableItem(QString, float);
+        SellableItem(int, QString, int, bool);
+        SellableItem(QString, int);
         ~SellableItem();
         int getId();
         void setId(int);
         QString getName();
         void setName(QString);
-        float getPriceCents();
+        int getPriceCents();
         void setPriceCents(int);
         bool getAvailability();
         void setAvailability(bool);
