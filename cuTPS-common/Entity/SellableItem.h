@@ -33,7 +33,7 @@ class SellableItem {
         bool getAvailability();
         void setAvailability(bool);
 
-        virtual QString getType() = 0;
+        virtual QString getDetails() = 0;
 };
 
 #endif // SELLABLEITEM_H

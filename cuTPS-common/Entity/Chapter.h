@@ -20,8 +20,8 @@ class Chapter: public SellableItem {
 
     public:
         Chapter();
-        Chapter(int, Textbook*, int, QString, float, bool);
-        Chapter(Textbook*, int, QString, float);
+        Chapter(int, Textbook*, int, QString, int, bool);
+        Chapter(Textbook*, int, QString, int);
         ~Chapter();
 
         Textbook* getParentTextbook();
@@ -30,7 +30,7 @@ class Chapter: public SellableItem {
         int getChapterNumber();
         void setChapterNumber(int);
 
-        QString getType();
+        QString getDetails();
 };
 
 #endif // CHAPTER_H
