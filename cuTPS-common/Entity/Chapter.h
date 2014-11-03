@@ -1,4 +1,4 @@
-// Class: BillingInfo
+// Class: Chapter
 // Type: Entity
 // Description:
 //     Entity object representing a chapter that
