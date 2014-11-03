@@ -1,3 +1,10 @@
+// Class: Textbook
+// Type: Entity
+// Description:
+//     Entity object representing a textbook that
+//     the system has available for purchase
+
+
 #ifndef TEXTBOOK_H
 #define TEXTBOOK_H
 

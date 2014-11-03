@@ -1,3 +1,10 @@
+// Class: SellableItem
+// Type: Entity
+// Description:
+//     Abstract class, representing the commonalities
+//     of all items that the system has for sale
+
+
 #ifndef SELLABLEITEM_H
 #define SELLABLEITEM_H
 

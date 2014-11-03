@@ -1,3 +1,10 @@
+// Class: BillingInfo
+// Type: Entity
+// Description:
+//     Entity object representing a chapter that
+//     the system has available for purchase
+
+
 #ifndef CHAPTER_H
 #define CHAPTER_H
 

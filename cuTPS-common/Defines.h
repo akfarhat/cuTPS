@@ -1,3 +1,8 @@
+// Name: Defines
+// Description:
+//     A header containing namespace definitions
+
+
 #ifndef DEFINES_H
 #define DEFINES_H
 

@@ -1,3 +1,10 @@
+// Class: CreditCardInfo
+// Type: Entity
+// Description:
+//     Concrete class containing the actual payment
+//     details that a user can use to purchase content
+
+
 #ifndef CREDITCARDINFO_H
 #define CREDITCARDINFO_H
 

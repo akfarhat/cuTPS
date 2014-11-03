@@ -1,3 +1,9 @@
+// Class: Course
+// Type: Entity
+// Description:
+//     represents a course that the system offers content for
+
+
 #ifndef COURSE_H
 #define COURSE_H
 
