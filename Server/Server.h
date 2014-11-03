@@ -43,7 +43,7 @@ public:
     ServerResponse addSection(QUuid, Section);
 
     // Students
-    ServerResponse getRequiredTextbooks(QUuid, int);
+    ServerResponse getRequiredTextbooks(QUuid, QString);
     ServerResponse getTextbookDetails(QUuid, int);
     ServerResponse submitOrder(QUuid, Order);
 
