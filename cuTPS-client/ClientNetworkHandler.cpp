@@ -1,6 +1,9 @@
 #include "ClientNetworkHandler.h"
+
 #include <QString>
 #include <QDebug>
+
+#include "Defines.h"
 
 
 /*
@@ -33,7 +36,7 @@ ClientNetworkHandler::~ClientNetworkHandler()
         connection->close();
     }
 
-    delete connection;
+    // delete connection; // this handler is a parent, so we don't have to worry about deletion.
 }
 
 void ClientNetworkHandler::connectToServer(QHostAddress& addr, int port)
@@ -48,6 +51,7 @@ void ClientNetworkHandler::disconnectFromServer()
 {
     if (isConnected())
     {
+        connection->disconnectFromHost();
         connection->close();
     }
 
@@ -67,14 +71,6 @@ QUuid ClientNetworkHandler::login(UserCredentials& credentials)
     }
 
     QUuid requestId = QUuid::createUuid();
-
-    QDataStream out(connection);
-    out.setVersion(QDataStream::Qt_4_7);
-
-    out << Login << requestId << credentials.username <<
-           credentials.password;
-
-    connection->flush();
 
     return requestId;
 }
@@ -136,7 +132,27 @@ void ClientNetworkHandler::disconnected()
 
 void ClientNetworkHandler::readyRead()
 {
+    QDataStream in(connection);
+    in.setVersion(QDataStream::Qt_4_8);
 
+    if (blockSize == 0)
+    {
+        if (connection->bytesAvailable() < sizeof(qint16))
+        {
+            return;
+        }
+
+        in >> blockSize;
+    }
+
+    if (connection->bytesAvailable() < blockSize)
+    {
+        return;
+    }
+
+    // Parse the block.
+
+    blockSize = 0;
 }
 
 void ClientNetworkHandler::aboutToClose()

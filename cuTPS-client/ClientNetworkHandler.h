@@ -63,6 +63,7 @@ private:
     QTcpSocket *connection;
     SessionCredentials session;
     bool loggedIn;
+    qint16 blockSize;
 };
 
 #endif // CLIENTNETWORKHANDLER_H
