@@ -22,7 +22,9 @@ HEADERS += \
     Entity/ShoppingCart.h \
     Entity/Student.h \
     Entity/Textbook.h \
-    Entity/User.h
+    Entity/User.h \
+    ErrorCodes.h \
+    Defines.h
 
 SOURCES += \
     Entity/BillingInfo.cpp \

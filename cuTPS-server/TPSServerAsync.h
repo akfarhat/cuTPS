@@ -5,9 +5,9 @@
 #include <QTcpSocket>
 #include <QAbstractSocket>
 #include <QDebug>
-#include "TPSClient.h"
 
-#define PORT 17251 // BAD: TODO: Make it dynamic instead
+#include "TPSClient.h"
+#include "Server.h"
 
 class TPSServerAsync : public QTcpServer
 {
@@ -15,6 +15,8 @@ class TPSServerAsync : public QTcpServer
 public:
     explicit TPSServerAsync(QObject *parent = 0);
     void StartServer();
+
+    Server *getServer() const;
 
 protected:
 
@@ -25,8 +27,14 @@ protected:
 #endif
 
 signals:
+    void serverStarted();
+    void serverFailure(); // not implemented
 
 public slots:
+    void clientDisconnected(TPSClient*);
+
+private:
+    Server *server;
 
 };
 

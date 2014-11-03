@@ -1,12 +1,18 @@
 #include "TPSClient.h"
+#include "TPSServerAsync.h"
+#include "Utils.h"
+#include "Defines.h"
 
 TPSClient::TPSClient(QObject *parent) :
     QObject(parent)
 {
-    QThreadPool::globalInstance()->setMaxThreadCount(15); // BAD: TODO: shouldn't be called every time a new client is created + make dynamic thread count
+    if (!parent) return; // TODO: rework. Throw an exception if not an instance of TPSServerAsync
+
+    server = ((TPSServerAsync*) parent)->getServer();
+    blockSize = 0;
 }
 
-void TPSClient::SetSocket(int sockdescriptor)
+void TPSClient::setSocket(int sockdescriptor)
 {
     socket = new QTcpSocket(this);
 
@@ -17,36 +23,80 @@ void TPSClient::SetSocket(int sockdescriptor)
     socket->setSocketDescriptor(sockdescriptor);
 
     qDebug() << "New client on socket " << sockdescriptor;
+
+    ServerResponse response = server->createSession();
+
+    if (response.code == Fail)
+    {
+        // TODO: throw an exception
+        qDebug() << "failed to create session!!";
+        /* Temporary */ return;
+    }
+
+    sessionId = response.sessionID;
+
+    qDebug() << "New Session. ID=" << sessionId;
 }
 
 void TPSClient::connected()
 {
     qDebug() << "client connected event";
+    // for some reason this func is never getting called
 }
 
 void TPSClient::disconnected()
 {
-    qDebug() << "client disconnected";
+    emit clientDisconnected(this);
 }
 
 void TPSClient::readyRead()
 {
-    qDebug() << socket->readAll(); // just flush whatever is sent to us (TEMPORARY)
+    QDataStream in(socket);
+    in.setVersion(TPSConstants::PROTOCOL_VER);
+
+    if (blockSize == 0)
+    {
+        if (socket->bytesAvailable() < sizeof(qint16))
+        {
+            return;
+        }
+
+        in >> blockSize;
+    }
+
+    if (socket->bytesAvailable() < blockSize)
+    {
+        return;
+    }
+
+    QString str;
+    in >> str;
+    qDebug() << "Got data: " << str;
+
+    // Parse data
 
     // Create and run asynchronous task
-    TPSWorkerTask *task = new TPSWorkerTask();
+    TPSWorkerTask *task = new TPSWorkerTask(server, sessionId);
     task->setAutoDelete(true); // will be deleted automatically once finished
 
     connect(task, SIGNAL(result(int)), this, SLOT(taskResult(int)), Qt::QueuedConnection);
 
     QThreadPool::globalInstance()->start(task); // schedule to run in the pool
+
+    blockSize = 0;
 }
 
 void TPSClient::taskResult(int code)
 {
-    QByteArray buffer;
-    buffer.append("\r\nTask Result (code) = ");
-    buffer.append(QString::number(code));
+    // send response
+}
 
-    socket->write(buffer); // send code to the client
+QUuid TPSClient::getSessionId() const
+{
+    return sessionId;
+}
+
+bool TPSClient::isConnected()
+{
+    return !(sessionId.isNull());
 }

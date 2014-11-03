@@ -1,18 +1,16 @@
-#include "TPSWorkerTask.h"
+#include <QTcpSocket>
 
-TPSWorkerTask::TPSWorkerTask()
-{
+#include "TPSWorkerTask.h"
+#include "Defines.h"
+#include "TPSClient.h"
+
+TPSWorkerTask::TPSWorkerTask(Server *srv, QUuid session) {
+    server = srv;
+    sessionId = session;
 }
 
 void TPSWorkerTask::run()
 {
-    // Asynchronous code that is executed for each client connection
-
-    qDebug() << "Task started";
-
-    // ... do some stuff
-
-    qDebug() << "Task done.";
-
+    // .. do time consuming stuff
     emit result(666); // return result code that will be sent back to the client
 }
