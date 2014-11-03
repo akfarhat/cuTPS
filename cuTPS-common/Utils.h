@@ -2,27 +2,19 @@
 #define UTILS_H
 
 #include <QString>
+#include <QByteArray>
 #include <QUuid>
+
+#include "Defines.h"
 
 enum ResponseCode {
     Success,
     Fail
 };
 
-enum InvocationDescriptor {
-    Login,
-    GetRequiredBooks,
-    GetBookDetails,
-    SubmitOrder,
-    AddCourse,
-    AddBook,
-    Goodbye
-};
-
 struct ServerResponse {
     QUuid sessionID;
-    ResponseCode code;
-    QString message;
+    quint8 errorCode;
 };
 
 struct UserCredentials {
@@ -34,5 +26,15 @@ struct SessionCredentials {
     QString username;
     int sessionID;
 };
+
+namespace TPSNetUtils {
+
+static void SerializeRequest(QDataStream* dest, const TPSNetProtocol::NetRequest* src);
+static void SerializeResponse(QDataStream* dest, const TPSNetProtocol::NetResponse* src);
+static void DeserializeRequest(TPSNetProtocol::NetRequest* dest, QDataStream* src);
+static void DeserializeResponse(TPSNetProtocol::NetResponse* dest, QDataStream* src);
+
+}
+
 
 #endif // UTILS_H
