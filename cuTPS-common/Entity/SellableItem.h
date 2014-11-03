@@ -15,7 +15,7 @@ class SellableItem {
     private:
         int id;
         QString name;
-        float price;
+        int priceCents;
         bool availableForSale;
 
 
@@ -28,8 +28,8 @@ class SellableItem {
         void setId(int);
         QString getName();
         void setName(QString);
-        float getPrice();
-        void setPrice(float);
+        float getPriceCents();
+        void setPriceCents(int);
         bool getAvailability();
         void setAvailability(bool);
 
