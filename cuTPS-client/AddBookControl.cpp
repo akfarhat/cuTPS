@@ -1,8 +1,7 @@
 #include "AddBookControl.h"
 
-AddBookControl::AddBookControl() {
-
-}
+AddBookControl::AddBookControl(ClientNetworkHandler &serverAPI)
+    : network(serverAPI) {}
 
 AddBookControl::~AddBookControl() {
 

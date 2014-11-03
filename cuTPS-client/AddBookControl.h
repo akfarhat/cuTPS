@@ -9,10 +9,10 @@
 class AddBookControl {
 
     private:
-        ClientNetworkHandler network;
+        ClientNetworkHandler &network;
 
     public:
-        AddBookControl();
+        AddBookControl(ClientNetworkHandler &);
         ~AddBookControl();
 
         void addBook(QUuid &, Textbook &);

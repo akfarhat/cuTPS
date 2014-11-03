@@ -1,8 +1,7 @@
 #include "ViewBookDetailsControl.h"
 
-ViewBookDetailsControl::ViewBookDetailsControl() {
-
-}
+ViewBookDetailsControl::ViewBookDetailsControl(ClientNetworkHandler &serverAPI)
+    : network(serverAPI) {}
 
 ViewBookDetailsControl::~ViewBookDetailsControl() {
 

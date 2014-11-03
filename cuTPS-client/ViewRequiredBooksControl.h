@@ -7,10 +7,10 @@
 class ViewRequiredBooksControl {
 
     private:
-        ClientNetworkHandler network;
+        ClientNetworkHandler &network;
 
     public:
-        ViewRequiredBooksControl();
+        ViewRequiredBooksControl(ClientNetworkHandler &);
         ~ViewRequiredBooksControl();
 
         void getRequiredBooks(QUuid &);

@@ -8,10 +8,10 @@
 class ViewBookDetailsControl{
 
     private:
-        ClientNetworkHandler network;
+        ClientNetworkHandler &network;
 
     public:
-        ViewBookDetailsControl();
+        ViewBookDetailsControl(ClientNetworkHandler &);
         ~ViewBookDetailsControl();
 
         void getBookDetails(QUuid &, Textbook &);

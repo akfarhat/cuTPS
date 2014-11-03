@@ -1,8 +1,8 @@
 #include "AddCourseControl.h"
 
-AddCourseControl::AddCourseControl() {
-
-}
+AddCourseControl::AddCourseControl(ClientNetworkHandler &serverAPI)
+    : network(serverAPI)
+{}
 
 AddCourseControl::~AddCourseControl() {
 

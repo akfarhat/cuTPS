@@ -1,8 +1,7 @@
 #include "LoginControl.h"
 
-LoginControl::LoginControl() {
-
-}
+LoginControl::LoginControl(ClientNetworkHandler &serverAPI)
+    : network(serverAPI) {}
 
 LoginControl::~LoginControl() {
 

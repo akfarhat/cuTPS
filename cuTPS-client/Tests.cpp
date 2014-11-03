@@ -32,6 +32,11 @@ Tests::Tests(QWidget *parent) :
 
     sessCreds.username = "joesmith";
     sessCreds.sessionID = 0;
+
+    // Connect the network handler to the server
+    // TODO: get the server connection details from a config
+    // QHostAddress addr(serverAddr)
+    // network.connectToServer(addr, serverPort);
 }
 
 Tests::~Tests() {
@@ -70,7 +75,7 @@ void Tests::on_loginButton_clicked() {
     clearResults();
     updateResults("Logging in as Joe:");
 
-    LoginControl *loginCtrl = new LoginControl();
+    LoginControl *loginCtrl = new LoginControl(network);
 
     loginCtrl->login(userCreds);
 
@@ -83,7 +88,7 @@ void Tests::on_viewReqTextsButton_clicked() {
 
     //ServerResponse res;
 
-    ViewRequiredBooksControl *ViewRequiredBooksCtrl = new ViewRequiredBooksControl();
+    ViewRequiredBooksControl *ViewRequiredBooksCtrl = new ViewRequiredBooksControl(network);
 
     QUuid requestId;
 
@@ -102,7 +107,7 @@ void Tests::on_viewBookDetailsButton_clicked() {
 
     //ServerResponse res;
 
-    ViewBookDetailsControl *viewBookDetailsCtrl = new ViewBookDetailsControl();
+    ViewBookDetailsControl *viewBookDetailsCtrl = new ViewBookDetailsControl(network);
 
     QUuid requestId;
 
@@ -136,7 +141,7 @@ void Tests::on_submitOrderButton_clicked() {
 
     //ServerResponse res;
 
-    SubmitOrderControl *submitOrderCtrl = new SubmitOrderControl();
+    SubmitOrderControl *submitOrderCtrl = new SubmitOrderControl(network);
 
     QUuid requestId;
 
@@ -155,7 +160,7 @@ void Tests::on_addCourseButton_clicked() {
 
     //ServerResponse res;
 
-    AddCourseControl *addCourseCtrl = new AddCourseControl();
+    AddCourseControl *addCourseCtrl = new AddCourseControl(network);
 
     QUuid requestId;
 
@@ -174,7 +179,7 @@ void Tests::on_addBookButton_clicked() {
 
     //ServerResponse res;
 
-    AddBookControl *addBookCtrl = new AddBookControl();
+    AddBookControl *addBookCtrl = new AddBookControl(network);
 
     QUuid requestId;
 

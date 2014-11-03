@@ -8,10 +8,10 @@
 class SubmitOrderControl {
 
     private:
-        ClientNetworkHandler network;
+        ClientNetworkHandler &network;
 
     public:
-        SubmitOrderControl();
+        SubmitOrderControl(ClientNetworkHandler &);
         ~SubmitOrderControl();
 
         void submitOrder(QUuid &, Order &);

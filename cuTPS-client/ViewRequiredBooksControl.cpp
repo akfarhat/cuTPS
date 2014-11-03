@@ -1,8 +1,7 @@
 #include "ViewRequiredBooksControl.h"
 
-ViewRequiredBooksControl::ViewRequiredBooksControl() {
-
-}
+ViewRequiredBooksControl::ViewRequiredBooksControl(ClientNetworkHandler &serverAPI)
+    : network(serverAPI) {}
 
 ViewRequiredBooksControl::~ViewRequiredBooksControl() {
 

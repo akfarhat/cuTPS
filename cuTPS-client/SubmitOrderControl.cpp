@@ -1,8 +1,7 @@
 #include "SubmitOrderControl.h"
 
-SubmitOrderControl::SubmitOrderControl() {
-
-}
+SubmitOrderControl::SubmitOrderControl(ClientNetworkHandler &serverAPI)
+    : network(serverAPI) {}
 
 SubmitOrderControl::~SubmitOrderControl() {
 

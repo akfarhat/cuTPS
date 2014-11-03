@@ -8,10 +8,10 @@
 class AddCourseControl {
 
     private:
-        ClientNetworkHandler network;
+        ClientNetworkHandler &network;
 
     public:
-        AddCourseControl();
+        AddCourseControl(ClientNetworkHandler &);
         ~AddCourseControl();
 
         void addCourse(QUuid &, Course &);

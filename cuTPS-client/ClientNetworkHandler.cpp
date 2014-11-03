@@ -63,7 +63,7 @@ void ClientNetworkHandler::disconnectFromServer()
 QUuid ClientNetworkHandler::login(UserCredentials& credentials)
 {
 
-    if (!isValid())
+    if (!isConnected())
     {
         qDebug() << "error: invocation attempt on invalid socket";
         // TODO: Throw an exception

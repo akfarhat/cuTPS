@@ -7,10 +7,10 @@
 class LoginControl {
 
     private:
-        ClientNetworkHandler network;
+        ClientNetworkHandler &network;
 
     public:
-        LoginControl();
+        LoginControl(ClientNetworkHandler &);
         ~LoginControl();
 
         QUuid login(UserCredentials&);
