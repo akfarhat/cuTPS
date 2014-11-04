@@ -35,8 +35,8 @@ Tests::Tests(QWidget *parent) :
 
     // Connect the network handler to the server
     // TODO: get the server connection details from a config
-    // QHostAddress addr(serverAddr)
-    // network.connectToServer(addr, serverPort);
+    QHostAddress addr(QHostAddress::LocalHost);
+    network.connectToServer(addr, TPSConstants::PORT);
 }
 
 Tests::~Tests() {
