@@ -1,9 +1,9 @@
 #include "Section.h"
 
-Section::Section(int id, Chapter* chapter, float num, QString name, int price, bool isAvailable) : SellableItem(id, name, price, isAvailable), parentChapter(chapter), number(num) {
+Section::Section(int id, Chapter* chapter, int num, QString name, int price, bool isAvailable) : SellableItem(id, name, price, isAvailable), parentChapter(chapter), number(num) {
 }
 
-Section::Section(Chapter* chapter, float num, QString name, int price) : SellableItem(name, price), parentChapter(chapter), number(num) {
+Section::Section(Chapter* chapter, int num, QString name, int price) : SellableItem(name, price), parentChapter(chapter), number(num) {
 }
 
 Section::~Section() {
@@ -17,11 +17,11 @@ void Section::setParentChapter(Chapter* newChapter) {
     parentChapter = newChapter;
 }
 
-float Section::getSectionNumber() {
+int Section::getSectionNumber() {
     return number;
 }
 
-void Section::setSectionNumber(float newNumber) {
+void Section::setSectionNumber(int newNumber) {
     number = newNumber;
 }
 

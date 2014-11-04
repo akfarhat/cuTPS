@@ -14,19 +14,19 @@
 class Section: public SellableItem {
     private:
         Chapter* parentChapter;
-        float number;
+        int number;
 
     public:
         Section();
-        Section(int, Chapter*, float, QString, int, bool);
-        Section(Chapter*, float, QString, int);
+        Section(int, Chapter*, int, QString, int, bool);
+        Section(Chapter*, int, QString, int);
         ~Section();
 
         Chapter* getParentChapter();
         void setParentChapter(Chapter*);
 
-        float getSectionNumber();
-        void setSectionNumber(float);
+        int getSectionNumber();
+        void setSectionNumber(int);
 
         QString getDetails();
 };
