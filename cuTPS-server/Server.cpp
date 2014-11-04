@@ -303,13 +303,14 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, std::
     // TODO : Handle case where attributes are null
     if (result) {
         while(query.next()) {
-            *textbook = std::unique_ptr<Textbook>( new Textbook(
-                        query.value(0).toInt(),
-                        query.value(1).toString(),
-                        query.value(2).toInt(),
-                        query.value(3).toBool(),
-                        query.value(4).toString()
-            ));
+            *textbook = std::unique_ptr<Textbook>(
+                        new Textbook(
+                            query.value(0).toInt(),
+                            query.value(1).toString(),
+                            query.value(2).toInt(),
+                            query.value(3).toBool(),
+                            query.value(4).toString()
+                            ));
         }
 
         // TODO : send textbook object to client
@@ -325,7 +326,7 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, std::
     return response;
 }
 
-ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector<SellableItem*>*)
+ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector<SellableItem*>* parts)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -333,24 +334,71 @@ ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector
     QSqlQuery query;
 
     QString queryString = "";
-    queryString += "select Chapter.id from Chapter, Textbook";
-    queryString += "where Textbook.item_id = ";
+    queryString += "select Chapter.item_id, Chapter.chapter_num, SellableItem.name, SellableItem.price, SellableItem.available from Chapter";
+    queryString += "where Chapter.textbook_id = ";
     queryString += textbookID;
     queryString += ";";
 
     bool result = dbManager->runQuery(queryString, &query);
 
+    QVector<Chapter*> chapters;
+
     if (result) {
         while(query.next()) {
-//            append(query.value(0).toInt());
+            chapters.append(
+                        new Chapter(
+                            query.value(0).toInt(),
+                            NULL,
+                            query.value(1).toInt(),
+                            query.value(2).toString(),
+                            query.value(3).toInt(),
+                            query.value(4).toBool()
+                            ));
         }
-        response.code = Success;
-        response.message = "";
+
     }
     else {
         response.code = Fail;
         response.message = query.lastError().text();
+        return response;
     }
+
+    for (Chapter* chapter : chapters) {
+
+        parts->append(chapter);
+
+        queryString = "";
+        queryString += "select Section.item_id, Section.section_num, SellableItem.name, SellableItem.price, SellableItem.available from Section";
+        queryString += "where Section.chapter_id = ";
+        queryString += chapter->getId();
+        queryString += ";";
+
+        result = dbManager->runQuery(queryString, &query);
+
+        if (result) {
+            while(query.next()) {
+                parts->append(
+                            new Section(
+                                query.value(0).toInt(),
+                                NULL,
+                                query.value(1).toInt(),
+                                query.value(2).toString(),
+                                query.value(3).toInt(),
+                                query.value(4).toBool()
+                                ));
+            }
+
+        }
+        else {
+            response.code = Fail;
+            response.message = query.lastError().text();
+            return response;
+        }
+
+    }
+
+    response.code = Success;
+    response.message = "";
 
     return response;
 }
