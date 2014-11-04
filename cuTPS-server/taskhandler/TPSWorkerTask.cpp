@@ -1,5 +1,7 @@
 #include <QTcpSocket>
 
+#include "TPSNetUtils.h"
+
 #include "TPSWorkerTask.h"
 #include "Defines.h"
 #include "TPSClient.h"

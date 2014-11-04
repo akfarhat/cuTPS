@@ -8,6 +8,8 @@
 #ifndef SERVER_H
 #define SERVER_H
 
+#include <memory>
+
 #include <QObject>
 #include <QString>
 #include <QVector>
@@ -37,6 +39,9 @@ public:
     // and a return code
     ServerResponse createSession();
 
+    //closeSession() takes in a sessionID and removes it from the openSessions
+    ServerResponse closeSession(QUuid);
+
     //All Server API functions except createSession() take sessionID
     // as the first parameter
 
@@ -54,12 +59,16 @@ public:
     // Student request API.
 
     // Get the list of required textbooks for a user
-    ServerResponse getRequiredTextbooks(QUuid, const QString&);
+    ServerResponse getRequiredTextbooks(QUuid, const QString&, QVector<int>*);
 
-    // Get the details for a particular textbook.
-    // I.e. the sections and chapters that it contains,
-    // as well as metadata
-    ServerResponse getTextbookDetails(QUuid, int);
+    // Get the metadata for a sellable item
+    ServerResponse getItemDetails(QUuid, int);
+
+    // Get the metadata for a particular textbook
+    ServerResponse getTextbookDetails(QUuid, int, std::unique_ptr<Textbook>*);
+
+    // Get a list of chapter and section objects in a particular textbook
+    ServerResponse getTextbookParts(QUuid, int, QVector<SellableItem*>*);
 
     // submit a student's order to the billing system
     ServerResponse submitOrder(QUuid, Order);
