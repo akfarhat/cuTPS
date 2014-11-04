@@ -7,6 +7,9 @@ Textbook::Textbook(int textId, QString name, int price, bool isAvailable, QStrin
 Textbook::Textbook(QString name, int price) : SellableItem(name, price) {
 }
 
+Textbook::Textbook() : SellableItem() {
+}
+
 Textbook::~Textbook() {
 }
 

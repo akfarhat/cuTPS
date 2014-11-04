@@ -6,6 +6,9 @@ SellableItem::SellableItem(int i, QString n, int p, bool isAvailable) : id(i), n
 SellableItem::SellableItem(QString n, int p) : name(n), priceCents(p), availableForSale(false) {
 }
 
+SellableItem::SellableItem() : name(""), priceCents(0), availableForSale(false) {
+}
+
 SellableItem::~SellableItem() {}
 
 int SellableItem::getId() const {
