@@ -155,7 +155,6 @@ void TPSNetUtils::SerializeOrder(QDataStream* ostream, Order* src)
 {
     ostream->setVersion(TPSConstants::PROTOCOL_VER);
 
-    QVector<qint32> vec;
     qint32 numItems = src->getOrder()->size();
 
     (*ostream) << src->getBillingInfo()->getName()
@@ -185,12 +184,10 @@ void TPSNetUtils::DeserializeOrder(Order* dest, QDataStream* istream)
             >> dEmail
             >> numItems;
 
-    QVector<qint32>* vec = dest->getOrder();
-
     for (int i = 0; i < numItems; ++i)
     {
         int id;
         (*istream) >> id;
-        vec->append(id);
+        dest->getOrder()->append(id);
     }
 }

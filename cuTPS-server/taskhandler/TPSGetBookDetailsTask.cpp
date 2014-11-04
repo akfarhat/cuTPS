@@ -1,4 +1,5 @@
 #include "TPSGetBookDetailsTask.h"
+#include "TPSNetUtils.h"
 
 #include <QDebug>
 
@@ -18,18 +19,19 @@ void TPSGetBookDetailsTask::run()
     QDataStream in(iblock, QIODevice::ReadOnly);
     in >> bookId;
 
-    ServerResponse r = server->getTextbookDetails(sessionId, bookId);
-
-    // how to get actual details?
+    std::unique_ptr<Textbook>* ppText;
+    ServerResponse r = server->getTextbookDetails(sessionId, bookId, ppText);
 
     TPSNetProtocol::NetResponse response;
-//    QByteArray data;
-//    QDataStream out(oblock, QIODevice::WriteOnly);
+    QByteArray data;
+    QDataStream out(oblock, QIODevice::WriteOnly);
 
-//    setupResponse(response,
-//                  r.code == Fail ? 0x0 : 0x1,
-//                  &data,
-//                  &out);
+    TPSNetUtils::SerializeTextbook(&out, *ppText);
+
+    setupResponse(response,
+                  r.code == Fail ? 0x0 : 0x1,
+                  &data,
+                  &out);
 
     emit result(response.responseCode, oblock);
 }
