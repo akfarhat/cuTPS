@@ -2,19 +2,18 @@
 
 #include <QString>
 #include <QDebug>
+#include <iostream>
 
 #include "TPSNetUtils.h"
 #include "Defines.h"
 #include "Utils.h"
 
-/*
 #define ASSERT_VALID \
     if (!isValid()) \
     {               \
-        qDebug() << "error: invocation attempt on invalid socket"; \
-        return null; \
+        std::cerr << "error: invocation attempt on invalid socket" << std::endl;\
+        return QUuid(); \
     } \
-*/
 
 ClientNetworkHandler::ClientNetworkHandler()
 {
@@ -96,6 +95,8 @@ QUuid ClientNetworkHandler::login(UserCredentials& credentials)
 
 QUuid ClientNetworkHandler::getRequiredBooks()
 {
+    ASSERT_VALID
+
     QUuid requestId = QUuid::createUuid();
 
     TPSNetProtocol::NetRequest request;
@@ -119,6 +120,8 @@ QUuid ClientNetworkHandler::getRequiredBooks()
 
 QUuid ClientNetworkHandler::getBookDetails(Textbook& text)
 {
+    ASSERT_VALID
+
     QUuid requestId = QUuid::createUuid();
 
     TPSNetProtocol::NetRequest request;
@@ -142,6 +145,8 @@ QUuid ClientNetworkHandler::getBookDetails(Textbook& text)
 
 QUuid ClientNetworkHandler::submitOrder(Order& order)
 {
+    ASSERT_VALID
+
     QUuid requestId = QUuid::createUuid();
 
     TPSNetProtocol::NetRequest request;
@@ -165,6 +170,8 @@ QUuid ClientNetworkHandler::submitOrder(Order& order)
 
 QUuid ClientNetworkHandler::addCourse(Course& course)
 {
+    ASSERT_VALID
+
     QUuid requestId = QUuid::createUuid();
 
     TPSNetProtocol::NetRequest request;
@@ -188,6 +195,8 @@ QUuid ClientNetworkHandler::addCourse(Course& course)
 
 QUuid ClientNetworkHandler::addBook(Textbook& text)
 {
+    ASSERT_VALID
+
     QUuid requestId = QUuid::createUuid();
 
     TPSNetProtocol::NetRequest request;
