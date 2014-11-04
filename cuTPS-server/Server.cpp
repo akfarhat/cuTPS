@@ -231,6 +231,40 @@ ServerResponse Server::addSection(QUuid sessionID, Section section)
     return response;
 }
 
+ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& username)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select Course_Textbook.textbook_id from User";
+    queryString += "join User_Course on User.id = User_Course.user_id";
+    queryString += "join Course_Textbook on User_Course.course_id = Course_Textbook.course_id";
+    queryString += "where User.username = \"";
+    queryString += username;
+    queryString += "\";";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    QVector<int> textbookIDs;
+
+    if (result) {
+        while(query.next()) {
+            textbookIDs.append(query.value(0).toInt());
+        }
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+    }
+
+    return response;
+}
+
 bool Server::validateBillingInfo(BillingInfo *billingInfo)
 {
     if (billingInfo == NULL)

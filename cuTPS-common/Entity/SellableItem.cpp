@@ -1,9 +1,9 @@
 #include "SellableItem.h"
 
-SellableItem::SellableItem(int i, QString n, float p, bool isAvailable) : id(i), name(n), price(p), availableForSale(isAvailable) {
+SellableItem::SellableItem(int i, QString n, int p, bool isAvailable) : id(i), name(n), priceCents(p), availableForSale(isAvailable) {
 }
 
-SellableItem::SellableItem(QString n, float p) : name(n), price(p), availableForSale(false) {
+SellableItem::SellableItem(QString n, int p) : name(n), priceCents(p), availableForSale(false) {
 }
 
 SellableItem::~SellableItem() {}
@@ -24,12 +24,12 @@ void SellableItem::setName(QString newName) {
     name = newName;
 }
 
-float SellableItem::getPrice() {
-    return price;
+int SellableItem::getPriceCents() {
+    return priceCents;
 }
 
-void SellableItem::setPrice(float newPrice) {
-    price = newPrice;
+void SellableItem::setPriceCents(int newPriceCents) {
+    priceCents = newPriceCents;
 }
 
 

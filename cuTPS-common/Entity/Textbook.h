@@ -16,14 +16,14 @@ class Textbook: public SellableItem {
         QString ISBN;
     public:
         Textbook();
-        Textbook(int, QString, float, bool);
-        Textbook(QString, float);
+        Textbook(int, QString, int, bool);
+        Textbook(QString, int);
         ~Textbook();
 
         QString getISBN();
         void setISBN(QString);
 
-        QString getType();
+        QString getDetails();
 };
 
 #endif // TEXTBOOK_H

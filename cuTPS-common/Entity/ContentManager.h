@@ -18,13 +18,13 @@ class ContentManager: public User {
         QString emailAddress;
 
     public:
-        ContentManager(QString, QString);
+        ContentManager(int, QString, QString);
         ~ContentManager();
 
         QString getEmailAddress();
         void setEmailAddress(QString);
 
-        QString getType();
+        QString getDetails();
 };
 
 #endif // CONTENTMANAGER_H

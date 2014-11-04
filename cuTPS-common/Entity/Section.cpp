@@ -1,9 +1,9 @@
 #include "Section.h"
 
-Section::Section(int id, Chapter* chapter, float num, QString name, float price, bool isAvailable) : SellableItem(id, name, price, isAvailable), parentChapter(chapter), number(num) {
+Section::Section(int id, Chapter* chapter, float num, QString name, int price, bool isAvailable) : SellableItem(id, name, price, isAvailable), parentChapter(chapter), number(num) {
 }
 
-Section::Section(Chapter* chapter, float num, QString name, float price) : SellableItem(name, price), parentChapter(chapter), number(num) {
+Section::Section(Chapter* chapter, float num, QString name, int price) : SellableItem(name, price), parentChapter(chapter), number(num) {
 }
 
 Section::~Section() {
@@ -25,6 +25,23 @@ void Section::setSectionNumber(float newNumber) {
     number = newNumber;
 }
 
-QString Section::getType() {
-    return "Section";
+QString Section::getDetails() {
+    QString details = "";
+    details += "Type: Section\nID:";
+    details += QString::number(this->getId());
+    details += "\nSection Name: ";
+    details += this->getName();
+    details += "\nSection Number: ";
+    details += QString::number(this->getSectionNumber());
+    details += "\nChapter Name: ";
+    details += this->getParentChapter()->getName();
+    details += "\nChapter Number: ";
+    details += QString::number(this->getParentChapter()->getChapterNumber());
+    details += "\nTextbook Name: ";
+    details += this->getParentChapter()->getParentTextbook()->getName();
+    details += "\nPrice (in cents): ";
+    details += QString::number(this->getPriceCents());
+    details += "\nAvailable: ";
+    details += (this->getAvailability() == true) ? "yes" : "no";
+    return details;
 }

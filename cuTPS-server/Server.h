@@ -54,7 +54,7 @@ public:
     // Student request API.
 
     // Get the list of required textbooks for a user
-    ServerResponse getRequiredTextbooks(QUuid, int);
+    ServerResponse getRequiredTextbooks(QUuid, const QString&);
 
     // Get the details for a particular textbook.
     // I.e. the sections and chapters that it contains,

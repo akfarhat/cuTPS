@@ -18,8 +18,8 @@ class Section: public SellableItem {
 
     public:
         Section();
-        Section(int, Chapter*, float, QString, float, bool);
-        Section(Chapter*, float, QString, float);
+        Section(int, Chapter*, float, QString, int, bool);
+        Section(Chapter*, float, QString, int);
         ~Section();
 
         Chapter* getParentChapter();
@@ -28,7 +28,7 @@ class Section: public SellableItem {
         float getSectionNumber();
         void setSectionNumber(float);
 
-        QString getType();
+        QString getDetails();
 };
 
 #endif // SECTION_H

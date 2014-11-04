@@ -20,11 +20,11 @@ class Student: public User {
     private:
         int studentNumber;
         QString emailAddress;
-        QVector<Course> courses;
+        QVector<Course*> courses;
 
 
     public:
-        Student(QString, QString);
+        Student(int, QString, QString, int);
         ~Student();
 
         int getStudentNumber();
@@ -33,7 +33,10 @@ class Student: public User {
         QString getEmailAddress();
         void setEmailAddress(QString);
 
-        QString getType();
+        QVector<Course*> getCourses();
+        void enrollInCourse(Course*);
+
+        QString getDetails();
 };
 
 #endif // STUDENT_H

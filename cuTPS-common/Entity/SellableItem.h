@@ -15,25 +15,25 @@ class SellableItem {
     private:
         int id;
         QString name;
-        float price;
+        int priceCents;
         bool availableForSale;
 
 
     public:
         SellableItem();
-        SellableItem(int, QString, float, bool);
-        SellableItem(QString, float);
+        SellableItem(int, QString, int, bool);
+        SellableItem(QString, int);
         ~SellableItem();
         int getId();
         void setId(int);
         QString getName();
         void setName(QString);
-        float getPrice();
-        void setPrice(float);
+        int getPriceCents();
+        void setPriceCents(int);
         bool getAvailability();
         void setAvailability(bool);
 
-        virtual QString getType() = 0;
+        virtual QString getDetails() = 0;
 };
 
 #endif // SELLABLEITEM_H
