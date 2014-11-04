@@ -436,7 +436,7 @@ bool Server::validateOrder(Order& order, QString *errorMessage)
         return false;
     }
 
-    if (! order.getOrder().size() > 0) {
+    if (! order.getOrder()->size() > 0) {
         *errorMessage = QString("Order must have at least one item");
         return false;
     }

@@ -45,6 +45,8 @@ void TPSNetUtils::SerializeResponse(QDataStream* ostream, const TPSNetProtocol::
 
 void TPSNetUtils::DeserializeRequest(TPSNetProtocol::NetRequest* dest, QDataStream* istream)
 {
+    istream->setVersion(TPSConstants::PROTOCOL_VER);
+
     qint8 invocationInteger;
     QUuid requestId;
     QByteArray* dataBlock = dest->data;
@@ -59,6 +61,8 @@ void TPSNetUtils::DeserializeRequest(TPSNetProtocol::NetRequest* dest, QDataStre
 
 void TPSNetUtils::DeserializeResponse(TPSNetProtocol::NetResponse* dest, QDataStream* istream)
 {
+    istream->setVersion(TPSConstants::PROTOCOL_VER);
+
     qint8 invocationInteger;
     QUuid requestId;
     QUuid sessionId;
@@ -79,6 +83,8 @@ void TPSNetUtils::DeserializeResponse(TPSNetProtocol::NetResponse* dest, QDataSt
 
 void TPSNetUtils::SerializeTextbook(QDataStream* ostream, const Textbook* src)
 {
+    ostream->setVersion(TPSConstants::PROTOCOL_VER);
+
     (*ostream) << (qint32) src->getId()
                << src->getName()
                << src->getISBN()
@@ -88,6 +94,8 @@ void TPSNetUtils::SerializeTextbook(QDataStream* ostream, const Textbook* src)
 
 void TPSNetUtils::DeserializeTextbook(Textbook* dest, QDataStream* istream)
 {
+    istream->setVersion(TPSConstants::PROTOCOL_VER);
+
     qint32 id;
     QString name;
     QString isbn;
@@ -105,6 +113,8 @@ void TPSNetUtils::DeserializeTextbook(Textbook* dest, QDataStream* istream)
 
 void TPSNetUtils::SerializeCourse(QDataStream* ostream, const Course* src)
 {
+    ostream->setVersion(TPSConstants::PROTOCOL_VER);
+
     (*ostream) << (qint32) src->getId()
                << src->getCourseName()
                << src->getCourseCode()
@@ -119,6 +129,8 @@ void TPSNetUtils::SerializeCourse(QDataStream* ostream, const Course* src)
 
 void TPSNetUtils::DeserializeCourse(Course* dest, QDataStream* istream)
 {
+    istream->setVersion(TPSConstants::PROTOCOL_VER);
+
     qint32 id;
     QString name;
     QString code;
@@ -139,12 +151,46 @@ void TPSNetUtils::DeserializeCourse(Course* dest, QDataStream* istream)
     dest->setCourseCode(code);
 }
 
-void TPSNetUtils::SerializeOrder(QDataStream* ostream, const Order* src)
+void TPSNetUtils::SerializeOrder(QDataStream* ostream, Order* src)
 {
+    ostream->setVersion(TPSConstants::PROTOCOL_VER);
 
+    QVector<qint32> vec;
+    qint32 numItems = src->getOrder()->size();
+
+    (*ostream) << src->getBillingInfo()->getName()
+               << src->getBillingInfo()->getEmail()
+               << src->getBillingInfo()->getBillingAddress()
+               << src->getBillingInfo()->getPhoneNumber()
+               << src->getDeliveryInfo()->getEmailAddress()
+               << numItems;
+
+    for (int i = 0; i < numItems; ++i)
+    {
+        (*ostream) << (*(src->getOrder())).at(i);
+    }
 }
 
 void TPSNetUtils::DeserializeOrder(Order* dest, QDataStream* istream)
 {
-    // read order
+    istream->setVersion(TPSConstants::PROTOCOL_VER);
+
+    qint32 numItems = 0;
+    QString name, bEmail, bAddress, phoneNum, dEmail;
+
+    (*istream) >> name
+            >> bEmail
+            >> bAddress
+            >> phoneNum
+            >> dEmail
+            >> numItems;
+
+    QVector<qint32>* vec = dest->getOrder();
+
+    for (int i = 0; i < numItems; ++i)
+    {
+        int id;
+        (*istream) >> id;
+        vec->append(id);
+    }
 }

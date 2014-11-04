@@ -1,8 +1,8 @@
 #include "Order.h"
 
-Order::Order(QVector<SellableItem*> *itemList, BillingInfo *billing,
+Order::Order(QVector<qint32> *itemList, BillingInfo *billing,
              DeliveryInfo *shipping) :
-    items( QVector<SellableItem*>( *itemList ) ),
+    itemIds( QVector<qint32>( *itemList ) ),
     billingInfo( billing ),
     deliveryInfo( shipping )
 {}
@@ -10,14 +10,14 @@ Order::Order(QVector<SellableItem*> *itemList, BillingInfo *billing,
 Order::~Order() {
 }
 
-BillingInfo *Order::getBillingInfo() {
+BillingInfo *Order::getBillingInfo() const {
     return billingInfo;
 }
 
-DeliveryInfo *Order::getDeliveryInfo() {
+DeliveryInfo *Order::getDeliveryInfo() const {
     return deliveryInfo;
 }
 
-QVector<SellableItem*> Order::getOrder() {
-    return items;
+QVector<qint32>* Order::getOrder() {
+    return &itemIds;
 }
