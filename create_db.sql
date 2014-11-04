@@ -101,15 +101,16 @@ insert into Administrator values (1);
 insert into User values (2, "cm", "Content Manager", "pass");
 insert into ContentManager values (2);
 
-insert into User values (3, "student", "John Doe", "pass");
-insert into Student values (3, "100123456", "student@cmail.carleton.ca");
+insert into User values (3, "joesmith", "Joe Smith", "alamepassword");
+insert into Student values (3, "100123457", "joesmith@cmail.carleton.ca");
 
 insert into User_Course values (3,1);
 
 insert into Course values (1, "COMP3004", "Object-Oriented Software Engineering");
 
-insert into Textbook values (1, "Ojbect-Oriented Software Engineering: Using UML, Patterns, and
-Java", "123456", 1);
+insert into SellableItem values (1, "Object-Oriented Software Engineering: Using UML, Patterns, and Java", "12356", 1);
+
+insert into Textbook values (1, "123-456-7890");
 
 insert into Course_Textbook values (1,1);
 
