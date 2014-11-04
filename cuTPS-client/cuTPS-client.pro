@@ -39,8 +39,14 @@ FORMS    += \
     Tests.ui \
     LoginWindow.ui
 
+macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
+}
+
+unix:!macx {
+QMAKE_CXXFLAGS += -std=c++0x
+}
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/release/ -lcutps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/debug/ -lcutps
