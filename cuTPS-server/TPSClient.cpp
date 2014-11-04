@@ -5,8 +5,12 @@
 
 #include <QByteArray>
 
-#include "TPSAddBookTask.h"
-#include "TPSLoginTask.h"
+#include "taskhandler/TPSAddBookTask.h"
+#include "taskhandler/TPSLoginTask.h"
+#include "taskhandler/TPSAddCourseTask.h"
+#include "taskhandler/TPSGetBookDetailsTask.h"
+#include "taskhandler/TPSGetRequiredBooksTask.h"
+#include "taskhandler/TPSSubmitOrderTask.h"
 
 TPSClient::TPSClient(QObject *parent) :
     QObject(parent)
@@ -95,11 +99,29 @@ void TPSClient::readyRead()
 
     // Temporary router
     switch (request.invocation) {
+
     case TPSConstants::AddBook:
         task = new TPSAddBookTask(server);
         break;
+    case TPSConstants::AddCourse:
+        task = new TPSAddCourseTask(server);
+        break;
+    case TPSConstants::GetBookDetails:
+        task = new TPSGetBookDetailsTask(server);
+        break;
+    case TPSConstants::GetRequiredBooks:
+        task = new TPSGetRequiredBooksTask(server);
+        break;
     case TPSConstants::Login:
         task = new TPSLoginTask(server);
+        break;
+    case TPSConstants::SubmitOrder:
+        task = new TPSSubmitOrderTask(server);
+        break;
+    case TPSConstants::Goodbye:
+    default:
+        // kill the client
+        return;
         break;
     }
 

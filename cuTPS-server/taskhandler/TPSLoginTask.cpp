@@ -35,17 +35,13 @@ void TPSLoginTask::run()
     qDebug() << credentials.username << " " << credentials.password;
 
     TPSNetProtocol::NetResponse response;
-
-    response.invocation = request.invocation;
-    response.requestId = request.requestId;
-    response.sessionId = sessionId;
-    r.code == Fail ? response.responseCode = 0x0 : response.responseCode = 0x1;
-
     QByteArray data;
-    response.data = &data;
-
     QDataStream out(oblock, QIODevice::WriteOnly);
-    TPSNetUtils::SerializeResponse(&out, &response);
+
+    setupResponse(response,
+                  r.code == Fail ? 0x0 : 0x1,
+                  &data,
+                  &out);
 
     emit result(response.responseCode, oblock);
 }

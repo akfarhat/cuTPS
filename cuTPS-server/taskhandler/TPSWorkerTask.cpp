@@ -28,3 +28,16 @@ void TPSWorkerTask::setResponseDataBlock(QByteArray* odata)
 {
     this->oblock = odata;
 }
+
+void TPSWorkerTask::setupResponse(TPSNetProtocol::NetResponse& response,
+                                  qint8 code,
+                                  QByteArray* dataBlock,
+                                  QDataStream* outStream)
+{
+    response.invocation = request.invocation;
+    response.requestId = request.requestId;
+    response.sessionId = sessionId;
+    response.responseCode = code;
+    response.data = dataBlock;
+    TPSNetUtils::SerializeResponse(outStream, &response);
+}

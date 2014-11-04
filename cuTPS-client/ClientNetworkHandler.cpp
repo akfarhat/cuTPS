@@ -95,27 +95,115 @@ QUuid ClientNetworkHandler::login(UserCredentials& credentials)
 
 QUuid ClientNetworkHandler::getRequiredBooks()
 {
+    QUuid requestId = QUuid::createUuid();
 
+    TPSNetProtocol::NetRequest request;
+    request.invocation = TPSConstants::GetRequiredBooks;
+    request.requestId = requestId;
+
+    QByteArray* data = new QByteArray(); // TODO: Manage memory
+    QDataStream outDataStream(data, QIODevice::WriteOnly);
+
+    request.data = data;
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    TPSNetUtils::SerializeRequest(&outStream, &request);
+
+    return requestId;
 }
 
-QUuid ClientNetworkHandler::getBookDetails(Textbook&)
+QUuid ClientNetworkHandler::getBookDetails(Textbook& text)
 {
+    QUuid requestId = QUuid::createUuid();
 
+    TPSNetProtocol::NetRequest request;
+    request.invocation = TPSConstants::GetBookDetails;
+    request.requestId = requestId;
+
+    QByteArray* data = new QByteArray(); // TODO: Manage memory
+    QDataStream outDataStream(data, QIODevice::WriteOnly);
+
+    // serializeTextbook(&data, text);
+
+    request.data = data;
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    TPSNetUtils::SerializeRequest(&outStream, &request);
+
+    return requestId;
 }
 
-QUuid ClientNetworkHandler::submitOrder(Order&)
+QUuid ClientNetworkHandler::submitOrder(Order& order)
 {
+    QUuid requestId = QUuid::createUuid();
 
+    TPSNetProtocol::NetRequest request;
+    request.invocation = TPSConstants::SubmitOrder;
+    request.requestId = requestId;
+
+    QByteArray* data = new QByteArray(); // TODO: Manage memory
+    QDataStream outDataStream(data, QIODevice::WriteOnly);
+
+    // serializeOrder(&data, order);
+
+    request.data = data;
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    TPSNetUtils::SerializeRequest(&outStream, &request);
+
+    return requestId;
 }
 
-QUuid ClientNetworkHandler::addCourse(Course&)
+QUuid ClientNetworkHandler::addCourse(Course& course)
 {
+    QUuid requestId = QUuid::createUuid();
 
+    TPSNetProtocol::NetRequest request;
+    request.invocation = TPSConstants::AddCourse;
+    request.requestId = requestId;
+
+    QByteArray* data = new QByteArray(); // TODO: Manage memory
+    QDataStream outDataStream(data, QIODevice::WriteOnly);
+
+    // serializeCourse(&data, course);
+
+    request.data = data;
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    TPSNetUtils::SerializeRequest(&outStream, &request);
+
+    return requestId;
 }
 
-QUuid ClientNetworkHandler::addBook(Textbook&)
+QUuid ClientNetworkHandler::addBook(Textbook& text)
 {
+    QUuid requestId = QUuid::createUuid();
 
+    TPSNetProtocol::NetRequest request;
+    request.invocation = TPSConstants::GetRequiredBooks;
+    request.requestId = requestId;
+
+    QByteArray* data = new QByteArray(); // TODO: Manage memory
+    QDataStream outDataStream(data, QIODevice::WriteOnly);
+
+    // serializeTextbook(text, &data);
+
+    request.data = data;
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    TPSNetUtils::SerializeRequest(&outStream, &request);
+
+    return requestId;
 }
 
 QTcpSocket::SocketState ClientNetworkHandler::getSocketState() const

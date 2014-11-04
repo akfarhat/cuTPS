@@ -19,7 +19,7 @@
 #include <QThreadPool>
 #include <QUuid>
 
-#include "TPSWorkerTask.h"
+#include "taskhandler/TPSWorkerTask.h"
 #include "Server.h"
 #include "Entity/User.h"
 
