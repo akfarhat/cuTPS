@@ -39,4 +39,5 @@ SOURCES += \
     Entity/ShoppingCart.cpp \
     Entity/Student.cpp \
     Entity/Textbook.cpp \
-    Entity/User.cpp
+    Entity/User.cpp \
+    Utils.cpp

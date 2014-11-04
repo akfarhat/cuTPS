@@ -23,7 +23,8 @@ enum ResponseCode {
 // Information returned by the server for requests
 struct ServerResponse {
     QUuid sessionID;
-    qint8 errorCode;
+    ResponseCode code;
+    QString message;
 };
 
 // For user authentication
@@ -38,14 +39,18 @@ struct SessionCredentials {
     int sessionID;
 };
 
-namespace TPSNetUtils {
+class TPSNetUtils {
+public:
+    static void SerializeRequest(QDataStream* dest, const TPSNetProtocol::NetRequest* src);
+    static void SerializeResponse(QDataStream* dest, const TPSNetProtocol::NetResponse* src);
+    static void DeserializeRequest(TPSNetProtocol::NetRequest* dest, QDataStream* src);
+    static void DeserializeResponse(TPSNetProtocol::NetResponse* dest, QDataStream* src);
 
-static void SerializeRequest(QDataStream* dest, const TPSNetProtocol::NetRequest* src);
-static void SerializeResponse(QDataStream* dest, const TPSNetProtocol::NetResponse* src);
-static void DeserializeRequest(TPSNetProtocol::NetRequest* dest, QDataStream* src);
-static void DeserializeResponse(TPSNetProtocol::NetResponse* dest, QDataStream* src);
+protected:
 
-}
+    virtual void getNothing(void) = 0;
+
+};
 
 
 #endif // UTILS_H

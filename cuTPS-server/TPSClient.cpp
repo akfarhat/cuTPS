@@ -3,6 +3,11 @@
 #include "Utils.h"
 #include "Defines.h"
 
+#include <QByteArray>
+
+#include "TPSAddBookTask.h"
+#include "TPSLoginTask.h"
+
 TPSClient::TPSClient(QObject *parent) :
     QObject(parent)
 {
@@ -69,26 +74,51 @@ void TPSClient::readyRead()
         return;
     }
 
-    QString str;
-    in >> str;
-    qDebug() << "Got data: " << str;
+    TPSNetProtocol::NetRequest request;
+
+    // Calculate data block size
+    qint16 dataBlockSize = blockSize - sizeof(qint8) - sizeof(QUuid);
+    // Allocate ByteArray of that size
+    QByteArray* dataBlock = new QByteArray();
+    dataBlock->resize(dataBlockSize);
+
+    request.data = dataBlock;
+
+    TPSNetUtils::DeserializeRequest(&request, &in);
 
     // Parse data
 
-    // Create and run asynchronous task
-    TPSWorkerTask *task = new TPSWorkerTask(server, sessionId);
-    task->setAutoDelete(true); // will be deleted automatically once finished
+    TPSWorkerTask* task;
 
-    connect(task, SIGNAL(result(int)), this, SLOT(taskResult(int)), Qt::QueuedConnection);
+    QByteArray* responseBlock = new QByteArray(); // TODO: manage memory
+    QDataStream out(responseBlock, QIODevice::WriteOnly);
 
+    // Temporary router
+    switch (request.invocation) {
+    case TPSConstants::AddBook:
+        task = new TPSAddBookTask(server);
+        break;
+    case TPSConstants::Login:
+        task = new TPSLoginTask(server);
+        break;
+    }
+
+    task->setInputDataBlock(dataBlock);
+    task->setResponseDataBlock(responseBlock);
+    task->setRequest(request);
+    task->setSessionId(sessionId);
+
+    task->setAutoDelete(true);
+    connect(task, SIGNAL(result(int, QByteArray*)), this, SLOT(taskResult(int, QByteArray*)), Qt::QueuedConnection);
     QThreadPool::globalInstance()->start(task); // schedule to run in the pool
 
     blockSize = 0;
 }
 
-void TPSClient::taskResult(int code)
+void TPSClient::taskResult(int code, QByteArray* response)
 {
-    // send response
+    qDebug() << "Task returned with code: " << code;
+    socket->write(*response);
 }
 
 QUuid TPSClient::getSessionId() const

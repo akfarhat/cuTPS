@@ -4,7 +4,7 @@
 #include <QDebug>
 
 #include "Defines.h"
-
+#include "Utils.h"
 
 /*
 #define ASSERT_VALID \
@@ -71,6 +71,24 @@ QUuid ClientNetworkHandler::login(UserCredentials& credentials)
     }
 
     QUuid requestId = QUuid::createUuid();
+
+    TPSNetProtocol::NetRequest request;
+    request.invocation = TPSConstants::Login;
+    request.requestId = requestId;
+
+    QByteArray* data = new QByteArray(); // TODO: Manage memory
+    QDataStream outDataStream(data, QIODevice::WriteOnly);
+
+    outDataStream << credentials.username << credentials.password;
+
+    request.data = data;
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    TPSNetUtils::SerializeRequest(&outStream, &request);
+
+    connection->write(requestBytes);
 
     return requestId;
 }
@@ -151,6 +169,33 @@ void ClientNetworkHandler::readyRead()
     }
 
     // Parse the block.
+
+    TPSNetProtocol::NetResponse response;
+
+    // Calculate data block size
+    qint16 dataBlockSize = blockSize - (2*sizeof(qint8)) - (2*sizeof(QUuid));
+    // Allocate ByteArray of that size
+    QByteArray* dataBlock = new QByteArray(); // TODO: manage memory
+    dataBlock->resize(dataBlockSize);
+
+    response.data = dataBlock;
+
+    TPSNetUtils::DeserializeResponse(&response, &in);
+
+    // For login: read response, emit appropriatge signal.
+
+    if (response.responseCode < 1)
+    {
+        emit serverError(response.requestId, response.responseCode);
+        qDebug() << "Login failed for request " << response.requestId << " with code "
+                 << response.responseCode;
+    }
+
+    switch (response.invocation) {
+    case TPSConstants::Login:
+        emit loginSuccessful(response.requestId);
+        qDebug() << "Login successful for request " << response.requestId;
+    }
 
     blockSize = 0;
 }

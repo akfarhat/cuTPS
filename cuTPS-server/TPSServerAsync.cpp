@@ -20,7 +20,10 @@ void TPSServerAsync::StartServer()
     }
     else
     {
-        std::cerr << " >> Server has failed to listen on port " << TPSConstants::PORT << std::endl;
+        std::cerr << " >> Server has failed to listen on port " << TPSConstants::PORT
+                  << " Error: " << serverError()
+                  << std::endl;
+
         emit serverFailure();
     }
 }
@@ -41,7 +44,7 @@ void TPSServerAsync::clientDisconnected(TPSClient *client)
     QUuid sessionId = client->getSessionId();
     qDebug() << "client disconnected: " << sessionId;
     // TODO: Invalidate sessionId
-    delete client;
+    // delete client;
 }
 
 Server* TPSServerAsync::getServer() const

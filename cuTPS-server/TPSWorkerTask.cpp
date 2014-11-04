@@ -4,13 +4,27 @@
 #include "Defines.h"
 #include "TPSClient.h"
 
-TPSWorkerTask::TPSWorkerTask(Server *srv, QUuid session) {
+TPSWorkerTask::TPSWorkerTask(Server* srv)
+{
     server = srv;
-    sessionId = session;
 }
 
-void TPSWorkerTask::run()
+void TPSWorkerTask::setSessionId(QUuid sessionId)
 {
-    // .. do time consuming stuff
-    emit result(666); // return result code that will be sent back to the client
+    this->sessionId = sessionId;
+}
+
+void TPSWorkerTask::setRequest(TPSNetProtocol::NetRequest& request)
+{
+    this->request = request;
+}
+
+void TPSWorkerTask::setInputDataBlock(QByteArray* idata)
+{
+    this->iblock = idata;
+}
+
+void TPSWorkerTask::setResponseDataBlock(QByteArray* odata)
+{
+    this->oblock = odata;
 }
