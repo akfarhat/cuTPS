@@ -418,7 +418,7 @@ bool Server::validateDeliveryInfo(DeliveryInfo *deliveryInfo)
         return false;
 
     // Validate the delivery email address
-    QRegExp re( QString("[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}") );
+    QRegExp re( QString("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}") );
     re.setCaseSensitivity(Qt::CaseInsensitive);
 
     return re.exactMatch(deliveryInfo->getEmailAddress());
