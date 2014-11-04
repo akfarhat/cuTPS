@@ -112,6 +112,8 @@ QUuid ClientNetworkHandler::getRequiredBooks()
 
     TPSNetUtils::SerializeRequest(&outStream, &request);
 
+    connection->write(requestBytes);
+
     return requestId;
 }
 

@@ -20,6 +20,9 @@ void TPSGetRequiredBooksTask::run()
 
     ServerResponse r = server->getRequiredTextbooks(sessionId, username);
 
+    // TODO: Get the list of required books based on User that belongs to current sessionId.
+    //       Write the list as ByteArray into data.
+
     TPSNetProtocol::NetResponse response;
     QByteArray data;
     QDataStream out(oblock, QIODevice::WriteOnly);
