@@ -87,9 +87,9 @@ ServerResponse Server::authenticateUser(QUuid sessionID, UserCredentials creds)
     response.sessionID = sessionID;
 
     QSqlQuery query;
-    bool result = dbManager->runQuery("select * from User where username = " +
-                                      creds.username + " and password = " +
-                                      creds.password + ";", &query);
+    bool result = dbManager->runQuery("select * from User where username = \"" +
+                                      creds.username + "\" and password = \"" +
+                                      creds.password + "\";", &query);
 
     if (result) {
         if (query.first()) {

@@ -12,7 +12,7 @@ DatabaseManager::~DatabaseManager() {
 bool DatabaseManager::openDB()
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("cutps.db");
+    db.setDatabaseName("/home/student/cuTPS-KernelPanic/cutps.db");
     return db.open();
 }
 
@@ -28,8 +28,8 @@ QSqlError DatabaseManager::getLastError()
 
 bool DatabaseManager::runQuery(const QString &queryString, QSqlQuery* returnQuery)
 {
-    QSqlQuery query(queryString);
-    bool result = query.exec();
+    QSqlQuery query;
+    bool result = query.exec(queryString);
 
     *returnQuery = query;
     return result;
