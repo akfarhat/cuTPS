@@ -62,6 +62,25 @@ ServerResponse Server::createSession()
     return response;
 }
 
+ServerResponse Server::closeSession(QUuid sessionID)
+{
+    ServerResponse response;
+
+    int index = openSessions.indexOf(sessionID);
+
+    if (index > -1) {
+        openSessions.remove(index);
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = "Session not found";
+    }
+
+    return response;
+}
+
 ServerResponse Server::authenticateUser(QUuid sessionID, UserCredentials creds)
 {
     ServerResponse response;
@@ -231,7 +250,7 @@ ServerResponse Server::addSection(QUuid sessionID, Section section)
     return response;
 }
 
-ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& username)
+ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& username, QVector<int>* textbookIDs)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -248,11 +267,82 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
 
     bool result = dbManager->runQuery(queryString, &query);
 
-    QVector<int> textbookIDs;
+    if (result) {
+        while(query.next()) {
+            textbookIDs->append(query.value(0).toInt());
+        }
+
+        // TODO : send textbookIDs to client
+
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+    }
+
+    return response;
+}
+
+ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, std::unique_ptr<Textbook>* textbook)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select SellableItem.id, SellableItem.name, SellableItem.price_cents, SellableItem.available, Textbook.isbn from Textbook, SellableItem";
+    queryString += "where Textbook.item_id = ";
+    queryString += textbookID;
+    queryString += ";";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    // TODO : Handle case where attributes are null
+    if (result) {
+        while(query.next()) {
+            *textbook = std::unique_ptr<Textbook>( new Textbook(
+                        query.value(0).toInt(),
+                        query.value(1).toString(),
+                        query.value(2).toInt(),
+                        query.value(3).toBool(),
+                        query.value(4).toString()
+            ));
+        }
+
+        // TODO : send textbook object to client
+
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+    }
+
+    return response;
+}
+
+ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector<SellableItem*>*)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select Chapter.id from Chapter, Textbook";
+    queryString += "where Textbook.item_id = ";
+    queryString += textbookID;
+    queryString += ";";
+
+    bool result = dbManager->runQuery(queryString, &query);
 
     if (result) {
         while(query.next()) {
-            textbookIDs.append(query.value(0).toInt());
+//            append(query.value(0).toInt());
         }
         response.code = Success;
         response.message = "";
