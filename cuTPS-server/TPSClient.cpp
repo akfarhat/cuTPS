@@ -1,6 +1,7 @@
 #include "TPSClient.h"
 #include "TPSServerAsync.h"
 #include "Utils.h"
+#include "TPSNetUtils.h"
 #include "Defines.h"
 #include "TPSNetUtils.h"
 

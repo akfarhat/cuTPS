@@ -111,7 +111,7 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
         return response;
     }
 
-    foreach (Textbook* textbook, course.getRequiredTexts()) {
+    for (Textbook* textbook : *(course.getRequiredTexts())) {
         QString queryString = "insert into Course_Textbook (course_id, textbook_id) values (";
         queryString += course.getId();
         queryString += ", ";
