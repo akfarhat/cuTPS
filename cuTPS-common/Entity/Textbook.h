@@ -16,7 +16,7 @@ class Textbook: public SellableItem {
         QString ISBN;
     public:
         Textbook();
-        Textbook(int, QString, float, bool);
+        Textbook(int, QString, float, bool, QString);
         Textbook(QString, float);
         ~Textbook();
 
