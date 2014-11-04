@@ -14,11 +14,12 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QByteArray>
 #include <QDebug>
 #include <QThreadPool>
 #include <QUuid>
 
-#include "TPSWorkerTask.h"
+#include "taskhandler/TPSWorkerTask.h"
 #include "Server.h"
 #include "Entity/User.h"
 
@@ -43,7 +44,7 @@ public slots:
     // Event handler called when data has been received by the client
     void readyRead();
     // Event handler for the completion of the asynchronouse task
-    void taskResult(int code);
+    void taskResult(int code, QByteArray* response);
 
 private:
     // Reference to the server API that will handle updating

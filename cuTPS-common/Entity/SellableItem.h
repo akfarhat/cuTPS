@@ -21,19 +21,21 @@ class SellableItem {
 
     public:
         SellableItem();
-        SellableItem(int, QString, float, bool);
-        SellableItem(QString, float);
+        SellableItem(int, QString, int, bool);
+        SellableItem(QString, int);
         ~SellableItem();
-        int getId();
-        void setId(int);
-        QString getName();
-        void setName(QString);
-        float getPriceCents();
-        void setPriceCents(int);
-        bool getAvailability();
-        void setAvailability(bool);
 
-        virtual QString getType() = 0;
+        void setId(const int);
+        void setName(const QString);
+        void setPriceCents(const int);
+        void setAvailability(const bool);
+
+        int getId() const;
+        QString getName() const;
+        int getPriceCents() const;
+        bool getAvailability() const;
+
+        virtual QString getDetails() = 0;
 };
 
 #endif // SELLABLEITEM_H

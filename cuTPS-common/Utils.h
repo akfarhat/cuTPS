@@ -9,24 +9,15 @@
 #define UTILS_H
 
 #include <QString>
+#include <QDataStream>
 #include <QUuid>
+
+#include "Defines.h"
 
 // A pass/fail response for a test case
 enum ResponseCode {
     Success,
     Fail
-};
-
-// Headers in the protocol, representing
-// message types for requests and responses
-enum InvocationDescriptor {
-    Login,
-    GetRequiredBooks,
-    GetBookDetails,
-    SubmitOrder,
-    AddCourse,
-    AddBook,
-    Goodbye
 };
 
 // Information returned by the server for requests
@@ -47,5 +38,6 @@ struct SessionCredentials {
     QString username;
     int sessionID;
 };
+
 
 #endif // UTILS_H

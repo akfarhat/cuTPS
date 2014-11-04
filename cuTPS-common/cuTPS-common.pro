@@ -24,7 +24,8 @@ HEADERS += \
     Entity/Textbook.h \
     Entity/User.h \
     ErrorCodes.h \
-    Defines.h
+    Defines.h \
+    TPSNetUtils.h
 
 SOURCES += \
     Entity/BillingInfo.cpp \
@@ -39,4 +40,7 @@ SOURCES += \
     Entity/ShoppingCart.cpp \
     Entity/Student.cpp \
     Entity/Textbook.cpp \
-    Entity/User.cpp
+    Entity/User.cpp \
+    TPSNetUtils.cpp
+
+QMAKE_CXXFLAGS += -std=c++0x

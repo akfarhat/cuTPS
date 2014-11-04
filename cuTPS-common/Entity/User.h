@@ -20,13 +20,18 @@ class User {
         QString username;
 
     public:
-        User(QString, QString);
+        User(int, QString, QString);
         ~User();
         int getUserId();
-        QString getUsername();
-        QString getName();
+        void setUserId(int);
 
-        virtual QString getType() = 0;
+        QString getUsername();
+        void setUsername(QString);
+
+        QString getName();
+        void setName(QString);
+
+        virtual QString getDetails() = 0;
 };
 
 #endif // USER_H

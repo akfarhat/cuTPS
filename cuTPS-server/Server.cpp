@@ -238,7 +238,7 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
 
     QSqlQuery query;
 
-    QString = "";
+    QString queryString = "";
     queryString += "select Course_Textbook.textbook_id from User";
     queryString += "join User_Course on User.id = User_Course.user_id";
     queryString += "join Course_Textbook on User_Course.course_id = Course_Textbook.course_id";

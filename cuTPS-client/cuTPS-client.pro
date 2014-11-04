@@ -38,6 +38,8 @@ FORMS    += \
     Tests.ui \
     LoginWindow.ui
 
+QMAKE_CXXFLAGS += -std=c++0x
+
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/release/ -lcutps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/debug/ -lcutps
 else:unix: LIBS += -L$$OUT_PWD/../cuTPS-common/ -lcutps

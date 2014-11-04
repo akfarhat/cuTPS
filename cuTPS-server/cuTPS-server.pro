@@ -17,18 +17,30 @@ TEMPLATE = app
 SOURCES += main.cpp \
     TPSServerAsync.cpp \
     TPSClient.cpp \
-    TPSWorkerTask.cpp \
     DatabaseManager.cpp \
-    ServerNetworkHandler.cpp \
-    Server.cpp
+    Server.cpp \
+    taskhandler/TPSAddBookTask.cpp \
+    taskhandler/TPSAddCourseTask.cpp \
+    taskhandler/TPSGetBookDetailsTask.cpp \
+    taskhandler/TPSGetRequiredBooksTask.cpp \
+    taskhandler/TPSLoginTask.cpp \
+    taskhandler/TPSSubmitOrderTask.cpp \
+    taskhandler/TPSWorkerTask.cpp
 
 HEADERS += \
     TPSServerAsync.h \
     TPSClient.h \
-    TPSWorkerTask.h \
     DatabaseManager.h \
-    ServerNetworkHandler.h \
-    Server.h
+    Server.h \
+    taskhandler/TPSAddBookTask.h \
+    taskhandler/TPSAddCourseTask.h \
+    taskhandler/TPSGetBookDetailsTask.h \
+    taskhandler/TPSGetRequiredBooksTask.h \
+    taskhandler/TPSLoginTask.h \
+    taskhandler/TPSSubmitOrderTask.h \
+    taskhandler/TPSWorkerTask.h
+
+QMAKE_CXXFLAGS += -std=c++0x
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/release/ -lcutps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/debug/ -lcutps

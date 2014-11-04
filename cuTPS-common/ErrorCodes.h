@@ -1,6 +1,6 @@
 // Name: ErrorCodes
 // Description:
-//     A headear containing error code definitions
+//     A header containing error code definitions
 
 
 #ifndef ERRORCODES_H
