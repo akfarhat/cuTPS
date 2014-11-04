@@ -22,7 +22,6 @@ enum InvocationDescriptor {
     Goodbye
 };
 
-
 static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
 static const int PORT = 10001;
 
