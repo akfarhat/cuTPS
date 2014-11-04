@@ -1,4 +1,5 @@
 #include "TPSAddBookTask.h"
+#include "TPSNetUtils.h"
 
 #include <QDebug>
 
@@ -16,7 +17,7 @@ void TPSAddBookTask::run()
     Textbook book;
 
     QDataStream in(iblock, QIODevice::ReadOnly);
-    parseTextbook(&book, &in);
+    TPSNetUtils::DeserializeTextbook(&book, &in);
 
     ServerResponse r = server->addTextbook(sessionId, book);
 
@@ -30,10 +31,5 @@ void TPSAddBookTask::run()
                   &out);
 
     emit result(response.responseCode, oblock);
-}
-
-void TPSAddBookTask::parseTextbook(Textbook*, QDataStream*)
-{
-
 }
 

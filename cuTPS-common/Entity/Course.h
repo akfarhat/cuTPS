@@ -26,15 +26,14 @@ class Course {
         Course(QString, QVector<Textbook*>);
         ~Course();
 
-        int getId();
-        void setId(int);
+        int getId() const;
+        void setId(const int);
 
-        QString getCourseCode();
-        void setCourseCode(QString);
+        QString getCourseCode() const;
+        void setCourseCode(const QString);
 
         void addRequiredText(Textbook *);
-        QVector<Textbook*> getRequiredTexts();
-
+        QVector<Textbook*>* getRequiredTexts() const;
 
         QString getCourseName() const;
         void setCourseName(const QString &value);

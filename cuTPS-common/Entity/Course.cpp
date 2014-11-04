@@ -18,19 +18,19 @@ Course::~Course() {
     delete requiredBooks;
 }
 
-int Course::getId() {
+int Course::getId() const {
     return id;
 }
 
-void Course::setId(int newId) {
+void Course::setId(const int newId) {
     id = newId;
 }
 
-QString Course::getCourseCode() {
+QString Course::getCourseCode() const {
     return code;
 }
 
-void Course::setCourseCode(QString newCode) {
+void Course::setCourseCode(const QString newCode) {
     code = newCode;
 }
 
@@ -38,9 +38,9 @@ void Course::addRequiredText(Textbook *book) {
     requiredBooks->append(book);
 }
 
-QVector<Textbook*> Course::getRequiredTexts() {
-    // Return a copy of the vector
-    return QVector<Textbook*>( *(this->requiredBooks) );
+QVector<Textbook*>* Course::getRequiredTexts() const {
+    // Return a pointer to the vector contatining books
+    return this->requiredBooks;
 }
 
 QString Course::getCourseName() const

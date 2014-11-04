@@ -1,4 +1,5 @@
 #include "TPSAddCourseTask.h"
+#include "TPSNetUtils.h"
 
 #include <QDebug>
 
@@ -16,7 +17,7 @@ void TPSAddCourseTask::run()
     Course course("blablabla"); // give me a default constructor pls
 
     QDataStream in(iblock, QIODevice::ReadOnly);
-    parseCourse(&course, &in);
+    TPSNetUtils::DeserializeCourse(&course, &in);
 
     ServerResponse r = server->addCourse(sessionId, course);
 
@@ -30,11 +31,6 @@ void TPSAddCourseTask::run()
                   &out);
 
     emit result(response.responseCode, oblock);
-}
-
-void TPSAddCourseTask::parseCourse(Course*, QDataStream*)
-{
-
 }
 
 

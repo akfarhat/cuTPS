@@ -3,6 +3,7 @@
 #include <QString>
 #include <QDebug>
 
+#include "TPSNetUtils.h"
 #include "Defines.h"
 #include "Utils.h"
 
@@ -125,7 +126,7 @@ QUuid ClientNetworkHandler::getBookDetails(Textbook& text)
     QByteArray* data = new QByteArray(); // TODO: Manage memory
     QDataStream outDataStream(data, QIODevice::WriteOnly);
 
-    // serializeTextbook(&data, text);
+    TPSNetUtils::SerializeTextbook(&outDataStream, &text);
 
     request.data = data;
 
@@ -148,7 +149,7 @@ QUuid ClientNetworkHandler::submitOrder(Order& order)
     QByteArray* data = new QByteArray(); // TODO: Manage memory
     QDataStream outDataStream(data, QIODevice::WriteOnly);
 
-    // serializeOrder(&data, order);
+    TPSNetUtils::SerializeOrder(&outDataStream, &order);
 
     request.data = data;
 
@@ -171,7 +172,7 @@ QUuid ClientNetworkHandler::addCourse(Course& course)
     QByteArray* data = new QByteArray(); // TODO: Manage memory
     QDataStream outDataStream(data, QIODevice::WriteOnly);
 
-    // serializeCourse(&data, course);
+    TPSNetUtils::SerializeCourse(&outDataStream, &course);
 
     request.data = data;
 
@@ -194,7 +195,7 @@ QUuid ClientNetworkHandler::addBook(Textbook& text)
     QByteArray* data = new QByteArray(); // TODO: Manage memory
     QDataStream outDataStream(data, QIODevice::WriteOnly);
 
-    // serializeTextbook(text, &data);
+    TPSNetUtils::SerializeTextbook(&outDataStream, &text);
 
     request.data = data;
 
@@ -239,7 +240,7 @@ void ClientNetworkHandler::disconnected()
 void ClientNetworkHandler::readyRead()
 {
     QDataStream in(connection);
-    in.setVersion(QDataStream::Qt_4_8);
+    in.setVersion(TPSConstants::PROTOCOL_VER);
 
     if (blockSize == 0)
     {
@@ -280,9 +281,61 @@ void ClientNetworkHandler::readyRead()
     }
 
     switch (response.invocation) {
-    case TPSConstants::Login:
+
+    case TPSConstants::AddBook: {
+        emit updateCompleted(response.requestId, response.responseCode);
+        qDebug() << "Server responded: book added. Request=" << response.requestId
+                 << " Code=" << response.responseCode;
+        break;
+    }
+
+    case TPSConstants::AddCourse: {
+        emit updateCompleted(response.requestId, response.responseCode);
+        qDebug() << "Server responded: course added. Request=" << response.requestId
+                 << " Code=" << response.responseCode;
+        break;
+    }
+
+    case TPSConstants::GetBookDetails: {
+        Textbook* book = new Textbook(); // TOOD: Manage memory
+        QDataStream in(dataBlock, QIODevice::ReadOnly);
+
+        TPSNetUtils::DeserializeTextbook(book, &in);
+
+        emit textbookDetailsReceived(response.requestId, response.responseCode, book);
+        qDebug() << "Server responded: book details received. Request=" << response.requestId
+                 << " Code=" << response.responseCode
+                 << " Book_Id=" << book->getId();
+        break;
+    }
+
+    case TPSConstants::GetRequiredBooks: {
+        QVector<Textbook*>* vector = new QVector<Textbook*>(); // TODO: Manage memory
+        qDebug() << "Server responded: required books received. Request=" << response.requestId
+                 << " Code=" << response.responseCode;
+        qDebug() << "WARNING: IMPLEMENTATION MISSING.";
+        // TODO: Pending implementation
+        emit textbookLookupCompleted(response.requestId, 0x0, vector);
+        break;
+    }
+
+    case TPSConstants::Login: {
         emit loginSuccessful(response.requestId);
         qDebug() << "Login successful for request " << response.requestId;
+        break;
+    }
+
+    case TPSConstants::SubmitOrder: {
+        qDebug() << "Server responded: order status update. Request=" << response.requestId
+                 << " Code=" << response.responseCode;
+        emit orderStatusReceived(response.requestId, response.responseCode);
+        break;
+    }
+
+    case TPSConstants::Goodbye:
+    default:
+        // TODO: Disconnect from svr.
+        break;
     }
 
     blockSize = 0;

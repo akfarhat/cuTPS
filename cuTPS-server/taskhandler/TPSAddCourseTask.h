@@ -16,8 +16,6 @@ public:
     TPSAddCourseTask(Server* srv);
     virtual void run();
 
-protected:
-    virtual void parseCourse(Course*, QDataStream*);
 };
 
 

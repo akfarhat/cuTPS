@@ -24,7 +24,8 @@ HEADERS += \
     Entity/Textbook.h \
     Entity/User.h \
     ErrorCodes.h \
-    Defines.h
+    Defines.h \
+    TPSNetUtils.h
 
 SOURCES += \
     Entity/BillingInfo.cpp \
@@ -40,4 +41,4 @@ SOURCES += \
     Entity/Student.cpp \
     Entity/Textbook.cpp \
     Entity/User.cpp \
-    Utils.cpp
+    TPSNetUtils.cpp

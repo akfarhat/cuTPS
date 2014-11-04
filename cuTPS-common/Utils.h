@@ -39,18 +39,5 @@ struct SessionCredentials {
     int sessionID;
 };
 
-class TPSNetUtils {
-public:
-    static void SerializeRequest(QDataStream* dest, const TPSNetProtocol::NetRequest* src);
-    static void SerializeResponse(QDataStream* dest, const TPSNetProtocol::NetResponse* src);
-    static void DeserializeRequest(TPSNetProtocol::NetRequest* dest, QDataStream* src);
-    static void DeserializeResponse(TPSNetProtocol::NetResponse* dest, QDataStream* src);
-
-protected:
-
-    virtual void getNothing(void) = 0;
-
-};
-
 
 #endif // UTILS_H

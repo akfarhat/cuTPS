@@ -8,35 +8,35 @@ SellableItem::SellableItem(QString n, int p) : name(n), priceCents(p), available
 
 SellableItem::~SellableItem() {}
 
-int SellableItem::getId() {
+int SellableItem::getId() const {
     return id;
 }
 
-void SellableItem::setId(int newId) {
+void SellableItem::setId(const int newId) {
     id = newId;
 }
 
-QString SellableItem::getName() {
+QString SellableItem::getName() const {
     return name;
 }
 
-void SellableItem::setName(QString newName) {
+void SellableItem::setName(const QString newName) {
     name = newName;
 }
 
-int SellableItem::getPriceCents() {
+int SellableItem::getPriceCents() const {
     return priceCents;
 }
 
-void SellableItem::setPriceCents(int newPriceCents) {
+void SellableItem::setPriceCents(const int newPriceCents) {
     priceCents = newPriceCents;
 }
 
 
-bool SellableItem::getAvailability() {
+bool SellableItem::getAvailability() const {
     return availableForSale;
 }
 
-void SellableItem::setAvailability(bool available) {
+void SellableItem::setAvailability(const bool available) {
     availableForSale = available;
 }

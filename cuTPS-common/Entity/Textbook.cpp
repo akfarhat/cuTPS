@@ -1,5 +1,8 @@
 #include "Textbook.h"
 
+Textbook::Textbook() {
+}
+
 Textbook::Textbook(int textId, QString name, int price, bool isAvailable) : SellableItem(textId, name, price, isAvailable) {
 }
 
@@ -9,14 +12,13 @@ Textbook::Textbook(QString name, int price) : SellableItem(name, price) {
 Textbook::~Textbook() {
 }
 
-QString Textbook::getISBN() {
+QString Textbook::getISBN() const {
     return ISBN;
 }
 
-void Textbook::setISBN(QString newISBN) {
+void Textbook::setISBN(const QString newISBN) {
     ISBN = newISBN;
 }
-
 
 QString Textbook::getDetails() {
     QString details = "";

@@ -28,32 +28,34 @@ class TPSWorkerTask : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    TPSWorkerTask(Server* srv);
-
-    void setSessionId(QUuid sessionId);
-    void setRequest(TPSNetProtocol::NetRequest& request);
-    void setInputDataBlock(QByteArray* idata);
-    void setResponseDataBlock(QByteArray* odata);
+    TPSWorkerTask(Server *srv, QUuid sessionId);
 
 signals:
+<<<<<<< Updated upstream
     // emmit an event signaling the completion of the task.
     // Params:
     //     code (int): a task-specific status indicator
-    void result(int code, QByteArray* response);
+    void result(int code);
 
 protected:
     // The thread method in which to perform this task
-    virtual void run() = 0;
+    void run();
 
+private:
     // Reference to the server API for updating the system
     // model with each request
+=======
+    void result(QDataStream* responseStream);
+
+protected:
+    void run() = 0;
+>>>>>>> Stashed changes
     Server *server;
 
     // The request identifier
-    TPSNetProtocol::NetRequest request;
     QUuid sessionId;
-    QByteArray *iblock;
-    QByteArray *oblock;
+    QDataStream *iStream;
+    QDataStream *oStream;
 };
 
 #endif // TPSWORKERTASK_H

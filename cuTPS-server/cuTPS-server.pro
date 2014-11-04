@@ -18,7 +18,6 @@ SOURCES += main.cpp \
     TPSServerAsync.cpp \
     TPSClient.cpp \
     DatabaseManager.cpp \
-    ServerNetworkHandler.cpp \
     Server.cpp \
     taskhandler/TPSAddBookTask.cpp \
     taskhandler/TPSAddCourseTask.cpp \
@@ -32,7 +31,6 @@ HEADERS += \
     TPSServerAsync.h \
     TPSClient.h \
     DatabaseManager.h \
-    ServerNetworkHandler.h \
     Server.h \
     taskhandler/TPSAddBookTask.h \
     taskhandler/TPSAddCourseTask.h \

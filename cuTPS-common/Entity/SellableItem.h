@@ -24,14 +24,16 @@ class SellableItem {
         SellableItem(int, QString, int, bool);
         SellableItem(QString, int);
         ~SellableItem();
-        int getId();
-        void setId(int);
-        QString getName();
-        void setName(QString);
-        int getPriceCents();
-        void setPriceCents(int);
-        bool getAvailability();
-        void setAvailability(bool);
+
+        void setId(const int);
+        void setName(const QString);
+        void setPriceCents(const int);
+        void setAvailability(const bool);
+
+        int getId() const;
+        QString getName() const;
+        int getPriceCents() const;
+        bool getAvailability() const;
 
         virtual QString getDetails() = 0;
 };

@@ -69,10 +69,10 @@ signals:
 
     // Events emitted regarding the completion of server API
     void loginSuccessful(QUuid requestId);
-    void orderStatusReceived(QUuid requestId, ServerResponse*);
-    void updateCompleted(QUuid requestId, ServerResponse*);
-    void textbookDetailsReceived(QUuid requestId, ServerResponse*, Textbook*);
-    void textbookLookupCompleted(QUuid requestId, ServerResponse*, QVector<Textbook*>*);
+    void orderStatusReceived(QUuid requestId, int code);
+    void updateCompleted(QUuid requestId, int code);
+    void textbookDetailsReceived(QUuid requestId, int code, Textbook*);
+    void textbookLookupCompleted(QUuid requestId, int code, QVector<Textbook*>*);
 
 public slots:
     // Event handlers for events emitted by the TCP socket object

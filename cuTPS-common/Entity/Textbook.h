@@ -20,8 +20,8 @@ class Textbook: public SellableItem {
         Textbook(QString, int);
         ~Textbook();
 
-        QString getISBN();
-        void setISBN(QString);
+        QString getISBN() const;
+        void setISBN(const QString);
 
         QString getDetails();
 };
