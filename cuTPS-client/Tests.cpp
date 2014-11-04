@@ -126,10 +126,10 @@ void Tests::on_submitOrderButton_clicked() {
 
     Chapter c1(book, 1, "someItem", 1.54f);
     Chapter c2(book, 2, "anotherItem", 99.42f);
-    QVector<SellableItem*> items;
+    QVector<qint32> items;
 
-    items.append(&c1);
-    items.append(&c2);
+    items.append(c1.getId());
+    items.append(c2.getId());
 
     CreditCardInfo creditInfo("Joe Smith", "smith@gmail.com", "43 streetName",
                               "613-555-1234", "Mastercard", "1305123234234",

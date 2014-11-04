@@ -139,12 +139,43 @@ void TPSNetUtils::DeserializeCourse(Course* dest, QDataStream* istream)
     dest->setCourseCode(code);
 }
 
-void TPSNetUtils::SerializeOrder(QDataStream* ostream, const Order* src)
+void TPSNetUtils::SerializeOrder(QDataStream* ostream, Order* src)
 {
+    QVector<qint32> vec;
+    qint32 numItems = src->getOrder()->size();
 
+    (*ostream) << src->getBillingInfo()->getName()
+               << src->getBillingInfo()->getEmail()
+               << src->getBillingInfo()->getBillingAddress()
+               << src->getBillingInfo()->getPhoneNumber()
+               << src->getDeliveryInfo()->getEmailAddress()
+               << numItems;
+
+    for (int i = 0; i < numItems; ++i)
+    {
+        (*ostream) << (*(src->getOrder())).at(i);
+    }
 }
 
 void TPSNetUtils::DeserializeOrder(Order* dest, QDataStream* istream)
 {
     // read order
+    qint32 numItems = 0;
+    QString name, bEmail, bAddress, phoneNum, dEmail;
+
+    (*istream) >> name
+            >> bEmail
+            >> bAddress
+            >> phoneNum
+            >> dEmail
+            >> numItems;
+
+    QVector<qint32>* vec = dest->getOrder();
+
+    for (int i = 0; i < numItems; ++i)
+    {
+        int id;
+        (*istream) >> id;
+        vec->append(id);
+    }
 }

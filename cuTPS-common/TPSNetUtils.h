@@ -21,7 +21,7 @@ public:
     static void SerializeCourse(QDataStream* dest, const Course* src);
     static void DeserializeCourse(Course* dest, QDataStream* src);
 
-    static void SerializeOrder(QDataStream* dest, const Order* src);
+    static void SerializeOrder(QDataStream* dest, Order* src);
     static void DeserializeOrder(Order* dest, QDataStream* src);
 
 protected:

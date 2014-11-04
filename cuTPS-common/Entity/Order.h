@@ -15,15 +15,15 @@
 class Order {
 
     public:
-        Order(QVector<SellableItem*> *, BillingInfo *, DeliveryInfo *);
+        Order(QVector<qint32>*, BillingInfo *, DeliveryInfo *);
         ~Order();
 
-        BillingInfo *getBillingInfo();
-        DeliveryInfo *getDeliveryInfo();
-        QVector<SellableItem*> getOrder();
+        BillingInfo *getBillingInfo() const;
+        DeliveryInfo *getDeliveryInfo() const;
+        QVector<qint32>* getOrder();
 
     private:
-        QVector<SellableItem*> items;
+        QVector<qint32> itemIds;
         BillingInfo *billingInfo;
         DeliveryInfo *deliveryInfo;
 };
