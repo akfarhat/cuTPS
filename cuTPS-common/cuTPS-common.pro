@@ -42,3 +42,5 @@ SOURCES += \
     Entity/Textbook.cpp \
     Entity/User.cpp \
     TPSNetUtils.cpp
+
+QMAKE_CXXFLAGS += -std=c++0x
