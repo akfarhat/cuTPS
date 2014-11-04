@@ -2,6 +2,7 @@
 #include "TPSServerAsync.h"
 #include "Utils.h"
 #include "Defines.h"
+#include "TPSNetUtils.h"
 
 #include <QByteArray>
 
