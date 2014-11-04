@@ -13,16 +13,15 @@ void TPSServerAsync::StartServer()
 {
     if (listen(QHostAddress::Any, TPSConstants::PORT))
     {
-        std::cout << " >> Server Started on port " << TPSConstants::PORT << std::endl;
+        qDebug() << " >> Server Started on port " << TPSConstants::PORT;
         // TODO: ensure that parent destroys its children
         server = new Server(this);
         emit serverStarted();
     }
     else
     {
-        std::cerr << " >> Server has failed to listen on port " << TPSConstants::PORT
-                  << " Error: " << serverError()
-                  << std::endl;
+        qDebug() << " >> Server has failed to listen on port " << TPSConstants::PORT
+                  << " Error: " << serverError();
 
         emit serverFailure();
     }

@@ -43,4 +43,5 @@ SOURCES += \
     Entity/User.cpp \
     TPSNetUtils.cpp
 
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7

@@ -26,7 +26,7 @@ void TPSGetBookDetailsTask::run()
     QByteArray data;
     QDataStream out(oblock, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeTextbook(&out, *ppText);
+    TPSNetUtils::SerializeTextbook(&out, ppText->get());
 
     setupResponse(response,
                   r.code == Fail ? 0x0 : 0x1,

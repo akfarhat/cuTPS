@@ -9,10 +9,10 @@ QT       -= gui
 
 TARGET = cutpsd
 CONFIG   += console
+CONFIG   += -std=gnu++11
 CONFIG   -= app_bundle
 
 TEMPLATE = app
-
 
 SOURCES += main.cpp \
     TPSServerAsync.cpp \
@@ -40,7 +40,15 @@ HEADERS += \
     taskhandler/TPSSubmitOrderTask.h \
     taskhandler/TPSWorkerTask.h
 
+macx {
+QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
+}
+
+unix:!macx {
 QMAKE_CXXFLAGS += -std=c++0x
+}
+
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/release/ -lcutps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/debug/ -lcutps
