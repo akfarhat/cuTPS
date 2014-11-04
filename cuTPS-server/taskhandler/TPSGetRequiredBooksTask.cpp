@@ -19,7 +19,7 @@ void TPSGetRequiredBooksTask::run()
     in >> username;
 
     QVector<int>* ids;
-    ServerResponse r = server->getRequiredTextbooks(sessionId, username, &ids);
+    ServerResponse r = server->getRequiredTextbooks(sessionId, username, ids);
 
     TPSNetProtocol::NetResponse response;
     QByteArray data;
@@ -27,7 +27,7 @@ void TPSGetRequiredBooksTask::run()
 
     for (int i = 0; i < ids->size(); ++i)
     {
-        data << ((qint32) ids->at(i));
+        out << ((qint32) ids->at(i));
     }
 
     setupResponse(response,

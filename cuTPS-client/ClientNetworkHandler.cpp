@@ -11,7 +11,7 @@
 #define ASSERT_VALID \
     if (!isValid()) \
     {               \
-        std::cerr << "error: invocation attempt on invalid socket" << std::endl;\
+        qDebug() << "error: invocation attempt on invalid socket";\
         return QUuid(); \
     } \
 

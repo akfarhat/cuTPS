@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = cuTPS-client
 TEMPLATE = app
 
+CONFIG   += -std=gnu++11
 
 SOURCES += main.cpp \
     ClientNetworkHandler.cpp \
@@ -38,7 +39,8 @@ FORMS    += \
     Tests.ui \
     LoginWindow.ui
 
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++
+QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/release/ -lcutps
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/debug/ -lcutps
