@@ -57,6 +57,7 @@ void TPSClient::connected()
 
 void TPSClient::disconnected()
 {
+    server->closeSession(sessionId);
     emit clientDisconnected(this);
 }
 
@@ -123,7 +124,8 @@ void TPSClient::readyRead()
     case TPSConstants::Goodbye:
     default:
         // kill the client
-        return;
+        server->closeSession(sessionId);
+        emit clientDisconnected(this);
         break;
     }
 

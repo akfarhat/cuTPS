@@ -332,6 +332,7 @@ void ClientNetworkHandler::readyRead()
 
     case TPSConstants::Login: {
         emit loginSuccessful(response.requestId);
+        loggedIn = true;
         qDebug() << "Login successful for request " << response.requestId;
         break;
     }
@@ -346,6 +347,7 @@ void ClientNetworkHandler::readyRead()
     case TPSConstants::Goodbye:
     default:
         // TODO: Disconnect from svr.
+        loggedIn = false;
         break;
     }
 
