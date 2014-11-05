@@ -1,4 +1,5 @@
 #include "TPSGetRequiredBooksTask.h"
+#include "TPSNetUtils.h"
 
 #include <QDebug>
 
@@ -14,6 +15,7 @@ void TPSGetRequiredBooksTask::run()
              << "Request: " << request.requestId;
 
     QString username;
+    bool error = false;
 
     QDataStream in(iblock, QIODevice::ReadOnly);
     in >> username;
@@ -22,27 +24,53 @@ void TPSGetRequiredBooksTask::run()
 
     qDebug() << "calling the getRequiredTextbooks API for user " << username;
 
-    ServerResponse r = server->getRequiredTextbooks(sessionId, username, ids);
+    ServerResponse getBooks = server->getRequiredTextbooks(sessionId, username, ids);
+
+    QVector<Textbook*>* textbooks = new QVector<Textbook*>(ids->size());
 
     TPSNetProtocol::NetResponse response;
     QByteArray data;
     QDataStream out(oblock, QIODevice::WriteOnly);
 
-    qDebug() << "writing " << ids->size() << " book ids to outgoing buffer...";
+    qDebug() << "writing " << ids->size() << " books to outgoing buffer...";
 
     for (int i = 0; i < ids->size(); ++i)
     {
-        out << ((qint32) ids->at(i));
+        qint32 bookId = ((qint32) ids->at(i));
+        Textbook *book;
+        ServerResponse r = server->getTextbookDetails(sessionId, bookId, &book);
+
+        if (r.code == Fail)
+        {
+            qDebug() << "Error: a failure has occurred while fetching textbook details for id"
+                     << bookId;
+            error = true;
+            continue;
+        }
+
+        textbooks->replace(i, book);
+    }
+
+    // Write number of textbooks first
+
+    out << textbooks->size();
+
+    // Write every textbook one by one
+
+    for (Textbook* t_p : *textbooks)
+    {
+        TPSNetUtils::SerializeTextbook(&out, t_p);
+        delete t_p;
     }
 
     qDebug() << "formulating server response... ";
 
     setupResponse(response,
-                  r.code == Fail ? 0x0 : 0x1,
+                  error ? 0x0 : 0x1,
                   &data,
                   &out);
 
-    qDebug() << "Result of getRequiredBooks: " << r.code << "\n";
+    qDebug() << "Result of getRequiredBooks: " << error << "\n";
 
     emit result(response.responseCode, oblock);
 }
