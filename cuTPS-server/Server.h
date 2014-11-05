@@ -65,7 +65,9 @@ public:
     ServerResponse getItemDetails(QUuid, int);
 
     // Get the metadata for a particular textbook
-    ServerResponse getTextbookDetails(QUuid, int, std::unique_ptr<Textbook>*);
+    // TODO: decide if we want to revert book arg to std::unique_ptr<Textbook>*
+    // changing it for now for simplicity while debugging.
+    ServerResponse getTextbookDetails(QUuid, int, Textbook**);
 
     // Get a list of chapter and section objects in a particular textbook
     ServerResponse getTextbookParts(QUuid, int, QVector<SellableItem*>*);

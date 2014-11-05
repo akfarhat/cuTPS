@@ -8,6 +8,7 @@ Textbook::Textbook(QString name, int price) : SellableItem(name, price) {
 }
 
 Textbook::Textbook() : SellableItem() {
+    ISBN = ""; // This constructor invocation means this book is invalid
 }
 
 Textbook::~Textbook() {

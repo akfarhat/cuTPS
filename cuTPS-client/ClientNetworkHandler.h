@@ -41,7 +41,7 @@ public:
 
     // Request the list of available textbooks
     // for the user with this session.
-    QUuid getRequiredBooks();
+    QUuid getRequiredBooks(QString &);
 
     // Request the details of a particular textbook
     QUuid getBookDetails(Textbook&);

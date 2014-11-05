@@ -7,6 +7,6 @@ ViewRequiredBooksControl::~ViewRequiredBooksControl() {
 
 }
 
-void ViewRequiredBooksControl::getRequiredBooks(QUuid &reqId) {
-    reqId = network.getRequiredBooks();
+void ViewRequiredBooksControl::getRequiredBooks(QUuid &reqId, QString& username) {
+    reqId = network.getRequiredBooks(username);
 }

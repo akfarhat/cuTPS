@@ -29,7 +29,7 @@ void TPSNetUtils::SerializeResponse(QDataStream* ostream, const TPSNetProtocol::
     qint8 invocationInteger = static_cast<qint8>(rq->invocation);
 
     // Do not change the sequence!
-    *ostream << (qint16) 0;
+    *ostream << (qint16) 0; // TODO: Why is this here?
     *ostream << invocationInteger;
     *ostream << rq->requestId;
     *ostream << rq->sessionId;

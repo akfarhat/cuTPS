@@ -17,6 +17,8 @@
 #include <QVector>
 #include <QTextStream>
 
+#include <QDebug>
+
 Tests::Tests(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::Tests)
@@ -37,6 +39,14 @@ Tests::Tests(QWidget *parent) :
     // TODO: get the server connection details from a config
     QHostAddress addr(QHostAddress::LocalHost);
     network.connectToServer(addr, TPSConstants::PORT);
+
+    // Bind a handler to server responses to our requests
+    connect(&network, SIGNAL(loginSuccessful(QUuid)), this, SLOT(loginSuccessful(QUuid)));
+    connect(&network, SIGNAL(orderStatusReceived(QUuid, int)), this, SLOT(orderStatusReceived(QUuid, int)));
+    connect(&network, SIGNAL(updateCompleted(QUuid, int)), this, SLOT(updateCompleted(QUuid, int)));
+    connect(&network, SIGNAL(textbookDetailsReceived(QUuid, int, Textbook*)), this, SLOT(textbookDetailsReceived(QUuid, int, Textbook*)));
+    connect(&network, SIGNAL(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)), this, SLOT(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)));
+
 }
 
 Tests::~Tests() {
@@ -50,6 +60,7 @@ void Tests::updateResults(QString msg) {
 
 void Tests::clearResults() {
     this->ui->resultInput->setText("");
+    this->ui->passFailInput->setText("");
 }
 
 void Tests::setResult(ServerResponse *s) {
@@ -65,6 +76,14 @@ void Tests::setResult(ServerResponse *s) {
     } else {
         this->ui->passFailInput->setText("Failed");
     }
+}
+
+void Tests::setPassed() {
+    this->ui->passFailInput->setText("Passed");
+}
+
+void Tests:: setFailed() {
+    this->ui->passFailInput->setText("Failed");
 }
 
 // Handle the test case button click events
@@ -92,7 +111,7 @@ void Tests::on_viewReqTextsButton_clicked() {
 
     QUuid requestId;
 
-    ViewRequiredBooksCtrl->getRequiredBooks(requestId);
+    ViewRequiredBooksCtrl->getRequiredBooks(requestId, sessCreds.username);
 
     delete ViewRequiredBooksCtrl;
 
@@ -103,7 +122,7 @@ void Tests::on_viewBookDetailsButton_clicked() {
     clearResults();
     updateResults("View book details:");
 
-    Textbook aBook("Software Engineering", 199.99);
+    Textbook aBook(1, "Comp 3004 - The Book", 9949, true, "123-456-7890");
 
     //ServerResponse res;
 
@@ -186,4 +205,25 @@ void Tests::on_addBookButton_clicked() {
     addBookCtrl->addBook(requestId, textbook);
 
     //setResult(&res);
+}
+
+void Tests::loginSuccessful(QUuid requestId) {
+    updateResults("Successful login for request: " + requestId);
+    setPassed();
+}
+
+void Tests::orderStatusReceived(QUuid requestId, int code) {
+    // TODO: update the results in the UI with these params
+}
+
+void Tests::updateCompleted(QUuid requestId, int code) {
+    // TODO: update the results in the UI with these params
+}
+
+void Tests::textbookDetailsReceived(QUuid requestId, int code, Textbook* resBook) {
+    // TODO: update the results in the UI with these params
+}
+
+void Tests::textbookLookupCompleted(QUuid requestId, int code, QVector<Textbook*>* resBooks) {
+    // TODO: update the results in the UI with these params
 }

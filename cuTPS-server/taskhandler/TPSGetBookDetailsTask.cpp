@@ -19,19 +19,26 @@ void TPSGetBookDetailsTask::run()
     QDataStream in(iblock, QIODevice::ReadOnly);
     in >> bookId;
 
-    std::unique_ptr<Textbook>* ppText;
-    ServerResponse r = server->getTextbookDetails(sessionId, bookId, ppText);
+    qDebug() << "Read in bookID = " << bookId;
+
+    //std::unique_ptr<Textbook>* ppText;
+    Textbook *returnBook = NULL;
+    ServerResponse r = server->getTextbookDetails(sessionId, bookId, &returnBook);
 
     TPSNetProtocol::NetResponse response;
     QByteArray data;
     QDataStream out(oblock, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeTextbook(&out, ppText->get());
+    TPSNetUtils::SerializeTextbook(&out, returnBook);
+
+    qDebug() << "Get book details setup the response";
 
     setupResponse(response,
                   r.code == Fail ? 0x0 : 0x1,
                   &data,
                   &out);
+
+    qDebug() << "Get book details, notify done";
 
     emit result(response.responseCode, oblock);
 }

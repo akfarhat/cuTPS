@@ -41,6 +41,17 @@ class Tests : public QDialog
 
         void on_addBookButton_clicked();
 
+        // ClientNetworkHandler (API) server response eventss:
+        void loginSuccessful(QUuid);
+
+        void orderStatusReceived(QUuid, int);
+
+        void updateCompleted(QUuid, int);
+
+        void textbookDetailsReceived(QUuid, int, Textbook*);
+
+        void textbookLookupCompleted(QUuid, int, QVector<Textbook*>*);
+
     private:
         // The UI window element
         Ui::Tests *ui;
@@ -60,6 +71,10 @@ class Tests : public QDialog
 
         // Set the results from the server in the status box
         void setResult(ServerResponse *);
+
+        // Set pass or fail result in the UI box:
+        void setPassed();
+        void setFailed();
 };
 
 #endif // TESTS_H

@@ -93,7 +93,7 @@ QUuid ClientNetworkHandler::login(UserCredentials& credentials)
     return requestId;
 }
 
-QUuid ClientNetworkHandler::getRequiredBooks()
+QUuid ClientNetworkHandler::getRequiredBooks(QString &username)
 {
     ASSERT_VALID
 
@@ -105,6 +105,8 @@ QUuid ClientNetworkHandler::getRequiredBooks()
 
     QByteArray* data = new QByteArray(); // TODO: Manage memory
     QDataStream outDataStream(data, QIODevice::WriteOnly);
+
+    outDataStream << username;
 
     request.data = data;
 
@@ -133,12 +135,17 @@ QUuid ClientNetworkHandler::getBookDetails(Textbook& text)
 
     TPSNetUtils::SerializeTextbook(&outDataStream, &text);
 
+    qDebug() << "forming request with textbook id = " << text.getId();
+    outDataStream << text.getId();
+
     request.data = data;
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
 
     TPSNetUtils::SerializeRequest(&outStream, &request);
+
+    connection->write(requestBytes);
 
     return requestId;
 }
@@ -290,6 +297,12 @@ void ClientNetworkHandler::readyRead()
         qDebug() << "Login failed for request " << response.requestId << " with code "
                  << response.responseCode;
     }
+
+    qDebug() << "ClientNetworkHandler reading reponse for "
+             << "invocation: " << response.invocation
+             << ", requestId: " << response.requestId
+             << ", sessionId: " << response.sessionId
+             << ", responseCode: " << response.responseCode;
 
     switch (response.invocation) {
 

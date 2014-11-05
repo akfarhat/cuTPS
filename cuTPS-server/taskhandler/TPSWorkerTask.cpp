@@ -41,5 +41,13 @@ void TPSWorkerTask::setupResponse(TPSNetProtocol::NetResponse& response,
     response.sessionId = sessionId;
     response.responseCode = code;
     response.data = dataBlock;
+
+    // TODO: this can be removed or moved to a more verbose output
+    qDebug() << "TPSWorkerTask::setupResponse -- "
+             << "invocation: " << response.invocation
+             << ", requestId: " << response.requestId
+             << ", sessionId: " << response.sessionId
+             << ", responseCode: " << response.responseCode;
+
     TPSNetUtils::SerializeResponse(outStream, &response);
 }

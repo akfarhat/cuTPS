@@ -273,12 +273,7 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
         qDebug() << "Query for required texts successful. Rows: " << query.size();
 
         while(query.next()) {
-            int currentResult = query.value(0).toInt();
-
-            // TODO: clean up debug logs
-            qDebug() << "Appending textBookid = " << currentResult;
-
-            textbookIDs->append(currentResult);
+            textbookIDs->append(query.value(0).toInt());
         }
 
         // TODO : send textbookIDs to client
@@ -296,32 +291,45 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
     return response;
 }
 
-ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, std::unique_ptr<Textbook>* textbook)
+ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textbook** textbook)
 {
     ServerResponse response;
     response.sessionID = sessionID;
 
     QSqlQuery query;
 
+    qDebug() << "textBookId param in server API = " << textbookID;
+
     QString queryString = "";
-    queryString += "select SellableItem.id, SellableItem.name, SellableItem.price_cents, SellableItem.available, Textbook.isbn from Textbook, SellableItem";
+    queryString += "select SellableItem.id, SellableItem.name, SellableItem.price_cents, SellableItem.available, Textbook.isbn from Textbook, SellableItem ";
     queryString += "where Textbook.item_id = ";
-    queryString += textbookID;
+    queryString += QString::number(textbookID);
     queryString += ";";
 
+    qDebug() << "getBookDetails query string: '" << queryString << "'";
+
     bool result = dbManager->runQuery(queryString, &query);
+
+    qDebug() << "query result: " << result;
 
     // TODO : Handle case where attributes are null
     if (result) {
         while(query.next()) {
-            *textbook = std::unique_ptr<Textbook>(
-                        new Textbook(
-                            query.value(0).toInt(),
-                            query.value(1).toString(),
-                            query.value(2).toInt(),
-                            query.value(3).toBool(),
-                            query.value(4).toString()
-                            ));
+            // TODO: remove this debug log
+            qDebug() << "Adding a textbook("
+                     << query.value(0).toInt() << ", "
+                     << query.value(1).toString() << ", "
+                     << query.value(2).toInt() << ", "
+                     << query.value(3).toBool() << ", "
+                     << query.value(4).toString() << ")";
+
+            *textbook = new Textbook(
+                query.value(0).toInt(),
+                query.value(1).toString(),
+                query.value(2).toInt(),
+                query.value(3).toBool(),
+                query.value(4).toString()
+            );
         }
 
         // TODO : send textbook object to client
@@ -330,6 +338,10 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, std::
         response.message = "";
     }
     else {
+
+        // Failed to query DB, provide empty book
+        *textbook = new Textbook();
+
         response.code = Fail;
         response.message = query.lastError().text();
     }
@@ -345,7 +357,7 @@ ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector
     QSqlQuery query;
 
     QString queryString = "";
-    queryString += "select Chapter.item_id, Chapter.chapter_num, SellableItem.name, SellableItem.price, SellableItem.available from Chapter";
+    queryString += "select Chapter.item_id, Chapter.chapter_num, SellableItem.name, SellableItem.price, SellableItem.available from Chapter ";
     queryString += "where Chapter.textbook_id = ";
     queryString += textbookID;
     queryString += ";";
@@ -379,7 +391,7 @@ ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector
         parts->append(chapter);
 
         queryString = "";
-        queryString += "select Section.item_id, Section.section_num, SellableItem.name, SellableItem.price, SellableItem.available from Section";
+        queryString += "select Section.item_id, Section.section_num, SellableItem.name, SellableItem.price, SellableItem.available from Section ";
         queryString += "where Section.chapter_id = ";
         queryString += chapter->getId();
         queryString += ";";

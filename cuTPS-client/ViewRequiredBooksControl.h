@@ -22,7 +22,7 @@ class ViewRequiredBooksControl {
 
         // Get the list of required books for this user,
         // store the request identifier
-        void getRequiredBooks(QUuid &);
+        void getRequiredBooks(QUuid &, QString&);
 
 };
 
