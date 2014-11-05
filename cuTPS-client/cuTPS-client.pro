@@ -15,7 +15,6 @@ CONFIG   += -std=gnu++11
 
 SOURCES += main.cpp \
     ClientNetworkHandler.cpp \
-    LoginWindow.cpp \
     Tests.cpp \
     AddBookControl.cpp \
     AddCourseControl.cpp \
@@ -33,11 +32,10 @@ HEADERS  += \
     SubmitOrderControl.h \
     ViewBookDetailsControl.h \
     ViewRequiredBooksControl.h \
-    LoginControl.h
+    LoginControl.h \
 
 FORMS    += \
-    Tests.ui \
-    LoginWindow.ui
+    Tests.ui
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++

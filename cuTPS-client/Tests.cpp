@@ -27,13 +27,9 @@ Tests::Tests(QWidget *parent) :
 
     this->setWindowTitle("Test Cases");
 
-    // Define some values that must be in the database
-    // for test cases/diagnostics requests
-    userCreds.username = "joesmith";
-    userCreds.password = "alamepassword";
+    ui->studentRadio->setChecked(true);
 
-    sessCreds.username = "joesmith";
-    sessCreds.sessionID = 0;
+    ui->testCasesGroup->hide();
 
     // Connect the network handler to the server
     // TODO: get the server connection details from a config
@@ -50,6 +46,7 @@ Tests::Tests(QWidget *parent) :
 }
 
 Tests::~Tests() {
+    network.disconnectFromServer();
     delete ui;
 }
 
@@ -67,7 +64,7 @@ void Tests::setResult(ServerResponse *s) {
 
     QString resMsg;
 
-    QTextStream(&resMsg) << "response code: " << s->code << ", \nsessionID: " << (s->sessionID).toString() << "\nMessage: " << s->message;
+    QTextStream(&resMsg) << "response code: " << s->code << "\nMessage: " << s->message;
 
     updateResults(resMsg);
 
@@ -92,13 +89,77 @@ void Tests:: setFailed() {
 
 void Tests::on_loginButton_clicked() {
     clearResults();
-    updateResults("Logging in as Joe:");
+
+    Role userRole;
+
+    if (ui->studentRadio->isChecked()) {
+        userCreds.username = "joesmith";
+        userCreds.password = "alamepassword";
+        sessCreds.username = "joesmith";
+        userRole = Role::Student;
+    } else if (ui->contentManagerRadio->isChecked()) {
+        userCreds.username = "cm";
+        userCreds.password = "pass";
+        sessCreds.username = "joesmith";
+        userRole = Role::ContentManager;
+    }
+
+    sessCreds.sessionID = 0;
 
     LoginControl *loginCtrl = new LoginControl(network);
 
-    loginCtrl->login(userCreds);
+
+    if (network.isConnected()) {
+        ServerResponse response;
+
+        // Send the login request and wait for the signal
+        QEventLoop loop;
+
+        this->connect(&network, SIGNAL(loginSuccessful(QUuid)), &loop, SLOT(quit()));
+        this->connect(&network, SIGNAL(serverError(QUuid,int)), &loop, SLOT(quit()));
+
+        updateResults("Logging in...");
+
+        QUuid requestId = loginCtrl->login(userCreds);
+
+        loop.exec();
+
+        clearResults();
+
+        if (network.isValid()) {
+            response.code = ResponseCode::Success;
+            response.message = "Logged in as user " + userCreds.username;
+            setResult(&response);
+
+            // Show the test cases
+            ui->testCasesGroup->show();
+
+            if (userRole == Role::Student) {
+                // Show the student test cases and hide the content manager test cases from the student
+                ui->viewReqTextsGroup->show();
+                ui->viewTextDetailsGroup->show();
+                ui->submitOrderGroup->show();
+                ui->addBooksGroup->hide();
+                ui->addCourseGroup->hide();
+            } else if (userRole == Role::ContentManager) {
+                // Show the content manager test cases and hide the student test cases from the content manager
+                ui->addBooksGroup->show();
+                ui->addCourseGroup->show();
+                ui->viewTextDetailsGroup->show();
+                ui->viewReqTextsGroup->hide();
+                ui->submitOrderGroup->hide();
+            }
+        } else {
+           response.code = ResponseCode::Fail;
+           response.message = "Error: login failed";
+           setResult(&response);
+        }
+    } else {
+        updateResults("Error: not connected to server");
+    }
 
     delete loginCtrl;
+
 }
 
 void Tests::on_viewReqTextsButton_clicked() {
