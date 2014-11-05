@@ -59,6 +59,8 @@ class Tests : public QDialog
 
         void textbookLookupCompleted(QUuid, int, QVector<Textbook*>*);
 
+        void serverErrorRecieved(QUuid, int);
+
     private:
         // The UI window element
         Ui::Tests *ui;
