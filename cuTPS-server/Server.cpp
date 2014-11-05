@@ -1,6 +1,7 @@
 #include "Server.h"
 
 #include <QSqlError>
+#include <QDebug>
 #include <QRegExp>
 
 #include <iostream>
@@ -258,18 +259,26 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
     QSqlQuery query;
 
     QString queryString = "";
-    queryString += "select Course_Textbook.textbook_id from User";
-    queryString += "join User_Course on User.id = User_Course.user_id";
-    queryString += "join Course_Textbook on User_Course.course_id = Course_Textbook.course_id";
+    queryString += "select Course_Textbook.textbook_id from User ";
+    queryString += "join User_Course on User.id = User_Course.user_id ";
+    queryString += "join Course_Textbook on User_Course.course_id = Course_Textbook.course_id ";
     queryString += "where User.username = \"";
     queryString += username;
     queryString += "\";";
 
+    qDebug() << "query string: '" << queryString << "'";
     bool result = dbManager->runQuery(queryString, &query);
 
     if (result) {
+        qDebug() << "Query for required texts successful. Rows: " << query.size();
+
         while(query.next()) {
-            textbookIDs->append(query.value(0).toInt());
+            int currentResult = query.value(0).toInt();
+
+            // TODO: clean up debug logs
+            qDebug() << "Appending textBookid = " << currentResult;
+
+            textbookIDs->append(currentResult);
         }
 
         // TODO : send textbookIDs to client
@@ -278,6 +287,8 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
         response.message = "";
     }
     else {
+        qDebug() << "Query for required texts failed.";
+
         response.code = Fail;
         response.message = query.lastError().text();
     }
