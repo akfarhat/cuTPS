@@ -46,6 +46,8 @@ void TPSGetRequiredBooksTask::run()
                      << bookId;
             error = true;
             continue;
+        } else {
+            qDebug() << "Received book details: " << book->getName();
         }
 
         textbooks->replace(i, book);
@@ -53,13 +55,13 @@ void TPSGetRequiredBooksTask::run()
 
     // Write number of textbooks first
 
-    out << textbooks->size();
+    QDataStream dataOut(&data,QIODevice::WriteOnly);
 
     // Write every textbook one by one
 
     for (Textbook* t_p : *textbooks)
     {
-        TPSNetUtils::SerializeTextbook(&out, t_p);
+        TPSNetUtils::SerializeTextbook(&dataOut, t_p);
         delete t_p;
     }
 
