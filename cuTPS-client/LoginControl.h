@@ -20,7 +20,7 @@ class LoginControl {
         ~LoginControl();
 
         // Request a login for this user
-        QUuid login(UserCredentials&);
+        void login(QUuid&, UserCredentials&);
 
 };
 

@@ -100,7 +100,9 @@ void Tests::on_loginButton_clicked() {
 
     loginCtrl = new LoginControl(network);
 
-    QUuid requestId = loginCtrl->login(userCreds);
+    QUuid requestId;
+
+    loginCtrl->login(requestId, userCreds);
 
 
     delete loginCtrl;

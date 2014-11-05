@@ -7,6 +7,6 @@ LoginControl::~LoginControl() {
 
 }
 
-QUuid LoginControl::login(UserCredentials &userCreds) {
-    return network.login(userCreds);
+void LoginControl::login(QUuid &reqId, UserCredentials &userCreds) {
+    reqId = network.login(userCreds);
 }
