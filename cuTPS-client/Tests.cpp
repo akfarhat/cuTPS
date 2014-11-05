@@ -1,12 +1,6 @@
 #include "Tests.h"
 #include "ui_Tests.h"
 
-#include "LoginControl.h"
-#include "ViewRequiredBooksControl.h"
-#include "ViewBookDetailsControl.h"
-#include "SubmitOrderControl.h"
-#include "AddCourseControl.h"
-#include "AddBookControl.h"
 
 #include "Entity/SellableItem.h"
 #include "Entity/Textbook.h"
@@ -90,8 +84,6 @@ void Tests:: setFailed() {
 void Tests::on_loginButton_clicked() {
     clearResults();
 
-    Role userRole;
-
     if (ui->studentRadio->isChecked()) {
         userCreds.username = "joesmith";
         userCreds.password = "alamepassword";
@@ -106,59 +98,12 @@ void Tests::on_loginButton_clicked() {
 
     sessCreds.sessionID = 0;
 
-    LoginControl *loginCtrl = new LoginControl(network);
+    loginCtrl = new LoginControl(network);
+
+    QUuid requestId = loginCtrl->login(userCreds);
 
 
-    if (network.isConnected()) {
-        ServerResponse response;
-
-        // Send the login request and wait for the signal
-        QEventLoop loop;
-
-        this->connect(&network, SIGNAL(loginSuccessful(QUuid)), &loop, SLOT(quit()));
-        this->connect(&network, SIGNAL(serverError(QUuid,int)), &loop, SLOT(quit()));
-
-        updateResults("Logging in...");
-
-        QUuid requestId = loginCtrl->login(userCreds);
-
-        loop.exec();
-
-        clearResults();
-
-        if (network.isValid()) {
-            response.code = ResponseCode::Success;
-            response.message = "Logged in as user " + userCreds.username;
-            setResult(&response);
-
-            // Show the test cases
-            ui->testCasesGroup->show();
-
-            if (userRole == Role::Student) {
-                // Show the student test cases and hide the content manager test cases from the student
-                ui->viewReqTextsGroup->show();
-                ui->viewTextDetailsGroup->show();
-                ui->submitOrderGroup->show();
-                ui->addBooksGroup->hide();
-                ui->addCourseGroup->hide();
-            } else if (userRole == Role::ContentManager) {
-                // Show the content manager test cases and hide the student test cases from the content manager
-                ui->addBooksGroup->show();
-                ui->addCourseGroup->show();
-                ui->viewTextDetailsGroup->show();
-                ui->viewReqTextsGroup->hide();
-                ui->submitOrderGroup->hide();
-            }
-        } else {
-           response.code = ResponseCode::Fail;
-           response.message = "Error: login failed";
-           setResult(&response);
-        }
-    } else {
-        updateResults("Error: not connected to server");
-    }
-
-    delete loginCtrl;
+    //delete loginCtrl;
 
 }
 
@@ -166,17 +111,14 @@ void Tests::on_viewReqTextsButton_clicked() {
     clearResults();
     updateResults("View required textbooks:");
 
-    //ServerResponse res;
-
-    ViewRequiredBooksControl *ViewRequiredBooksCtrl = new ViewRequiredBooksControl(network);
+    viewReqBooksCtrl = new ViewRequiredBooksControl(network);
 
     QUuid requestId;
 
-    ViewRequiredBooksCtrl->getRequiredBooks(requestId, sessCreds.username);
+    viewReqBooksCtrl->getRequiredBooks(requestId, sessCreds.username);
 
-    delete ViewRequiredBooksCtrl;
+    delete viewReqBooksCtrl;
 
-    //setResult(&res);
 }
 
 void Tests::on_viewBookDetailsButton_clicked() {
@@ -185,17 +127,12 @@ void Tests::on_viewBookDetailsButton_clicked() {
 
     Textbook aBook(1, "Comp 3004 - The Book", 9949, true, "123-456-7890");
 
-    //ServerResponse res;
+    viewBookDetailsCtrl = new ViewBookDetailsControl(network);
 
-    ViewBookDetailsControl *viewBookDetailsCtrl = new ViewBookDetailsControl(network);
-
-    QUuid requestId;
-
-    viewBookDetailsCtrl->getBookDetails(requestId, aBook);
+    QUuid requestId = viewBookDetailsCtrl->getBookDetails(aBook);
 
     delete viewBookDetailsCtrl;
 
-    //setResult(&res);
 }
 
 void Tests::on_submitOrderButton_clicked() {
@@ -219,17 +156,15 @@ void Tests::on_submitOrderButton_clicked() {
 
     Order order(&items, &creditInfo, &deliveryInfo);
 
-    //ServerResponse res;
 
-    SubmitOrderControl *submitOrderCtrl = new SubmitOrderControl(network);
+    submitOrderCtrl = new SubmitOrderControl(network);
 
     QUuid requestId;
 
     submitOrderCtrl->submitOrder(requestId, order);
 
-    delete submitOrderCtrl;
+    //delete submitOrderCtrl;
 
-    //setResult(&res);
 }
 
 void Tests::on_addCourseButton_clicked() {
@@ -238,17 +173,15 @@ void Tests::on_addCourseButton_clicked() {
 
     Course c("COMP3004");
 
-    //ServerResponse res;
 
-    AddCourseControl *addCourseCtrl = new AddCourseControl(network);
+    addCourseCtrl = new AddCourseControl(network);
 
     QUuid requestId;
 
     addCourseCtrl->addCourse(requestId, c);
 
-    delete addCourseCtrl;
+    //delete addCourseCtrl;
 
-    //setResult(&res);
 }
 
 void Tests::on_addBookButton_clicked() {
@@ -257,20 +190,41 @@ void Tests::on_addBookButton_clicked() {
 
     Textbook textbook("Introduction to Calculus", 120);
 
-    //ServerResponse res;
 
-    AddBookControl *addBookCtrl = new AddBookControl(network);
+    addBookCtrl = new AddBookControl(network);
 
     QUuid requestId;
 
     addBookCtrl->addBook(requestId, textbook);
 
-    //setResult(&res);
 }
 
 void Tests::loginSuccessful(QUuid requestId) {
-    updateResults("Successful login for request: " + requestId);
-    setPassed();
+        clearResults();
+
+        updateResults("Successful request: " + requestId.toString() + "\nLogged in as user " + userCreds.username);
+        setPassed();
+
+        // Show the test cases
+        ui->testCasesGroup->show();
+
+        if (userRole == Role::Student) {
+            // Show the student test cases and hide the content manager test cases from the student
+            ui->viewReqTextsGroup->show();
+            ui->viewTextDetailsGroup->show();
+            ui->submitOrderGroup->show();
+            ui->addBooksGroup->hide();
+            ui->addCourseGroup->hide();
+        } else if (userRole == Role::ContentManager) {
+            // Show the content manager test cases and hide the student test cases from the content manager
+            ui->addBooksGroup->show();
+            ui->addCourseGroup->show();
+            ui->viewTextDetailsGroup->show();
+            ui->viewReqTextsGroup->hide();
+            ui->submitOrderGroup->hide();
+        }
+
+
 }
 
 void Tests::orderStatusReceived(QUuid requestId, int code) {
@@ -283,6 +237,9 @@ void Tests::updateCompleted(QUuid requestId, int code) {
 
 void Tests::textbookDetailsReceived(QUuid requestId, int code, Textbook* resBook) {
     // TODO: update the results in the UI with these params
+    clearResults();
+    setPassed();
+    updateResults(resBook->getDetails());
 }
 
 void Tests::textbookLookupCompleted(QUuid requestId, int code, QVector<Textbook*>* resBooks) {

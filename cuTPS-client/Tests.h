@@ -14,6 +14,13 @@
 #include "ClientNetworkHandler.h"
 #include "Utils.h"
 
+#include "LoginControl.h"
+#include "ViewRequiredBooksControl.h"
+#include "ViewBookDetailsControl.h"
+#include "SubmitOrderControl.h"
+#include "AddCourseControl.h"
+#include "AddBookControl.h"
+
 namespace Ui {
     class Tests;
 }
@@ -60,9 +67,16 @@ class Tests : public QDialog
         ClientNetworkHandler network;
 
         UserCredentials userCreds;
-        //UserCredentials contentManagerCreds;
-
         SessionCredentials sessCreds;
+
+        Role userRole;
+
+        LoginControl *loginCtrl;
+        ViewRequiredBooksControl *viewReqBooksCtrl;
+        ViewBookDetailsControl *viewBookDetailsCtrl;
+        SubmitOrderControl *submitOrderCtrl;
+        AddCourseControl *addCourseCtrl;
+        AddBookControl *addBookCtrl;
 
         // Append a status string to the results box
         void updateResults(QString);
