@@ -28,8 +28,9 @@ void TPSGetBookDetailsTask::run()
     TPSNetProtocol::NetResponse response;
     QByteArray data;
     QDataStream out(oblock, QIODevice::WriteOnly);
+    QDataStream outData(&data, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeTextbook(&out, returnBook);
+    TPSNetUtils::SerializeTextbook(&outData, returnBook);
 
     qDebug() << "Get book details setup the response";
 
