@@ -103,7 +103,7 @@ void Tests::on_loginButton_clicked() {
     QUuid requestId = loginCtrl->login(userCreds);
 
 
-    //delete loginCtrl;
+    delete loginCtrl;
 
 }
 
@@ -129,7 +129,9 @@ void Tests::on_viewBookDetailsButton_clicked() {
 
     viewBookDetailsCtrl = new ViewBookDetailsControl(network);
 
-    QUuid requestId = viewBookDetailsCtrl->getBookDetails(aBook);
+    QUuid requestId;
+
+    viewBookDetailsCtrl->getBookDetails(requestId, aBook);
 
     delete viewBookDetailsCtrl;
 
@@ -163,7 +165,7 @@ void Tests::on_submitOrderButton_clicked() {
 
     submitOrderCtrl->submitOrder(requestId, order);
 
-    //delete submitOrderCtrl;
+    delete submitOrderCtrl;
 
 }
 
@@ -180,7 +182,7 @@ void Tests::on_addCourseButton_clicked() {
 
     addCourseCtrl->addCourse(requestId, c);
 
-    //delete addCourseCtrl;
+    delete addCourseCtrl;
 
 }
 
@@ -196,6 +198,8 @@ void Tests::on_addBookButton_clicked() {
     QUuid requestId;
 
     addBookCtrl->addBook(requestId, textbook);
+
+    delete addBookCtrl;
 
 }
 

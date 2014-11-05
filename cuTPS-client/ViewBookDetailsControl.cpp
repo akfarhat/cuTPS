@@ -7,6 +7,6 @@ ViewBookDetailsControl::~ViewBookDetailsControl() {
 
 }
 
-QUuid ViewBookDetailsControl::getBookDetails(Textbook &book) {
-    return network.getBookDetails(book);
+void ViewBookDetailsControl::getBookDetails(QUuid &reqId, Textbook &book) {
+    reqId = network.getBookDetails(book);
 }
