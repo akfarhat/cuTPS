@@ -29,15 +29,6 @@ Tests::Tests(QWidget *parent) :
 
     ui->testCasesGroup->hide();
 
-    // Define some values that must be in the database
-    // for test cases/diagnostics requests
-
-    //contentManagerCreds.username = "cm";
-    //contentManagerCreds.password = "pass";
-
-    sessCreds.username = "joesmith";
-    sessCreds.sessionID = 0;
-
     // Connect the network handler to the server
     // TODO: get the server connection details from a config
     QHostAddress addr(QHostAddress::LocalHost);
@@ -85,12 +76,16 @@ void Tests::on_loginButton_clicked() {
     if (ui->studentRadio->isChecked()) {
         userCreds.username = "joesmith";
         userCreds.password = "alamepassword";
+        sessCreds.username = "joesmith";
         userRole = Role::Student;
     } else if (ui->contentManagerRadio->isChecked()) {
         userCreds.username = "cm";
         userCreds.password = "pass";
+        sessCreds.username = "joesmith";
         userRole = Role::ContentManager;
     }
+
+    sessCreds.sessionID = 0;
 
     LoginControl *loginCtrl = new LoginControl(network);
 
