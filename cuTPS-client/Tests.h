@@ -49,6 +49,7 @@ class Tests : public QDialog
         ClientNetworkHandler network;
 
         UserCredentials userCreds;
+        //UserCredentials contentManagerCreds;
 
         SessionCredentials sessCreds;
 

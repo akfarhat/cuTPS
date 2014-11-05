@@ -20,6 +20,12 @@ enum ResponseCode {
     Fail
 };
 
+enum Role {
+    None,
+    Student,
+    ContentManager
+};
+
 // Information returned by the server for requests
 struct ServerResponse {
     QUuid sessionID;
