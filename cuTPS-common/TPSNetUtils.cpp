@@ -139,16 +139,26 @@ void TPSNetUtils::DeserializeCourse(Course* dest, QDataStream* istream)
     (*istream) >> id >> name >> code >> numLinkedBooks;
 
     qint32 bookIds[numLinkedBooks];
-    QVector<Textbook*>* books = dest->getRequiredTexts();
 
     for (int i = 0; i < numLinkedBooks; ++i)
     {
         // TODO: Fetch textbooks by ID and add to the vector
+        //dest->addRequiredText(requiredtext);
     }
 
+    qDebug() << "TPSNetUtils::DeserializeCourse():"
+             << " id = " << (int)id
+             << " courseName = " << name
+             << " courseCode = " << code
+             << ". dest pointer = " << dest;
+
+    qDebug() << "setting id";
     dest->setId(id);
+    qDebug() << "setting course name";
     dest->setCourseName(name);
+    qDebug() << "setting course code";
     dest->setCourseCode(code);
+    qDebug() << "done";
 }
 
 void TPSNetUtils::SerializeOrder(QDataStream* ostream, Order* src)

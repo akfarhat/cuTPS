@@ -176,14 +176,18 @@ void Tests::on_addCourseButton_clicked() {
     clearResults();
     updateResults("Add course:");
 
-    Course c("COMP3004");
+    // Create some hard coded objects to test the request
+    QVector<Textbook*> books;
+    books.append(new Textbook(2, "Comp 3004 Textbook 2", 5153, true, "123-456-710"));
+    books.append(new Textbook(3, "Comp 3004 Textbook 3", 9153, true, "123-456-711"));
 
+    Course *c = new Course("COMP 3004", "Advanced Diagrams", books);
 
     addCourseCtrl = new AddCourseControl(network);
 
     QUuid requestId;
 
-    addCourseCtrl->addCourse(requestId, c);
+    addCourseCtrl->addCourse(requestId, *c);
 
     delete addCourseCtrl;
 

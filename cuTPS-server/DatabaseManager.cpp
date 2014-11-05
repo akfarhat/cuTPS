@@ -12,7 +12,7 @@ DatabaseManager::~DatabaseManager() {
 bool DatabaseManager::openDB()
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("/home/admin/Desktop/cuTPS/cutps.db");
+    db.setDatabaseName("cutps.db");
     return db.open();
 }
 
