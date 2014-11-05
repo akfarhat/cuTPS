@@ -1,6 +1,7 @@
 #include "ClientNetworkHandler.h"
 
 #include <QString>
+#include <QVector>
 #include <QDebug>
 #include <iostream>
 
@@ -263,6 +264,8 @@ void ClientNetworkHandler::disconnected()
 
 void ClientNetworkHandler::readyRead()
 {
+    qDebug() << "READ";
+
     QDataStream in(connection);
     in.setVersion(TPSConstants::PROTOCOL_VER);
 
@@ -341,11 +344,20 @@ void ClientNetworkHandler::readyRead()
 
     case TPSConstants::GetRequiredBooks: {
         QVector<Textbook*>* vector = new QVector<Textbook*>(); // TODO: Manage memory
+        QDataStream in(dataBlock, QIODevice::ReadOnly);
+        qint32 numBooks;
+        in >> numBooks;
+
+        for (int i = 0; i < numBooks; ++i)
+        {
+            Textbook* book = new Textbook();
+            vector->append(book);
+            TPSNetUtils::DeserializeTextbook(book, &in);
+        }
+
         qDebug() << "Server responded: required books received. Request=" << response.requestId
                  << " Code=" << response.responseCode;
-        qDebug() << "WARNING: IMPLEMENTATION MISSING.";
-        // TODO: Pending implementation
-        emit textbookLookupCompleted(response.requestId, 0x0, vector);
+        emit textbookLookupCompleted(response.requestId, response.responseCode, vector);
         break;
     }
 
