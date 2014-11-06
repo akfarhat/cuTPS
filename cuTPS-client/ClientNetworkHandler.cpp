@@ -173,6 +173,8 @@ QUuid ClientNetworkHandler::submitOrder(Order& order)
 
     TPSNetUtils::SerializeRequest(&outStream, &request);
 
+    connection->write(requestBytes);
+
     return requestId;
 }
 

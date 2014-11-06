@@ -1,5 +1,8 @@
 #include "Order.h"
 
+Order::Order() {
+}
+
 Order::Order(QVector<qint32> *itemList, BillingInfo *billing,
              DeliveryInfo *shipping) :
     itemIds( QVector<qint32>( *itemList ) ),
