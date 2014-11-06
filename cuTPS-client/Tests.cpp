@@ -249,11 +249,11 @@ void Tests::updateCompleted(QUuid requestId, int code) {
     if (code == 0) {
         setFailed();
         updateResults("Failed to add the course for request: "
-                      + requestId);
+                      + requestId.toString());
     } else if (code == 1) {
         setPassed();
         updateResults("Succesfully added course for request: "
-                      + requestId);
+                      + requestId.toString());
     }
 }
 
