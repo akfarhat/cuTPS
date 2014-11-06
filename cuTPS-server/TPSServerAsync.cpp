@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "Defines.h"
+#include "TPSServerPrefs.h"
 
 TPSServerAsync::TPSServerAsync(QObject *parent) :
     QTcpServer(parent)
@@ -11,6 +12,7 @@ TPSServerAsync::TPSServerAsync(QObject *parent) :
 
 void TPSServerAsync::StartServer()
 {
+    TPSServerPrefs::GetDbPath();
     if (listen(QHostAddress::Any, TPSConstants::PORT))
     {
         qDebug() << " >> Server Started on port " << TPSConstants::PORT;
