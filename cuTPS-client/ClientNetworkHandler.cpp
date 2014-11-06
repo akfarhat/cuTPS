@@ -173,6 +173,8 @@ QUuid ClientNetworkHandler::submitOrder(Order& order)
 
     TPSNetUtils::SerializeRequest(&outStream, &request);
 
+    connection->write(requestBytes);
+
     return requestId;
 }
 
@@ -196,7 +198,13 @@ QUuid ClientNetworkHandler::addCourse(Course& course)
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
 
+    qDebug() << "ClientNetworkHandler::addCourse serializing course";
+
     TPSNetUtils::SerializeRequest(&outStream, &request);
+
+    qDebug() << "ClientNetworkHandler::addCourse writing payload to network";
+
+    connection->write(requestBytes);
 
     return requestId;
 }

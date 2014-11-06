@@ -16,8 +16,8 @@
 
 // A pass/fail response for a test case
 enum ResponseCode {
-    Success,
-    Fail
+    Fail,
+    Success
 };
 
 enum Role {

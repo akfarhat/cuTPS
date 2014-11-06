@@ -22,8 +22,9 @@ class Course {
         QVector<Textbook*> *requiredBooks;
 
     public:
+        Course();
         Course(QString);
-        Course(QString, QVector<Textbook*>);
+        Course(QString, QString, QVector<Textbook*>);
         ~Course();
 
         int getId() const;

@@ -36,7 +36,7 @@ Tests::Tests(QWidget *parent) :
     connect(&network, SIGNAL(updateCompleted(QUuid, int)), this, SLOT(updateCompleted(QUuid, int)));
     connect(&network, SIGNAL(textbookDetailsReceived(QUuid, int, Textbook*)), this, SLOT(textbookDetailsReceived(QUuid, int, Textbook*)));
     connect(&network, SIGNAL(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)), this, SLOT(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)));
-    connect(&network, SIGNAL(serverError(QUuid,int)), this, SLOT(serverErrorRecieved(QUuid, int)));
+    connect(&network, SIGNAL(serverError(QUuid,int)), this, SLOT(serverError(QUuid, int)));
 
 }
 
@@ -176,14 +176,18 @@ void Tests::on_addCourseButton_clicked() {
     clearResults();
     updateResults("Add course:");
 
-    Course c("COMP3004");
+    // Create some hard coded objects to test the request
+    QVector<Textbook*> books;
+    books.append(new Textbook(2, "Comp 3004 Textbook 2", 5153, true, "123-456-710"));
+    books.append(new Textbook(3, "Comp 3004 Textbook 3", 9153, true, "123-456-711"));
 
+    Course *c = new Course("COMP 3004", "Advanced Diagrams", books);
 
     addCourseCtrl = new AddCourseControl(network);
 
     QUuid requestId;
 
-    addCourseCtrl->addCourse(requestId, c);
+    addCourseCtrl->addCourse(requestId, *c);
 
     delete addCourseCtrl;
 
@@ -241,7 +245,16 @@ void Tests::orderStatusReceived(QUuid requestId, int code) {
 }
 
 void Tests::updateCompleted(QUuid requestId, int code) {
-    // TODO: update the results in the UI with these params
+    clearResults();
+    if (code == 0) {
+        setFailed();
+        updateResults("Failed to add the course for request: "
+                      + requestId.toString());
+    } else if (code == 1) {
+        setPassed();
+        updateResults("Succesfully added course for request: "
+                      + requestId.toString());
+    }
 }
 
 void Tests::textbookDetailsReceived(QUuid requestId, int code, Textbook* resBook) {
@@ -254,14 +267,12 @@ void Tests::textbookLookupCompleted(QUuid requestId, int code, QVector<Textbook*
     clearResults();
     setPassed();
 
-    int i = 0;
-    // TODO: Test this
-    for (i = 0; i < resBooks->size(); i++) {
+    for (int i = 0; i < resBooks->size(); i++) {
         updateResults(resBooks->at(i)->getDetails() + "\n\n");
     }
 }
 
-void Tests::serverErrorRecieved(QUuid requestId, int error) {
+void Tests::serverError(QUuid requestId, int error) {
     clearResults();
     setFailed();
     updateResults("Receieved error code " + QString::number(error) + " from server");

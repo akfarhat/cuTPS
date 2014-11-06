@@ -59,7 +59,7 @@ class Tests : public QDialog
 
         void textbookLookupCompleted(QUuid, int, QVector<Textbook*>*);
 
-        void serverErrorRecieved(QUuid, int);
+        void serverError(QUuid, int);
 
     private:
         // The UI window element

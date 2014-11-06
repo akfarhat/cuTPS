@@ -1,12 +1,19 @@
 #include "Course.h"
 
-Course::Course(QString course) {
-    code = course;
+Course::Course() {
+    code = "";
     requiredBooks = new QVector<Textbook*>();
 }
 
-Course::Course(QString course, QVector<Textbook*> books) {
+Course::Course(QString course) {
     code = course;
+    name = "";
+    requiredBooks = new QVector<Textbook*>();
+}
+
+Course::Course(QString course, QString courseName, QVector<Textbook*> books) {
+    code = course;
+    name = courseName;
     requiredBooks = new QVector<Textbook*>();
 
     for (int i=0; i<books.size(); i++) {

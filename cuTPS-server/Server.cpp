@@ -116,10 +116,16 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
     response.sessionID = sessionID;
 
     QSqlQuery query;
-    bool result = dbManager->runQuery("insert into Course (code, name) values (" +
-                                      course.getCourseCode() + ", " +
-                                      course.getCourseName() + ")" +
-                                      ";", &query);
+
+    QString queryString = "insert into Course (code, name) values (\"" +
+                           course.getCourseCode() + "\", \"" +
+                           course.getCourseName() + "\")" +
+                           ";";
+
+    qDebug() << "About to insert Course, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
 
     if (result) {
         response.code = Success;
@@ -128,10 +134,16 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
     else {
         response.code = Fail;
         response.message = query.lastError().text();
+
+        qDebug() << "Failed to insert course: " << response.message;
         return response;
     }
 
+    qDebug() << "About to insert " //<< QString::number(course.getRequiredTexts()->size())
+             << " Course_Textbooks";
+
     for (Textbook* textbook : *(course.getRequiredTexts())) {
+        // TODO: this is we should form the query for all books and execute it once.
         QString queryString = "insert into Course_Textbook (course_id, textbook_id) values (";
         queryString += course.getId();
         queryString += ", ";
@@ -147,6 +159,8 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
         else {
             response.code = Fail;
             response.message = query.lastError().text();
+
+            qDebug() << "Failed to insert Course_Textbook: " << response.message;
             return response;
         }
     }
@@ -175,9 +189,9 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
         return response;
     }
 
-    result = dbManager->runQuery("insert into Textbook (name, available) values (" +
-                                 textbook.getName() + ", " +
-                                 textbook.getAvailability() + ")" +
+    result = dbManager->runQuery("insert into Textbook (item_id, isbm) values (" +
+                                 QString::number(textbook.getId()) + ", \"" +
+                                 textbook.getISBN() + "\")" +
                                  ";", &query);
 
     if (result) {
