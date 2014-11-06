@@ -266,7 +266,7 @@ void Tests::updateCompleted(TPSConstants::InvocationDescriptor invocation,
         updateMsg += "textbook";
     }
 
-    updateMsg += "for request: " + requestId;
+    updateMsg += "for request: " + requestId.toString();
     updateResults(updateMsg);
 }
 
