@@ -25,7 +25,8 @@ SOURCES += main.cpp \
     taskhandler/TPSGetRequiredBooksTask.cpp \
     taskhandler/TPSLoginTask.cpp \
     taskhandler/TPSSubmitOrderTask.cpp \
-    taskhandler/TPSWorkerTask.cpp
+    taskhandler/TPSWorkerTask.cpp \
+    TPSServerPrefs.cpp
 
 HEADERS += \
     TPSServerAsync.h \
@@ -38,7 +39,8 @@ HEADERS += \
     taskhandler/TPSGetRequiredBooksTask.h \
     taskhandler/TPSLoginTask.h \
     taskhandler/TPSSubmitOrderTask.h \
-    taskhandler/TPSWorkerTask.h
+    taskhandler/TPSWorkerTask.h \
+    TPSServerPrefs.h
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++

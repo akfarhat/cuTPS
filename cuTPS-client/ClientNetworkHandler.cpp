@@ -357,7 +357,10 @@ void ClientNetworkHandler::readyRead()
             TPSNetUtils::DeserializeTextbook(book, &in);
         }
 
-        qDebug() << "Server responded: required books received. Request=" << response.requestId
+        qDebug() << "Server responded: "
+                 << vector->size()
+                 << " required books received. Request="
+                 << response.requestId
                  << " Code=" << response.responseCode;
         emit textbookLookupCompleted(response.requestId, response.responseCode, vector);
         break;
