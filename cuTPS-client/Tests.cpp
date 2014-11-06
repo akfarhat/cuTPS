@@ -33,9 +33,12 @@ Tests::Tests(QWidget *parent) :
     // Bind a handler to server responses to our requests
     connect(&network, SIGNAL(loginSuccessful(QUuid)), this, SLOT(loginSuccessful(QUuid)));
     connect(&network, SIGNAL(orderStatusReceived(QUuid, int)), this, SLOT(orderStatusReceived(QUuid, int)));
-    connect(&network, SIGNAL(updateCompleted(QUuid, int)), this, SLOT(updateCompleted(QUuid, int)));
-    connect(&network, SIGNAL(textbookDetailsReceived(QUuid, int, Textbook*)), this, SLOT(textbookDetailsReceived(QUuid, int, Textbook*)));
-    connect(&network, SIGNAL(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)), this, SLOT(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)));
+    connect(&network, SIGNAL(updateCompleted(TPSConstants::InvocationDescriptor, QUuid, int)),
+                this, SLOT(updateCompleted(TPSConstants::InvocationDescriptor, QUuid, int)));
+    connect(&network, SIGNAL(textbookDetailsReceived(QUuid, int, Textbook*)),
+                this, SLOT(textbookDetailsReceived(QUuid, int, Textbook*)));
+    connect(&network, SIGNAL(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)),
+                this, SLOT(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)));
     connect(&network, SIGNAL(serverError(QUuid,int)), this, SLOT(serverError(QUuid, int)));
 
 }
@@ -195,10 +198,9 @@ void Tests::on_addCourseButton_clicked() {
 
 void Tests::on_addBookButton_clicked() {
     clearResults();
-    updateResults("Add book:");
+    updateResults("Add Textbook:");
 
-    Textbook textbook("Introduction to Calculus", 120);
-
+    Textbook textbook(4, "Introduction to Calculus", 12054, true, "123-456-712");
 
     addBookCtrl = new AddBookControl(network);
 
@@ -244,17 +246,28 @@ void Tests::orderStatusReceived(QUuid requestId, int code) {
     updateResults("Order request recieved by server");
 }
 
-void Tests::updateCompleted(QUuid requestId, int code) {
+void Tests::updateCompleted(TPSConstants::InvocationDescriptor invocation,
+                            QUuid requestId, int code) {
     clearResults();
+
+    QString updateMsg;
+
     if (code == 0) {
         setFailed();
-        updateResults("Failed to add the course for request: "
-                      + requestId);
+        updateMsg = "Failed to add ";
     } else if (code == 1) {
         setPassed();
-        updateResults("Succesfully added course for request: "
-                      + requestId);
+        updateMsg += "Succesfully added ";
     }
+
+    if (invocation == TPSConstants::AddCourse) {
+        updateMsg += "course ";
+    } else if (invocation == TPSConstants::AddBook) {
+        updateMsg += "textbook";
+    }
+
+    updateMsg += "for request: " + requestId;
+    updateResults(updateMsg);
 }
 
 void Tests::textbookDetailsReceived(QUuid requestId, int code, Textbook* resBook) {

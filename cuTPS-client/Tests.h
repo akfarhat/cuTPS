@@ -53,7 +53,7 @@ class Tests : public QDialog
 
         void orderStatusReceived(QUuid, int);
 
-        void updateCompleted(QUuid, int);
+        void updateCompleted(TPSConstants::InvocationDescriptor, QUuid, int);
 
         void textbookDetailsReceived(QUuid, int, Textbook*);
 

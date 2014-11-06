@@ -174,10 +174,14 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
     response.sessionID = sessionID;
 
     QSqlQuery query;
-    bool result = dbManager->runQuery("insert into SellableItem (available) values (" +
-                                      textbook.getName() + ", " +
-                                      textbook.getAvailability() + ")" +
-                                      ";", &query);
+
+    QString queryString = "insert into SellableItem (name, price_cents, available) values (\"" +
+                           textbook.getName() + "\", " +
+            QString::number(textbook.getPriceCents()) + ", " +
+                           QString::number(textbook.getAvailability()) + ");";
+
+    qDebug() << "Server::addTextbook running query: '" << queryString << "'";
+    bool result = dbManager->runQuery(queryString, &query);
 
     if (result) {
         response.code = Success;
@@ -186,13 +190,18 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
     else {
         response.code = Fail;
         response.message = query.lastError().text();
+
+        qDebug() << "Server::addTextbook Failed to insert into SellableItem: "
+                 << response.message;
         return response;
     }
 
-    result = dbManager->runQuery("insert into Textbook (item_id, isbm) values (" +
-                                 QString::number(textbook.getId()) + ", \"" +
-                                 textbook.getISBN() + "\")" +
-                                 ";", &query);
+    queryString = "insert into Textbook (isbn) values (\"" +
+                  textbook.getISBN() + "\");";
+
+    result = dbManager->runQuery(queryString, &query);
+
+    qDebug() << "Server::addTextbook running query: '" << queryString << "'";
 
     if (result) {
         response.code = Success;
@@ -201,6 +210,9 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
     else {
         response.code = Fail;
         response.message = query.lastError().text();
+
+        qDebug() << "Server::addTextbook Failed to insert into Textbook: "
+                 << response.message;
         return response;
     }
 

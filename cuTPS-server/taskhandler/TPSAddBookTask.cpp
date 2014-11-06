@@ -19,6 +19,13 @@ void TPSAddBookTask::run()
     QDataStream in(iblock, QIODevice::ReadOnly);
     TPSNetUtils::DeserializeTextbook(&book, &in);
 
+    qDebug() << "TPSAddBookTask Deserialized textbook: ";
+    qDebug() << " id = " << QString::number(book.getId());
+    qDebug() << " ISBN = " << book.getISBN();
+    qDebug() << " name = " << book.getName();
+    qDebug() << " price = " << QString::number(book.getPriceCents());
+    qDebug() << "available? = " << book.getAvailability();
+
     ServerResponse r = server->addTextbook(sessionId, book);
 
     TPSNetProtocol::NetResponse response;

@@ -12,7 +12,13 @@ DatabaseManager::~DatabaseManager() {
 bool DatabaseManager::openDB()
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("/home/student/Comp3004/cuTPS/cutps.db");
+
+    //QString dbPath = QCoreApplication::applicationDirPath() + "/cutps.db";
+
+    QString dbPath = "/home/student/Comp3004/cuTPS/cutps.db";
+    qDebug() << "dbPath: '" << dbPath << "'";
+
+    db.setDatabaseName(dbPath);
     return db.open();
 }
 

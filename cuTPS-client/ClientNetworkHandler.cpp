@@ -216,20 +216,29 @@ QUuid ClientNetworkHandler::addBook(Textbook& text)
     QUuid requestId = QUuid::createUuid();
 
     TPSNetProtocol::NetRequest request;
-    request.invocation = TPSConstants::GetRequiredBooks;
+    request.invocation = TPSConstants::AddBook;
     request.requestId = requestId;
 
     QByteArray* data = new QByteArray(); // TODO: Manage memory
     QDataStream outDataStream(data, QIODevice::WriteOnly);
 
+    qDebug() << "ClientNetworkHandler::addBook serializing book";
+
     TPSNetUtils::SerializeTextbook(&outDataStream, &text);
+
+    qDebug() << "ClientNetworkHandler::addBook finished serializing book";
 
     request.data = data;
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
 
+    qDebug() << "ClientNetworkHandler::addBook serializing request invocation type: "
+             << request.invocation;
+
     TPSNetUtils::SerializeRequest(&outStream, &request);
+
+    connection->write(requestBytes);
 
     return requestId;
 }
@@ -318,14 +327,14 @@ void ClientNetworkHandler::readyRead()
     switch (response.invocation) {
 
     case TPSConstants::AddBook: {
-        emit updateCompleted(response.requestId, response.responseCode);
+        emit updateCompleted(response.invocation, response.requestId, response.responseCode);
         qDebug() << "Server responded: book added. Request=" << response.requestId
                  << " Code=" << response.responseCode;
         break;
     }
 
     case TPSConstants::AddCourse: {
-        emit updateCompleted(response.requestId, response.responseCode);
+        emit updateCompleted(response.invocation, response.requestId, response.responseCode);
         qDebug() << "Server responded: course added. Request=" << response.requestId
                  << " Code=" << response.responseCode;
         break;
