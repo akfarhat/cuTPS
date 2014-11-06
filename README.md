@@ -33,7 +33,7 @@ Within the project's build path, following items exist:
 Build instructions:
 -------------------
 Using QtCreator: (Recommended)
-* import project to QTCreator
+* import project (cuTPS-KernelPanic.pro) to QTCreator
 * once asked, setup build kits (providing paths to debug and release build output directories)
 * run the build
 * in case of issues while building, 'Build -> Clean all' then 'Build -> run qmake' then 'Build -> Build all'
