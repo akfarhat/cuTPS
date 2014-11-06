@@ -42,6 +42,9 @@ HEADERS += \
     taskhandler/TPSWorkerTask.h \
     TPSServerPrefs.h
 
+OTHER_FILES += \
+    db/cutpsd.db
+
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
@@ -63,3 +66,11 @@ else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTP
 else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/release/cutps.lib
 else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/debug/cutps.lib
 else:unix: PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/libcutps.a
+
+# copy db folder to the build path
+copydata.commands = $(COPY_DIR) $$PWD/db $$OUT_PWD
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata
+

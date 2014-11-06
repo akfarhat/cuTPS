@@ -11,7 +11,7 @@ TPSServerPrefs::TPSServerPrefs()
 QString TPSServerPrefs::GetDbPath()
 {
     QSettings settings("cutpsd.conf", QSettings::IniFormat);
-    QString dbPath = settings.value(TPSConstants::PREF_DB_PATH_SEC, QDir::currentPath() + QString("cutpsd.db")).toString();
+    QString dbPath = settings.value(TPSConstants::PREF_DB_PATH_SEC, QDir::currentPath() + QString("/db/cutpsd.db")).toString();
     settings.setValue(TPSConstants::PREF_DB_PATH_SEC, dbPath);
     return dbPath;
 }
