@@ -57,6 +57,8 @@ void TPSGetRequiredBooksTask::run()
 
     QDataStream dataOut(&data,QIODevice::WriteOnly);
 
+    dataOut << textbooks->size();
+
     // Write every textbook one by one
 
     for (Textbook* t_p : *textbooks)

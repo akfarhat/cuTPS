@@ -36,7 +36,7 @@ Tests::Tests(QWidget *parent) :
     connect(&network, SIGNAL(updateCompleted(QUuid, int)), this, SLOT(updateCompleted(QUuid, int)));
     connect(&network, SIGNAL(textbookDetailsReceived(QUuid, int, Textbook*)), this, SLOT(textbookDetailsReceived(QUuid, int, Textbook*)));
     connect(&network, SIGNAL(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)), this, SLOT(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)));
-    connect(&network, SIGNAL(serverError(QUuid,int)), this, SLOT(serverErrorRecieved(QUuid, int)));
+    connect(&network, SIGNAL(serverError(QUuid,int)), this, SLOT(serverError(QUuid, int)));
 
 }
 
@@ -267,14 +267,12 @@ void Tests::textbookLookupCompleted(QUuid requestId, int code, QVector<Textbook*
     clearResults();
     setPassed();
 
-    int i = 0;
-    // TODO: Test this
-    for (i = 0; i < resBooks->size(); i++) {
+    for (int i = 0; i < resBooks->size(); i++) {
         updateResults(resBooks->at(i)->getDetails() + "\n\n");
     }
 }
 
-void Tests::serverErrorRecieved(QUuid requestId, int error) {
+void Tests::serverError(QUuid requestId, int error) {
     clearResults();
     setFailed();
     updateResults("Receieved error code " + QString::number(error) + " from server");

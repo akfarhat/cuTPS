@@ -15,6 +15,7 @@
 class Order {
 
     public:
+        Order();
         Order(QVector<qint32>*, BillingInfo *, DeliveryInfo *);
         ~Order();
 
