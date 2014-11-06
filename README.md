@@ -15,7 +15,7 @@ Contributors:
 Project Configuration:
 ----------------------
 
-The project contains of 3 subprojects:
+The main Qt project contains 3 subprojects:
 
 1. cuTPS-client: the client application. Outputs: cuTPS-client executable
 2. cuTPS-server: the server. Outputs: cutpsd executable
@@ -32,15 +32,27 @@ Within the project's build path, following items exist:
 
 Build instructions:
 -------------------
+Using QtCreator: (Recommended)
 * import project to QTCreator
 * once asked, setup build kits (providing paths to debug and release build output directories)
 * run the build
+* in case of issues while building, 'Build -> Clean all' then 'Build -> run qmake' then 'Build -> Build all'
 * following files will be produced by build:
 	/build/cuTPS-client/cuTPS-client -- the client executable
 	/build/cuTPS-server/cutpsd -- the server executable.
+
+Using command-line:
+* In project directory, run 'qmake -unix cuTPS-KernelPanic.pro'
+* Run 'make'
 
 Run instructions:
 -----------------
 
 * run the cutpsd server daemon. Ensure that the server is started and proper database file is used. (look in the standard output)
 * run the cuTPS-client
+
+Known Issues:
+-------------
+
+* The client is disconnected from the server after running any test after the 'Add course' test. All API calls and tests work correctly but they will fail if run right after 'Add course'. So run the 'Add course' test last and everything will work fine.
+* When running the executables outside of QtCreator, it's possible that things will not be displayed properly in the client GUI. This seems to be a problem with the VM and we can't change the VM configuration.
