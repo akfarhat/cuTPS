@@ -142,6 +142,8 @@ void TPSNetUtils::DeserializeCourse(Course* dest, QDataStream* istream)
 
     for (int i = 0; i < numLinkedBooks; ++i)
     {
+        (*istream) >> bookIds[i];
+        qDebug() << "This course has book id " << QString::number(bookIds[i]);
         // TODO: Fetch textbooks by ID and add to the vector
         //dest->addRequiredText(requiredtext);
     }

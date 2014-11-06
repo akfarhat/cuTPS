@@ -24,8 +24,8 @@ void TPSAddCourseTask::run()
 
     qDebug() << "TPSAddCourseTask deserialized course:";
     qDebug() << " courseCode = " << course.getCourseCode();
+    qDebug() << " course name = " << course.getCourseName();
     qDebug() << " id = " << QString::number(course.getId());
-    qDebug() << " num required texts ptr = " << course.getRequiredTexts();
 
     qDebug() << "TPSAddCourseTask calling server addCourse API";
 

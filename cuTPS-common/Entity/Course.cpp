@@ -2,6 +2,7 @@
 
 Course::Course() {
     code = "";
+    requiredBooks = new QVector<Textbook*>();
 }
 
 Course::Course(QString course) {

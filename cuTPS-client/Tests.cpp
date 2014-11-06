@@ -245,7 +245,16 @@ void Tests::orderStatusReceived(QUuid requestId, int code) {
 }
 
 void Tests::updateCompleted(QUuid requestId, int code) {
-    // TODO: update the results in the UI with these params
+    clearResults();
+    if (code == 0) {
+        setFailed();
+        updateResults("Failed to add the course for request: "
+                      + requestId);
+    } else if (code == 1) {
+        setPassed();
+        updateResults("Succesfully added course for request: "
+                      + requestId);
+    }
 }
 
 void Tests::textbookDetailsReceived(QUuid requestId, int code, Textbook* resBook) {
