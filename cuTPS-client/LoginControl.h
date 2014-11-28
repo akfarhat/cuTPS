@@ -10,18 +10,19 @@
 #include "Utils.h"
 #include "ClientNetworkHandler.h"
 
+#include <QObject>
+
 class LoginControl {
 
     private:
-        ClientNetworkHandler &network;
+        ClientNetworkHandler *network;
 
     public:
-        LoginControl(ClientNetworkHandler &);
+        LoginControl(ClientNetworkHandler *);
         ~LoginControl();
 
         // Request a login for this user
         void login(QUuid&, UserCredentials&);
-
 };
 
 #endif // LOGINCONTROL_H

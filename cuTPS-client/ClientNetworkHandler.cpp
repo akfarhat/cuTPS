@@ -250,8 +250,9 @@ QTcpSocket::SocketState ClientNetworkHandler::getSocketState() const
 
 bool ClientNetworkHandler::isConnected() const
 {
+    qDebug() << "SocketState: " << getSocketState();
     return getSocketState() == QTcpSocket::ConnectedState ||
-            getSocketState() == QTcpSocket::BoundState;
+           getSocketState() == QTcpSocket::BoundState;
 }
 
 bool ClientNetworkHandler::isValid() const
@@ -376,8 +377,15 @@ void ClientNetworkHandler::readyRead()
     }
 
     case TPSConstants::Login: {
-        emit loginSuccessful(response.requestId);
-        loggedIn = true;
+
+        if (response.responseCode < 1) {
+            emit loginFailed(response.requestId);
+            loggedIn = false;
+        } else {
+            emit loginSuccessful(response.requestId);
+            loggedIn = true;
+        }
+
         qDebug() << "Login successful for request " << response.requestId;
         break;
     }

@@ -31,7 +31,6 @@ Tests::Tests(QWidget *parent) :
     network.connectToServer(addr, TPSConstants::PORT);
 
     // Bind a handler to server responses to our requests
-    connect(&network, SIGNAL(loginSuccessful(QUuid)), this, SLOT(loginSuccessful(QUuid)));
     connect(&network, SIGNAL(orderStatusReceived(QUuid, int)), this, SLOT(orderStatusReceived(QUuid, int)));
     connect(&network, SIGNAL(updateCompleted(TPSConstants::InvocationDescriptor, QUuid, int)),
                 this, SLOT(updateCompleted(TPSConstants::InvocationDescriptor, QUuid, int)));
@@ -102,7 +101,7 @@ void Tests::on_loginButton_clicked() {
 
     sessCreds.sessionID = 0;
 
-    loginCtrl = new LoginControl(network);
+    loginCtrl = new LoginControl(&network);
 
     QUuid requestId;
 

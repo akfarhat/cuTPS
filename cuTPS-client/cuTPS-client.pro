@@ -21,7 +21,9 @@ SOURCES += main.cpp \
     SubmitOrderControl.cpp \
     ViewBookDetailsControl.cpp \
     ViewRequiredBooksControl.cpp \
-    LoginControl.cpp
+    LoginControl.cpp \
+    Login.cpp \
+    ContentManagementInterface.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -33,9 +35,13 @@ HEADERS  += \
     ViewBookDetailsControl.h \
     ViewRequiredBooksControl.h \
     LoginControl.h \
+    Login.h \
+    ContentManagementInterface.h
 
 FORMS    += \
-    Tests.ui
+    Tests.ui \
+    Login.ui \
+    ContentManagementInterface.ui
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++
