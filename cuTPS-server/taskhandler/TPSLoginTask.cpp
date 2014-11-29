@@ -21,7 +21,9 @@ void TPSLoginTask::run()
 
     qDebug() << credentials.username << credentials.password;
 
-    ServerResponse r = server->authenticateUser(sessionId, credentials);
+    Role userRole;
+
+    ServerResponse r = server->authenticateUser(sessionId, userRole, credentials);
 
     if (r.code == Fail)
     {
@@ -29,7 +31,7 @@ void TPSLoginTask::run()
     }
     else
     {
-        qDebug() << "Successful login! >";
+        qDebug() << "Successful login! > userRole: " << userRole;
     }
 
     qDebug() << credentials.username << " " << credentials.password;
@@ -37,6 +39,10 @@ void TPSLoginTask::run()
     TPSNetProtocol::NetResponse response;
     QByteArray data;
     QDataStream out(oblock, QIODevice::WriteOnly);
+
+    // Write the user role first
+    QDataStream dataOut(&data,QIODevice::WriteOnly);
+    dataOut << (qint8)userRole;
 
     setupResponse(response,
                   r.code == Fail ? 0x0 : 0x1,

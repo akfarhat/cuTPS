@@ -68,7 +68,7 @@ signals:
     void serverError(QUuid requestId, int code);
 
     // Events emitted regarding the completion of server API
-    void loginSuccessful(QUuid requestId);
+    void loginSuccessful(QUuid requestId, Role userRole);
     void loginFailed(QUuid requestId);
     void orderStatusReceived(QUuid requestId, int code);
     void updateCompleted(TPSConstants::InvocationDescriptor, QUuid requestId, int code);

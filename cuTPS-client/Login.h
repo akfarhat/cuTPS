@@ -5,6 +5,9 @@
 
 #include "ClientNetworkHandler.h"
 
+// Forward declare LoginControl to avoid circular dependency
+class LoginControl;
+
 namespace Ui {
 class Login;
 }
@@ -14,7 +17,10 @@ class Login : public QDialog
     Q_OBJECT
 
 public:
-    explicit Login(QWidget *parent = 0, ClientNetworkHandler *network = NULL);
+    explicit Login(QWidget *parent = 0,
+                   ClientNetworkHandler *network = NULL,
+                   LoginControl *loginC = NULL);
+    void clearFields();
     ~Login();
 
 private slots:
@@ -22,13 +28,10 @@ private slots:
 
     void on_cancelButton_clicked();
 
-    void loginSuccessful(QUuid);
-
-    void loginFailed(QUuid);
-
 private:
     Ui::Login *ui;
     ClientNetworkHandler *network;
+    LoginControl *loginCtrl;
 
 };
 

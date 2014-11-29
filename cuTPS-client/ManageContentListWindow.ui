@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ManageContentListWindow</class>
+ <widget class="QMainWindow" name="ManageContentListWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>664</width>
+    <height>494</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>cuTPS - Content Manager</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QListWidget" name="contentList">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>50</y>
+      <width>341</width>
+      <height>391</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTableView" name="metadataView">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>281</width>
+      <height>391</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="backButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>71</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Back</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>664</width>
+     <height>24</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

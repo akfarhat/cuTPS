@@ -28,6 +28,7 @@ ClientNetworkHandler::ClientNetworkHandler()
             this, SLOT(error(QAbstractSocket::SocketError)));
 
     loggedIn = false;
+    blockSize = 0;
 }
 
 ClientNetworkHandler::~ClientNetworkHandler()
@@ -285,14 +286,18 @@ void ClientNetworkHandler::readyRead()
     {
         if (connection->bytesAvailable() < sizeof(qint16))
         {
+            qDebug() << "ClientNetworkHandler::bytes avail < size(qint16)";
             return;
         }
 
         in >> blockSize;
+        qDebug() << "Read in block size of " << blockSize;
     }
 
     if (connection->bytesAvailable() < blockSize)
     {
+        qDebug() << "ClientNetworkHandler::bytes avail < blocksize("
+                 << blockSize << "), finished";
         return;
     }
 
@@ -378,15 +383,24 @@ void ClientNetworkHandler::readyRead()
 
     case TPSConstants::Login: {
 
+        QDataStream in(dataBlock, QIODevice::ReadOnly);
+        qint8 roleId; // TODO: check the actual size being writted for this int
+        in >> roleId;
+
+        qDebug() << "ClientNetworkHandler::Ready read Login, read role id: " << roleId;
+
         if (response.responseCode < 1) {
+            qDebug() << "ClientNetworkHandler::Login failed for request "
+                     << response.requestId;
             emit loginFailed(response.requestId);
             loggedIn = false;
         } else {
-            emit loginSuccessful(response.requestId);
+            qDebug() << "ClientNetworkHandler::Login successful for request "
+                     << response.requestId;
+            emit loginSuccessful(response.requestId, (Role)roleId);
             loggedIn = true;
         }
 
-        qDebug() << "Login successful for request " << response.requestId;
         break;
     }
 

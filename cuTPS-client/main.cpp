@@ -1,6 +1,5 @@
-#include "Login.h"
 #include "ClientNetworkHandler.h"
-#include "ContentManagementInterface.h"
+#include "LoginControl.h"
 #include <QApplication>
 
 
@@ -16,8 +15,9 @@ int main(int argc, char *argv[])
     QHostAddress addr(QHostAddress::LocalHost);
     network.connectToServer(addr, TPSConstants::PORT);
 
-    Login loginWindow(0, &network);
-    loginWindow.show();
+    LoginControl loginCtrl(&network);
+
+    loginCtrl.startSession();
 
     return a.exec();
 }

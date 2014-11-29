@@ -8,13 +8,18 @@
 #define LOGINCONTROL_H
 
 #include "Utils.h"
+#include "Login.h"
 #include "ClientNetworkHandler.h"
+#include "ContentManagementInterface.h"
 
 #include <QObject>
 
-class LoginControl {
-
+class LoginControl : public QObject
+{
     private:
+        Q_OBJECT
+        Login *loginWin;
+        ContentManagementInterface *cmIF;
         ClientNetworkHandler *network;
 
     public:
@@ -23,6 +28,11 @@ class LoginControl {
 
         // Request a login for this user
         void login(QUuid&, UserCredentials&);
+        void startSession();
+
+    private slots:
+        void loginSuccessful(QUuid, Role);
+        void loginFailed(QUuid);
 };
 
 #endif // LOGINCONTROL_H

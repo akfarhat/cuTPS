@@ -2,20 +2,17 @@
 #include "ui_Login.h"
 #include "Utils.h"
 #include "LoginControl.h"
-#include "ContentManagementInterface.h"
-#include "ui_ContentManagementInferface.h"
 
 #include <QDebug>
 
-Login::Login(QWidget *parent, ClientNetworkHandler *net) :
+Login::Login(QWidget *parent, ClientNetworkHandler *net, LoginControl *loginC) :
     QDialog(parent),
     ui(new Ui::Login),
     network(net)
 {
     ui->setupUi(this);
 
-    connect(network, SIGNAL(loginSuccessful(QUuid)), this, SLOT(loginSuccessful(QUuid)));
-    connect(network, SIGNAL(loginFailed(QUuid)), this, SLOT(loginFailed(QUuid)));
+    loginCtrl = loginC;
 }
 
 Login::~Login()
@@ -35,17 +32,9 @@ void Login::on_loginButton_clicked()
     SessionCredentials sessCreds;
     sessCreds.sessionID = 0;
 
-    LoginControl *loginCtrl = new LoginControl(network);
-
     QUuid requestId;
 
     loginCtrl->login(requestId, userCreds);
-
-    // TODO: if login was successful, create a Menu for the
-    // correct user type, give the MenuWindow a new instance
-    // of the subset network handler that references this one's.
-
-    delete loginCtrl;
 }
 
 void Login::on_cancelButton_clicked()
@@ -55,24 +44,7 @@ void Login::on_cancelButton_clicked()
     this->close();
 }
 
-void Login::loginSuccessful(QUuid requestId) {
-    qDebug() << "Login::successfulLogin for: " << requestId;
-
-    ContentManagementInterface cmInterface;
-    cmInterface.show();
-
-    qDebug() << "Login::finished creating cmInterface";
-
-    //ui->setupUi(&cmInterface);
-
-    qDebug() << "Login::finished setting up new UI";
-
+void Login::clearFields() {
     ui->usernameField->clear();
     ui->passwordField->clear();
-
-    qDebug() << "Login::cleared fields";
-}
-
-void Login::loginFailed(QUuid requestId) {
-    qDebug() << "Login::failedLogin for: " << requestId;
 }

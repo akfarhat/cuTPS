@@ -144,6 +144,7 @@ void TPSClient::readyRead()
 void TPSClient::taskResult(int code, QByteArray* response)
 {
     qDebug() << "Task returned with code: " << code;
+
     socket->write(*response);
 }
 

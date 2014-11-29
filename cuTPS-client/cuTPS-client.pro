@@ -23,7 +23,9 @@ SOURCES += main.cpp \
     ViewRequiredBooksControl.cpp \
     LoginControl.cpp \
     Login.cpp \
-    ContentManagementInterface.cpp
+    ContentManagementInterface.cpp \
+    ManageContentListWindow.cpp \
+    ManageContentControl.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -36,12 +38,15 @@ HEADERS  += \
     ViewRequiredBooksControl.h \
     LoginControl.h \
     Login.h \
-    ContentManagementInterface.h
+    ContentManagementInterface.h \
+    ManageContentListWindow.h \
+    ManageContentControl.h
 
 FORMS    += \
     Tests.ui \
     Login.ui \
-    ContentManagementInterface.ui
+    ContentManagementInterface.ui \
+    ManageContentListWindow.ui
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++

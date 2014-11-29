@@ -3,10 +3,13 @@
 
 #include <QDebug>
 
-ContentManagementInterface::ContentManagementInterface(QWidget *parent) :
+ContentManagementInterface::ContentManagementInterface(QWidget *parent,
+                                                       ClientNetworkHandler *net) :
     QDialog(parent),
+    network(net),
     ui(new Ui::ContentManagementInterface)
 {
+    qDebug() << "ContentManagementInterface::CTOR";
     ui->setupUi(this);
 }
 
@@ -15,17 +18,27 @@ ContentManagementInterface::~ContentManagementInterface()
     delete ui;
 }
 
-void ContentManagementInterface::on_addCourseButton_clicked()
-{
-    qDebug() << "ContentManagementInterface::addCourseButton";
-}
-
-void ContentManagementInterface::on_modifyCourseButton_clicked()
-{
-    qDebug() << "ContentManagementInterface::modifyCourseButton";
-}
-
 void ContentManagementInterface::on_manageContentButton_clicked()
 {
     qDebug() << "ContentManagementInterface::ManageContent";
+
+    // Create the control class for the management subsystem
+    contentManagementCtrl = new ManageContentControl(this);
+
+    // Hide this more general window for now
+    this->hide();
+}
+
+void ContentManagementInterface::on_manageCoursesButton_clicked()
+{
+    qDebug() << "ContentManagementInterface::ManageCourses";
+}
+
+void ContentManagementInterface::navigateBack() {
+    // Handles signals from lower back button on
+    // management windows.
+
+    delete contentManagementCtrl;
+
+    this->show();
 }

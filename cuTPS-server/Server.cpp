@@ -82,7 +82,39 @@ ServerResponse Server::closeSession(QUuid sessionID)
     return response;
 }
 
-ServerResponse Server::authenticateUser(QUuid sessionID, UserCredentials creds)
+// TODO: This is dumb. We should add a "type" attribute to
+// the User table and get rid of this function, since the
+// authenticateUser can select the attribute.
+Role Server::getUserRole(QString &username)
+{
+    QSqlQuery query;
+    bool result;
+
+    result = dbManager->runQuery("SELECT * FROM Student s JOIN User u ON (u.id=s.user_id) "
+                                 "WHERE u.username = \"" + username + "\";",
+                                 &query);
+    if (result)
+        if (query.first())
+            return Role::Student;
+
+    result = dbManager->runQuery("SELECT * FROM ContentManager cm JOIN User u ON (u.id=cm.user_id) "
+                                 "WHERE u.username = \"" + username + "\";",
+                                 &query);
+    if (result)
+        if (query.first())
+            return Role::ContentManager;
+
+    result = dbManager->runQuery("SELECT * FROM Administrator a JOIN User u ON (u.id=a.user_id) "
+                                 "WHERE u.username = \"" + username + "\";",
+                                 &query);
+    if (result)
+        if (query.first())
+            return Role::Administrator;
+
+    return Role::None;
+}
+
+ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCredentials creds)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -96,6 +128,8 @@ ServerResponse Server::authenticateUser(QUuid sessionID, UserCredentials creds)
         if (query.first()) {
             response.code = Success;
             response.message = "";
+
+            userRole = getUserRole(creds.username);
         }
         else {
             response.code = Fail;
