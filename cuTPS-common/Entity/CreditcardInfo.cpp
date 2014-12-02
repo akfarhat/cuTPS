@@ -1,20 +1,15 @@
 #include "CreditcardInfo.h"
+#include "Defines.h"
+
+using namespace TPSConstants;
 
 CreditCardInfo::CreditCardInfo(QString name, QString email, QString addr, QString pnumber,
-                               QString ctype, QString cnumber, QString expiry, QString sCode)
+                               QString cholder, QString cnumber, QString expiry, QString sCode)
                                : BillingInfo(name, email, addr, pnumber) {
-    type = ctype;
+    cardholder = cholder;
     number = cnumber;
     expiryDate = expiry;
     securityCode = sCode;
-}
-
-QString CreditCardInfo::getCardType() {
-    return type;
-}
-
-void CreditCardInfo::setCardType(QString newCardType) {
-    type = newCardType;
 }
 
 QString CreditCardInfo::getCardNumber() {
@@ -33,8 +28,18 @@ void CreditCardInfo::setExpiry(QString newExpiry) {
     expiryDate = newExpiry;
 }
 
-QString CreditCardInfo::getPaymentDetails() {
-    return QString( type + ": " + billingName + "|"
-                  + number + "|" + securityCode + "|"
-                  + expiryDate );
+QString CreditCardInfo::getPaymentDetails() const {
+    QString separator = QString();
+    separator += STRSEP;
+
+    QString paymentStr = QString("%1|%2|%3|%4|%5|%6|%7|%8")
+            .arg(number, expiryDate, securityCode,
+                 cardholder, billingName, billingAddress,
+                 emailAddress, phoneNumber);
+    return paymentStr;
+}
+
+CreditCardInfo* CreditCardInfo::clone() const
+{
+    return new CreditCardInfo(*this);
 }

@@ -12,6 +12,15 @@
 
 namespace TPSConstants {
 
+static const QString PREF_DB_PATH_SEC = "Database/Database_Path";
+static const char STRSEP = ((char)007); // beep sound :)
+}
+
+namespace TPSNetProtocolDefs {
+
+static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
+static const int PORT = 10001;
+
 enum InvocationDescriptor {
     Login,
     GetRequiredBooks,
@@ -20,30 +29,6 @@ enum InvocationDescriptor {
     AddCourse,
     AddBook,
     Goodbye
-};
-
-static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
-static const int PORT = 10001;
-
-static const QString PREF_DB_PATH_SEC = "Database/Database_Path";
-
-}
-
-namespace TPSNetProtocol {
-
-struct NetRequest {
-    TPSConstants::InvocationDescriptor invocation;
-    QUuid requestId;
-    QByteArray* data;
-};
-
-struct NetResponse {
-    qint16 blockSize;
-    TPSConstants::InvocationDescriptor invocation;
-    QUuid requestId;
-    QByteArray* data;
-    QUuid sessionId;
-    qint8 responseCode;
 };
 
 }

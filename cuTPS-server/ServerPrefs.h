@@ -3,13 +3,10 @@
 
 #include <QString>
 
-class TPSServerPrefs
+class ServerPrefs
 {
-
-
-
 public:
-    TPSServerPrefs();
+    ServerPrefs();
 
     static QString GetDbPath();
     static QString GetServerAddr();

@@ -19,15 +19,15 @@
 #include <QThreadPool>
 #include <QUuid>
 
-#include "taskhandler/TPSWorkerTask.h"
+#include <ClientTaskHandling/WorkerTask.h>
 #include "Server.h"
 #include "Entity/User.h"
 
-class TPSClient : public QObject
+class NetClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit TPSClient(QObject *parent = 0);
+    explicit NetClient(QObject *parent = 0);
     void setSocket(int sockdescriptor);
     bool isConnected();
 
@@ -35,7 +35,7 @@ public:
 
 signals:
     // Event emitted when the client connection is closed
-    void clientDisconnected(TPSClient*);
+    void clientDisconnected(NetClient*);
 
 public slots:
     // Event handlers for events emitted by the TCP socket object

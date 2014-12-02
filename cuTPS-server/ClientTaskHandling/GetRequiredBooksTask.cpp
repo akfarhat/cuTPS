@@ -1,14 +1,14 @@
-#include "TPSGetRequiredBooksTask.h"
+#include "GetRequiredBooksTask.h"
 #include "TPSNetUtils.h"
 
 #include <QDebug>
 
-TPSGetRequiredBooksTask::TPSGetRequiredBooksTask(Server* srv)
-    : TPSWorkerTask(srv)
+GetRequiredBooksTask::GetRequiredBooksTask(Server* srv)
+    : WorkerTask(srv)
 {
 }
 
-void TPSGetRequiredBooksTask::run()
+void GetRequiredBooksTask::run()
 {
     qDebug() << "GetRequiredBooks task was run";
     qDebug() << "Doing job for session: " << sessionId

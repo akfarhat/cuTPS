@@ -1,14 +1,14 @@
-#include "TPSAddCourseTask.h"
+#include "AddCourseTask.h"
 #include "TPSNetUtils.h"
 
 #include <QDebug>
 
-TPSAddCourseTask::TPSAddCourseTask(Server* srv)
-    : TPSWorkerTask(srv)
+AddCourseTask::AddCourseTask(Server* srv)
+    : WorkerTask(srv)
 {
 }
 
-void TPSAddCourseTask::run()
+void AddCourseTask::run()
 {
     qDebug() << "Add course task was run";
     qDebug() << "Doing job for session: " << sessionId

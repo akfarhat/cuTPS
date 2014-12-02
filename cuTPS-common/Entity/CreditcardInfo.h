@@ -8,30 +8,35 @@
 #ifndef CREDITCARDINFO_H
 #define CREDITCARDINFO_H
 
+#include <memory>
 #include <QString>
+
 #include "BillingInfo.h"
 
-class CreditCardInfo : public BillingInfo {
+class CreditCardInfo : public BillingInfo
+{
+public:
+    CreditCardInfo(QString name, QString email, QString addr, QString pnumber,
+                   QString cholder, QString cnumber, QString expiry, QString sCode);
+    virtual inline ~CreditCardInfo() {}
+    QString getCardholderName();
+    void setCardholder(QString);
+    QString getCardNumber();
+    void setCardNumber(QString);
+    QString getExpiry();
+    void setExpiry(QString);
+    QString getSecurityCode();
+    void setSecurityCode(QString);
 
-    private:
-        QString type;
-        QString number;
-        QString expiryDate;
-        QString securityCode;
+    virtual QString getPaymentDetails() const;
+    virtual CreditCardInfo* clone() const;
 
-    public:
-        CreditCardInfo(QString name, QString email, QString addr, QString pnumber,
-                       QString ctype, QString cnumber, QString expiry, QString sCode);
-
-        QString getCardType();
-        void setCardType(QString);
-        QString getCardNumber();
-        void setCardNumber(QString);
-        QString getExpiry();
-        void setExpiry(QString);
-
-        virtual QString getPaymentDetails();
-
+private:
+    // QString type; >> no need; it is very easy to determine card type by its number
+    QString cardholder; // this might be different from name in BillingInfo.
+    QString number;
+    QString expiryDate; // TODO: make it month+year pair
+    QString securityCode;
 };
 
 #endif // CREDITCARDINFO_H

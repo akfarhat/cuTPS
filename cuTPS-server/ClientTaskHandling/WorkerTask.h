@@ -9,8 +9,8 @@
 //     handled by the TPSClient that instantiated this object
 
 
-#ifndef TPSWORKERTASK_H
-#define TPSWORKERTASK_H
+#ifndef WORKERTASK_H
+#define WORKERTASK_H
 
 #include <QRunnable>
 #include <QObject> // for singals+slots
@@ -20,15 +20,15 @@
 #include <QDataStream>
 #include <QByteArray>
 
+#include <ServerNetworking/NetClient.h>
 #include "Defines.h"
-#include "TPSClient.h"
 #include "Server.h"
 
-class TPSWorkerTask : public QObject, public QRunnable
+class WorkerTask : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    TPSWorkerTask(Server* srv);
+    WorkerTask(Server* srv);
 
     void setSessionId(QUuid sessionId);
     void setRequest(TPSNetProtocol::NetRequest& request);
@@ -60,4 +60,4 @@ protected:
     QByteArray *oblock;
 };
 
-#endif // TPSWORKERTASK_H
+#endif // WORKERTASK_H

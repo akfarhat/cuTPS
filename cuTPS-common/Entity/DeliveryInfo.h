@@ -10,16 +10,22 @@
 
 #include <QString>
 
-class DeliveryInfo {
-    private:
-        QString emailAddress;
+class DeliveryInfo
+{
+private:
+    QString emailAddress;
 
-    public:
-        DeliveryInfo(QString);
-        ~DeliveryInfo();
-        QString getEmailAddress();
-        void setEmailAddress(QString);
+public:
+    DeliveryInfo();
+    DeliveryInfo(QString);
+    ~DeliveryInfo();
+    QString getEmailAddress();
+    void setEmailAddress(QString);
 
+
+    // Serialization routines
+    friend QDataStream& operator<<(QDataStream& os, const DeliveryInfo& d); // output
+    friend QDataStream& operator>>(QDataStream& is, DeliveryInfo& d); // input
 };
 
 #endif // DELIVERYINFO_H

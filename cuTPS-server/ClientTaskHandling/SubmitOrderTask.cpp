@@ -1,14 +1,14 @@
-#include "TPSSubmitOrderTask.h"
+#include "SubmitOrderTask.h"
 #include "Entity/Order.h"
 
 #include <QDebug>
 
-TPSSubmitOrderTask::TPSSubmitOrderTask(Server* srv)
-    : TPSWorkerTask(srv)
+SubmitOrderTask::SubmitOrderTask(Server* srv)
+    : WorkerTask(srv)
 {
 }
 
-void TPSSubmitOrderTask::run()
+void SubmitOrderTask::run()
 {
     qDebug() << "Submit order task was run";
     qDebug() << "Doing job for session: " << sessionId

@@ -7,32 +7,34 @@
 #ifndef BILLINGINFO_H
 #define BILLINGINFO_H
 
+#include <memory>
 #include <QString>
 
-class BillingInfo {
+class BillingInfo
+{
+public:
+    BillingInfo(QString name, QString email, QString addr, QString number);
+    virtual inline ~BillingInfo() {}
+    // This string will represent the information required to
+    // charge this user.
+    virtual QString getPaymentDetails() const = 0;
+    virtual BillingInfo* clone() const  = 0;
 
-    public:
-        BillingInfo(QString name, QString email, QString addr, QString number);
+    // Setters and getters
+    void setEmail(QString email);
+    void setBillingAddress(QString addr);
+    void setPhoneNumber(QString number);
+    void setName(QString name);
+    QString getEmail();
+    QString getBillingAddress(); // TODO: Make city, state/prov, postal code separate
+    QString getPhoneNumber();
+    QString getName();
 
-        // This string will represent the information required to
-        // charge this user.
-        virtual QString getPaymentDetails() = 0;
-
-        // Setters and getters
-        void setEmail(QString email);
-        void setBillingAddress(QString addr);
-        void setPhoneNumber(QString number);
-        void setName(QString name);
-        QString getEmail();
-        QString getBillingAddress();
-        QString getPhoneNumber();
-        QString getName();
-
-    protected:
-        QString billingName;
-        QString emailAddress;
-        QString billingAddress;
-        QString phoneNumber;
+protected:
+    QString billingName;
+    QString emailAddress;
+    QString billingAddress;
+    QString phoneNumber;
 };
 
 #endif // BILLINGINFO_H

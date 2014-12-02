@@ -15,32 +15,44 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    TPSServerAsync.cpp \
-    TPSClient.cpp \
     DatabaseManager.cpp \
     Server.cpp \
-    taskhandler/TPSAddBookTask.cpp \
-    taskhandler/TPSAddCourseTask.cpp \
-    taskhandler/TPSGetBookDetailsTask.cpp \
-    taskhandler/TPSGetRequiredBooksTask.cpp \
-    taskhandler/TPSLoginTask.cpp \
-    taskhandler/TPSSubmitOrderTask.cpp \
-    taskhandler/TPSWorkerTask.cpp \
-    TPSServerPrefs.cpp
+    ClientTaskHandling/AddBookTask.cpp \
+    ClientTaskHandling/AddCourseTask.cpp \
+    ClientTaskHandling/GetBookDetailsTask.cpp \
+    ClientTaskHandling/GetRequiredBooksTask.cpp \
+    ClientTaskHandling/LoginTask.cpp \
+    ClientTaskHandling/SubmitOrderTask.cpp \
+    ClientTaskHandling/WorkerTask.cpp \
+    ServerNetworking/ServerAsync.cpp \
+    ServerNetworking/NetClient.cpp \
+    ServerPrefs.cpp \
+    ClientTaskHandling/TaskAbsFactory.cpp \
+    ClientTaskHandling/LoginTaskFactory.cpp \
+    ClientTaskHandling/ContentMgrTaskFactory.cpp \
+    ClientTaskHandling/UserTaskFactory.cpp \
+    ClientTaskHandling/AdminTaskFactory.cpp \
+    ClientTaskHandling/GenerateReportTask.cpp
 
 HEADERS += \
-    TPSServerAsync.h \
-    TPSClient.h \
     DatabaseManager.h \
     Server.h \
-    taskhandler/TPSAddBookTask.h \
-    taskhandler/TPSAddCourseTask.h \
-    taskhandler/TPSGetBookDetailsTask.h \
-    taskhandler/TPSGetRequiredBooksTask.h \
-    taskhandler/TPSLoginTask.h \
-    taskhandler/TPSSubmitOrderTask.h \
-    taskhandler/TPSWorkerTask.h \
-    TPSServerPrefs.h
+    ClientTaskHandling/AddBookTask.h \
+    ClientTaskHandling/AddCourseTask.h \
+    ClientTaskHandling/GetBookDetailsTask.h \
+    ClientTaskHandling/GetRequiredBooksTask.h \
+    ClientTaskHandling/LoginTask.h \
+    ClientTaskHandling/SubmitOrderTask.h \
+    ClientTaskHandling/WorkerTask.h \
+    ServerNetworking/ServerAsync.h \
+    ServerNetworking/NetClient.h \
+    ServerPrefs.h \
+    ClientTaskHandling/TaskAbsFactory.h \
+    ClientTaskHandling/LoginTaskFactory.h \
+    ClientTaskHandling/ContentMgrTaskFactory.h \
+    ClientTaskHandling/UserTaskFactory.h \
+    ClientTaskHandling/AdminTaskFactory.h \
+    ClientTaskHandling/GenerateReportTask.h
 
 OTHER_FILES += \
     db/cutpsd.db

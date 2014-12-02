@@ -2,36 +2,36 @@
 
 #include "TPSNetUtils.h"
 
-#include "TPSWorkerTask.h"
+#include "WorkerTask.h"
 #include "Defines.h"
-#include "TPSClient.h"
+#include <ServerNetworking/NetClient.h>
 
-TPSWorkerTask::TPSWorkerTask(Server* srv)
+WorkerTask::WorkerTask(Server* srv)
 {
     server = srv;
 }
 
-void TPSWorkerTask::setSessionId(QUuid sessionId)
+void WorkerTask::setSessionId(QUuid sessionId)
 {
     this->sessionId = sessionId;
 }
 
-void TPSWorkerTask::setRequest(TPSNetProtocol::NetRequest& request)
+void WorkerTask::setRequest(TPSNetProtocol::NetRequest& request)
 {
     this->request = request;
 }
 
-void TPSWorkerTask::setInputDataBlock(QByteArray* idata)
+void WorkerTask::setInputDataBlock(QByteArray* idata)
 {
     this->iblock = idata;
 }
 
-void TPSWorkerTask::setResponseDataBlock(QByteArray* odata)
+void WorkerTask::setResponseDataBlock(QByteArray* odata)
 {
     this->oblock = odata;
 }
 
-void TPSWorkerTask::setupResponse(TPSNetProtocol::NetResponse& response,
+void WorkerTask::setupResponse(TPSNetProtocol::NetResponse& response,
                                   qint8 code,
                                   QByteArray* dataBlock,
                                   QDataStream* outStream)

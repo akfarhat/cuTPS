@@ -1,14 +1,14 @@
-#include "TPSLoginTask.h"
+#include "LoginTask.h"
 
 #include <QDebug>
 #include <QString>
 
-TPSLoginTask::TPSLoginTask(Server* srv)
-    : TPSWorkerTask(srv)
+LoginTask::LoginTask(Server* srv)
+    : WorkerTask(srv)
 {
 }
 
-void TPSLoginTask::run()
+void LoginTask::run()
 {
     qDebug() << "Login task ruN!";
     qDebug() << "Doing job for session: " << sessionId

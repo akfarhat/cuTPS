@@ -14,7 +14,7 @@ HEADERS += \
     Entity/Chapter.h \
     Entity/ContentManager.h \
     Entity/Course.h \
-    Entity/CreditcardInfo.h \
+    Entity/CreditCardInfo.h \
     Entity/DeliveryInfo.h \
     Entity/Order.h \
     Entity/Section.h \
@@ -25,7 +25,9 @@ HEADERS += \
     Entity/User.h \
     ErrorCodes.h \
     Defines.h \
-    TPSNetUtils.h
+    Entity/NetMessage.h \
+    Entity/NetRequest.h \
+    Entity/NetResponse.h
 
 SOURCES += \
     Entity/BillingInfo.cpp \
@@ -41,7 +43,9 @@ SOURCES += \
     Entity/Student.cpp \
     Entity/Textbook.cpp \
     Entity/User.cpp \
-    TPSNetUtils.cpp
+    Entity/NetMessage.cpp \
+    Entity/NetRequest.cpp \
+    Entity/NetResponse.cpp
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++

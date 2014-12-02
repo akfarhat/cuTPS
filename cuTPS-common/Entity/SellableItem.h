@@ -8,34 +8,38 @@
 #ifndef SELLABLEITEM_H
 #define SELLABLEITEM_H
 
-#include<QString>
+#include <QString>
+#include <QDataStream>
 
-class SellableItem {
+class SellableItem
+{
+public:
+    SellableItem();
+    SellableItem(int, QString, int, bool);
+    SellableItem(QString, int);
+    ~SellableItem();
 
-    private:
-        int id;
-        QString name;
-        int priceCents;
-        bool availableForSale;
+    void setId(const int);
+    void setName(const QString);
+    void setPriceCents(const int);
+    void setAvailability(const bool);
 
+    int getId() const;
+    QString getName() const;
+    int getPriceCents() const;
+    bool getAvailability() const;
 
-    public:
-        SellableItem();
-        SellableItem(int, QString, int, bool);
-        SellableItem(QString, int);
-        ~SellableItem();
+    virtual QString getDetails() const = 0;
 
-        void setId(const int);
-        void setName(const QString);
-        void setPriceCents(const int);
-        void setAvailability(const bool);
+    // Serialization routines
+    friend QDataStream& operator<< (QDataStream& os, const SellableItem& i); // output
+    friend QDataStream& operator>> (QDataStream& is, SellableItem& i); // input
 
-        int getId() const;
-        QString getName() const;
-        int getPriceCents() const;
-        bool getAvailability() const;
-
-        virtual QString getDetails() = 0;
+protected:
+    int id;
+    QString name;
+    int priceCents;
+    bool availableForSale;
 };
 
 #endif // SELLABLEITEM_H

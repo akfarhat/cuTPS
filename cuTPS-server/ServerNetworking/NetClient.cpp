@@ -1,5 +1,5 @@
-#include "TPSClient.h"
-#include "TPSServerAsync.h"
+#include "NetClient.h"
+#include "ServerAsync.h"
 #include "Utils.h"
 #include "TPSNetUtils.h"
 #include "Defines.h"
@@ -7,23 +7,23 @@
 
 #include <QByteArray>
 
-#include "taskhandler/TPSAddBookTask.h"
-#include "taskhandler/TPSLoginTask.h"
-#include "taskhandler/TPSAddCourseTask.h"
-#include "taskhandler/TPSGetBookDetailsTask.h"
-#include "taskhandler/TPSGetRequiredBooksTask.h"
-#include "taskhandler/TPSSubmitOrderTask.h"
+#include "ClientTaskHandling/AddBookTask.h"
+#include "ClientTaskHandling/LoginTask.h"
+#include "ClientTaskHandling/AddCourseTask.h"
+#include "ClientTaskHandling/GetBookDetailsTask.h"
+#include "ClientTaskHandling/GetRequiredBooksTask.h"
+#include "ClientTaskHandling/SubmitOrderTask.h"
 
-TPSClient::TPSClient(QObject *parent) :
+NetClient::NetClient(QObject *parent) :
     QObject(parent)
 {
     if (!parent) return; // TODO: rework. Throw an exception if not an instance of TPSServerAsync
 
-    server = ((TPSServerAsync*) parent)->getServer();
+    server = ((ServerAsync*) parent)->getServer();
     blockSize = 0;
 }
 
-void TPSClient::setSocket(int sockdescriptor)
+void NetClient::setSocket(int sockdescriptor)
 {
     socket = new QTcpSocket(this);
 
@@ -49,19 +49,19 @@ void TPSClient::setSocket(int sockdescriptor)
     qDebug() << "New Session. ID=" << sessionId;
 }
 
-void TPSClient::connected()
+void NetClient::connected()
 {
     qDebug() << "client connected event";
     // for some reason this func is never getting called
 }
 
-void TPSClient::disconnected()
+void NetClient::disconnected()
 {
     server->closeSession(sessionId);
     emit clientDisconnected(this);
 }
 
-void TPSClient::readyRead()
+void NetClient::readyRead()
 {
     QDataStream in(socket);
     in.setVersion(TPSConstants::PROTOCOL_VER);
@@ -95,7 +95,7 @@ void TPSClient::readyRead()
 
     // Parse data
 
-    TPSWorkerTask* task;
+    WorkerTask* task;
 
     QByteArray* responseBlock = new QByteArray(); // TODO: manage memory
     QDataStream out(responseBlock, QIODevice::WriteOnly);
@@ -104,29 +104,29 @@ void TPSClient::readyRead()
     switch (request.invocation) {
 
     case TPSConstants::AddBook:
-        task = new TPSAddBookTask(server);
+        task = new AddBookTask(server);
         break;
     case TPSConstants::AddCourse:
-        task = new TPSAddCourseTask(server);
+        task = new AddCourseTask(server);
         break;
     case TPSConstants::GetBookDetails:
-        task = new TPSGetBookDetailsTask(server);
+        task = new GetBookDetailsTask(server);
         break;
     case TPSConstants::GetRequiredBooks:
-        task = new TPSGetRequiredBooksTask(server);
+        task = new GetRequiredBooksTask(server);
         break;
     case TPSConstants::Login:
-        task = new TPSLoginTask(server);
+        task = new LoginTask(server);
         break;
     case TPSConstants::SubmitOrder:
-        task = new TPSSubmitOrderTask(server);
+        task = new SubmitOrderTask(server);
         break;
     case TPSConstants::Goodbye:
     default:
         // kill the client
         server->closeSession(sessionId);
         emit clientDisconnected(this);
-        break;
+        return;
     }
 
     task->setInputDataBlock(dataBlock);
@@ -141,18 +141,18 @@ void TPSClient::readyRead()
     blockSize = 0;
 }
 
-void TPSClient::taskResult(int code, QByteArray* response)
+void NetClient::taskResult(int code, QByteArray* response)
 {
     qDebug() << "Task returned with code: " << code;
     socket->write(*response);
 }
 
-QUuid TPSClient::getSessionId() const
+QUuid NetClient::getSessionId() const
 {
     return sessionId;
 }
 
-bool TPSClient::isConnected()
+bool NetClient::isConnected()
 {
     return !(sessionId.isNull());
 }

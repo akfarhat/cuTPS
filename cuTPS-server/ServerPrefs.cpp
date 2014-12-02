@@ -1,14 +1,14 @@
-#include "TPSServerPrefs.h"
+#include "ServerPrefs.h"
 #include "Defines.h"
 
 #include <QSettings>
 #include <QDir>
 
-TPSServerPrefs::TPSServerPrefs()
+ServerPrefs::ServerPrefs()
 {
 }
 
-QString TPSServerPrefs::GetDbPath()
+QString ServerPrefs::GetDbPath()
 {
     QSettings settings("cutpsd.conf", QSettings::IniFormat);
     QString dbPath = settings.value(TPSConstants::PREF_DB_PATH_SEC, QDir::currentPath() + QString("/db/cutpsd.db")).toString();

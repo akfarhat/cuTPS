@@ -13,14 +13,14 @@
 #include <QAbstractSocket>
 #include <QDebug>
 
-#include "TPSClient.h"
+#include "NetClient.h"
 #include "Server.h"
 
-class TPSServerAsync : public QTcpServer
+class ServerAsync : public QTcpServer
 {
     Q_OBJECT
 public:
-    explicit TPSServerAsync(QObject *parent = 0);
+    explicit ServerAsync(QObject *parent = 0);
     void StartServer();
 
     Server *getServer() const;
@@ -38,7 +38,7 @@ signals:
     void serverFailure(); // not implemented
 
 public slots:
-    void clientDisconnected(TPSClient*);
+    void clientDisconnected(NetClient*);
 
 private:
     Server *server;
