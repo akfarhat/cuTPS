@@ -31,6 +31,7 @@ class Chapter: public SellableItem {
         void setChapterNumber(int);
 
         QString getDetails();
+        QString getTitle();
 };
 
 #endif // CHAPTER_H

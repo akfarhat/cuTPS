@@ -41,3 +41,7 @@ QString Chapter::getDetails() {
     details += (this->getAvailability() == true) ? "yes" : "no";
     return details;
 }
+
+QString Chapter::getTitle() {
+    return "Chapter " + QString::number(this->getChapterNumber()) + ": " + this->getName();
+}

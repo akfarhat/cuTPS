@@ -24,6 +24,7 @@ class Textbook: public SellableItem {
         void setISBN(const QString);
 
         QString getDetails();
+        QString getTitle();
 };
 
 #endif // TEXTBOOK_H

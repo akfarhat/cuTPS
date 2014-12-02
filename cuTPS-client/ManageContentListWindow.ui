@@ -20,18 +20,17 @@
       <x>300</x>
       <y>50</y>
       <width>341</width>
-      <height>391</height>
+      <height>401</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QTableView" name="metadataView">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>281</width>
-      <height>391</height>
-     </rect>
+    <property name="cursor" stdset="0">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
+    <property name="selectionRectVisible">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="backButton">
@@ -45,6 +44,16 @@
     </property>
     <property name="text">
      <string>Back</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="metadataView">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>281</width>
+      <height>401</height>
+     </rect>
     </property>
    </widget>
   </widget>

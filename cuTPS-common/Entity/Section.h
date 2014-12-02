@@ -29,6 +29,7 @@ class Section: public SellableItem {
         void setSectionNumber(int);
 
         QString getDetails();
+        QString getTitle();
 };
 
 #endif // SECTION_H

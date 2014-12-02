@@ -23,7 +23,7 @@ void ContentManagementInterface::on_manageContentButton_clicked()
     qDebug() << "ContentManagementInterface::ManageContent";
 
     // Create the control class for the management subsystem
-    contentManagementCtrl = new ManageContentControl(this);
+    contentManagementCtrl = new ManageContentControl(this, network);
 
     // Hide this more general window for now
     this->hide();

@@ -35,7 +35,10 @@ class SellableItem {
         int getPriceCents() const;
         bool getAvailability() const;
 
+        // Return the formatted details for the item
         virtual QString getDetails() = 0;
+        // Return the one-line list string
+        virtual QString getTitle() = 0;
 };
 
 #endif // SELLABLEITEM_H

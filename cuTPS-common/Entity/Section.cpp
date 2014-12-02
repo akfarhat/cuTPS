@@ -45,3 +45,8 @@ QString Section::getDetails() {
     details += (this->getAvailability() == true) ? "yes" : "no";
     return details;
 }
+
+QString Section::getTitle() {
+    return "Section " + QString::number(this->getSectionNumber())
+                      + ": " + this->getName();
+}

@@ -7,6 +7,9 @@
 //   small interface subsystem, since it will simply create
 //   the operation-specific controller and pass the control
 //   to it.
+// Traceability:
+//   ContentManagerMainMenuWindow
+//   in the ContentManagementInterface subsytem.
 
 #ifndef CONTENTMANAGEMENTINTERFACE_H
 #define CONTENTMANAGEMENTINTERFACE_H
@@ -38,10 +41,11 @@ private slots:
 
 private:
     Ui::ContentManagementInterface *ui;
-    ClientNetworkHandler *network;
-    ManageContentControl *contentManagementCtrl;
-    // TODO: add management control/network classes here.
 
+    // TODO: this network should be the new subset network handler for CM reqs
+    ClientNetworkHandler *network;
+
+    ManageContentControl *contentManagementCtrl;
 };
 
 #endif // CONTENTMANAGEMENTINTERFACE_H

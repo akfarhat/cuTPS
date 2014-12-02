@@ -30,9 +30,13 @@ QString Textbook::getDetails() {
     details += this->getName();
     details += "\nISBN: ";
     details += this->getISBN();
-    details += "\nPrice (in cents): ";
-    details += QString::number(this->getPriceCents());
+    details += "\nPrice: $";
+    details += QString::number(this->getPriceCents() / 100.00f);
     details += "\nAvailable: ";
     details += (this->getAvailability() == true) ? "yes" : "no";
     return details;
+}
+
+QString Textbook::getTitle() {
+    return this->getName() + " - " + this->getISBN();
 }

@@ -36,7 +36,11 @@ void LoginControl::loginSuccessful(QUuid requestId, Role userRole) {
     switch (userRole) {
 
         case Role::Student:
-            qDebug() << "TODO: handle student login";
+            qDebug() << "LoginControl::loginSuccessful creating studentInterface";
+
+            studentIF = new StudentMainMenuWindow();
+            studentIF->show();
+            loginWin->close();
             break;
 
         case Role::ContentManager:
