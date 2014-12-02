@@ -1,3 +1,11 @@
+// Class: ViewRequiredBooksOption
+// Type: Boundary
+// Description:
+//     this class provides student users with the option to
+//     view the books associated with the courses which they are enrolled in
+//
+// Traceability: ViewRequiredBooksOption class in the StudentInterface subsystem
+
 #ifndef VIEWREQUIREDBOOKSOPTION_H
 #define VIEWREQUIREDBOOKSOPTION_H
 

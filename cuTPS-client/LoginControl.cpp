@@ -38,7 +38,7 @@ void LoginControl::loginSuccessful(QUuid requestId, Role userRole) {
         case Role::Student:
             qDebug() << "LoginControl::loginSuccessful creating studentInterface";
 
-            studentIF = new StudentMainMenuWindow();
+            studentIF = new StudentMainMenuWindow(0, network);
             studentIF->show();
             loginWin->close();
             break;

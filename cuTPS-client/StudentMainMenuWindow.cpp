@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-StudentMainMenuWindow::StudentMainMenuWindow(QWidget *parent) : QDialog(parent), ui(new Ui::StudentMainMenuWindow) {
+StudentMainMenuWindow::StudentMainMenuWindow(QWidget *parent, ClientNetworkHandler *net) : QDialog(parent), ui(new Ui::StudentMainMenuWindow), network(net) {
     ui->setupUi(this);
 
     this->setWindowTitle("Carleton University Textbook Publishing System");
