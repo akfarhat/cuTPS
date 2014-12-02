@@ -11,6 +11,7 @@
 #include "Login.h"
 #include "ClientNetworkHandler.h"
 #include "ContentManagementInterface.h"
+#include "StudentMainMenuWindow.h"
 
 #include <QObject>
 
@@ -20,6 +21,7 @@ class LoginControl : public QObject
         Q_OBJECT
         Login *loginWin;
         ContentManagementInterface *cmIF;
+        StudentMainMenuWindow *studentIF;
         ClientNetworkHandler *network;
 
     public:

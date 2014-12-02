@@ -1,3 +1,10 @@
+// Class: ViewCartOption
+// Type: Boundary
+// Description:
+//     this class provides student users with the option to view/manage their cart
+//
+// Traceability: ViewCartOption class in the StudentInterface subsystem
+
 #ifndef VIEWCARTOPTION_H
 #define VIEWCARTOPTION_H
 

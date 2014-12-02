@@ -28,7 +28,8 @@ SOURCES += main.cpp \
     ManageContentControl.cpp \
     StudentMainMenuWindow.cpp \
     ViewCartOption.cpp \
-    ViewRequiredBooksOption.cpp
+    ViewRequiredBooksOption.cpp \
+    CartRequestsAPI.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -46,7 +47,8 @@ HEADERS  += \
     ManageContentControl.h \
     StudentMainMenuWindow.h \
     ViewCartOption.h \
-    ViewRequiredBooksOption.h
+    ViewRequiredBooksOption.h \
+    CartRequestsAPI.h
 
 FORMS    += \
     Tests.ui \
