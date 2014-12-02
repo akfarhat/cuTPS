@@ -11,7 +11,7 @@
 class TPSAddBookTask : public TPSWorkerTask
 {
 public:
-    TPSAddBookTask(Server* srv);
+    TPSAddBookTask(ServerAPI* srv);
     virtual void run();
 };
 

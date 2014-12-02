@@ -13,7 +13,7 @@
 class TPSSubmitOrderTask : public TPSWorkerTask
 {
 public:
-    TPSSubmitOrderTask(Server* srv);
+    TPSSubmitOrderTask(ServerAPI* srv);
     virtual void run();
 };
 

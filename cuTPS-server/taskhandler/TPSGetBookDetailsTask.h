@@ -12,7 +12,7 @@
 class TPSGetBookDetailsTask : public TPSWorkerTask
 {
 public:
-    TPSGetBookDetailsTask(Server* srv);
+    TPSGetBookDetailsTask(ServerAPI* srv);
     virtual void run();
 };
 

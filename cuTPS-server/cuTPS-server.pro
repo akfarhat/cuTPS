@@ -26,7 +26,10 @@ SOURCES += main.cpp \
     taskhandler/TPSLoginTask.cpp \
     taskhandler/TPSSubmitOrderTask.cpp \
     taskhandler/TPSWorkerTask.cpp \
-    TPSServerPrefs.cpp
+    TPSServerPrefs.cpp \
+    ServerAPI.cpp \
+    ../Storage.cpp \
+    Storage.cpp
 
 HEADERS += \
     TPSServerAsync.h \
@@ -40,7 +43,10 @@ HEADERS += \
     taskhandler/TPSLoginTask.h \
     taskhandler/TPSSubmitOrderTask.h \
     taskhandler/TPSWorkerTask.h \
-    TPSServerPrefs.h
+    TPSServerPrefs.h \
+    ServerAPI.h \
+    ../Storage.h \
+    Storage.h
 
 OTHER_FILES += \
     db/cutpsd.db

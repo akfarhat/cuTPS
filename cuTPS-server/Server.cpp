@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-Server::Server(QObject *parent) :
+ServerAPI::ServerAPI(QObject *parent) :
     QObject(parent)
 {
     dbManager = new DatabaseManager();
@@ -17,12 +17,12 @@ Server::Server(QObject *parent) :
 
 }
 
-Server::~Server()
+ServerAPI::~ServerAPI()
 {
     dbManager->closeDB();
 }
 
-bool Server::generateSessionID(QUuid& sessionID, QString& errorMessage)
+bool ServerAPI::generateSessionID(QUuid& sessionID, QString& errorMessage)
 {
     if (openSessions.size() >= MAX_SESSIONS) {
         errorMessage = "Exceeded maximum number of open sessions";
@@ -48,7 +48,7 @@ bool Server::generateSessionID(QUuid& sessionID, QString& errorMessage)
     }
 }
 
-ServerResponse Server::createSession()
+ServerResponse ServerAPI::createSession()
 {
     ServerResponse response;
     bool result = generateSessionID(response.sessionID, response.message);
@@ -63,7 +63,7 @@ ServerResponse Server::createSession()
     return response;
 }
 
-ServerResponse Server::closeSession(QUuid sessionID)
+ServerResponse ServerAPI::closeSession(QUuid sessionID)
 {
     ServerResponse response;
 
@@ -85,7 +85,7 @@ ServerResponse Server::closeSession(QUuid sessionID)
 // TODO: This is dumb. We should add a "type" attribute to
 // the User table and get rid of this function, since the
 // authenticateUser can select the attribute.
-Role Server::getUserRole(QString &username)
+Role ServerAPI::getUserRole(QString &username)
 {
     QSqlQuery query;
     bool result;
@@ -114,7 +114,7 @@ Role Server::getUserRole(QString &username)
     return Role::None;
 }
 
-ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCredentials creds)
+ServerResponse ServerAPI::authenticateUser(QUuid sessionID, Role &userRole, UserCredentials creds)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -144,7 +144,7 @@ ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCre
     return response;
 }
 
-ServerResponse Server::addCourse(QUuid sessionID, Course course)
+ServerResponse ServerAPI::addCourse(QUuid sessionID, Course course)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -202,7 +202,7 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
     return response;
 }
 
-ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
+ServerResponse ServerAPI::addTextbook(QUuid sessionID, Textbook textbook)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -253,7 +253,7 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
     return response;
 }
 
-ServerResponse Server::addChapter(QUuid sessionID, Chapter chapter)
+ServerResponse ServerAPI::addChapter(QUuid sessionID, Chapter chapter)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -282,7 +282,7 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter chapter)
     return response;
 }
 
-ServerResponse Server::addSection(QUuid sessionID, Section section)
+ServerResponse ServerAPI::addSection(QUuid sessionID, Section section)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -311,7 +311,7 @@ ServerResponse Server::addSection(QUuid sessionID, Section section)
     return response;
 }
 
-ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& username, QVector<int>* textbookIDs)
+ServerResponse ServerAPI::getRequiredTextbooks(QUuid sessionID,const QString& username, QVector<int>* textbookIDs)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -351,7 +351,7 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
     return response;
 }
 
-ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textbook** textbook)
+ServerResponse ServerAPI::getTextbookDetails(QUuid sessionID, int textbookID, Textbook** textbook)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -409,7 +409,7 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
     return response;
 }
 
-ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector<SellableItem*>* parts)
+ServerResponse ServerAPI::getTextbookParts(QUuid sessionID, int textbookID, QVector<SellableItem*>* parts)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -486,7 +486,7 @@ ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector
     return response;
 }
 
-bool Server::validateBillingInfo(BillingInfo *billingInfo)
+bool ServerAPI::validateBillingInfo(BillingInfo *billingInfo)
 {
     if (billingInfo == NULL)
         return false;
@@ -495,7 +495,7 @@ bool Server::validateBillingInfo(BillingInfo *billingInfo)
     return true;
 }
 
-bool Server::validateDeliveryInfo(DeliveryInfo *deliveryInfo)
+bool ServerAPI::validateDeliveryInfo(DeliveryInfo *deliveryInfo)
 {
     if (deliveryInfo == NULL)
         return false;
@@ -507,7 +507,7 @@ bool Server::validateDeliveryInfo(DeliveryInfo *deliveryInfo)
     return re.exactMatch(deliveryInfo->getEmailAddress());
 }
 
-bool Server::validateOrder(Order& order, QString *errorMessage)
+bool ServerAPI::validateOrder(Order& order, QString *errorMessage)
 {
     if (! validateBillingInfo(order.getBillingInfo())) {
         *errorMessage = QString("Invalid billing information");
@@ -527,7 +527,7 @@ bool Server::validateOrder(Order& order, QString *errorMessage)
     return true;
 }
 
-ServerResponse Server::submitOrder(QUuid sessionID, Order order)
+ServerResponse ServerAPI::submitOrder(QUuid sessionID, Order order)
 {
     ServerResponse response;
     response.sessionID = sessionID;

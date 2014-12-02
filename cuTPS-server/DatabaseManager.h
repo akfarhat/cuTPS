@@ -33,7 +33,7 @@ public:
     //     (QSqlQuery*) : The compiled and executed query objected being returned
     // Returns:
     //     (bool): true if the query was successful, false otherwise.
-    bool runQuery(const QString& queryString, QSqlQuery*);
+    bool runQuery(QSqlQuery&);
 
 private:
     QSqlDatabase db;

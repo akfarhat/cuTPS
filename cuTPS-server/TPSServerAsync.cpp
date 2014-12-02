@@ -17,7 +17,7 @@ void TPSServerAsync::StartServer()
     {
         qDebug() << " >> Server Started on port " << TPSConstants::PORT;
         // TODO: ensure that parent destroys its children
-        server = new Server(this);
+        server = new ServerAPI(this);
         emit serverStarted();
     }
     else
@@ -48,7 +48,7 @@ void TPSServerAsync::clientDisconnected(TPSClient *client)
     // delete client;
 }
 
-Server* TPSServerAsync::getServer() const
+ServerAPI* TPSServerAsync::getServer() const
 {
     return server;
 }

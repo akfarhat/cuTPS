@@ -12,7 +12,7 @@
 class TPSLoginTask : public TPSWorkerTask
 {
 public:
-    TPSLoginTask(Server* srv);
+    TPSLoginTask(ServerAPI* srv);
     virtual void run();
 };
 

@@ -13,7 +13,7 @@
 class TPSAddCourseTask : public TPSWorkerTask
 {
 public:
-    TPSAddCourseTask(Server* srv);
+    TPSAddCourseTask(ServerAPI* srv);
     virtual void run();
 
 };

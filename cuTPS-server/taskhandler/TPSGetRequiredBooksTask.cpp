@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-TPSGetRequiredBooksTask::TPSGetRequiredBooksTask(Server* srv)
+TPSGetRequiredBooksTask::TPSGetRequiredBooksTask(ServerAPI* srv)
     : TPSWorkerTask(srv)
 {
 }

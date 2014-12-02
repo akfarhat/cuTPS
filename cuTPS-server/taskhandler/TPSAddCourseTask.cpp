@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-TPSAddCourseTask::TPSAddCourseTask(Server* srv)
+TPSAddCourseTask::TPSAddCourseTask(ServerAPI* srv)
     : TPSWorkerTask(srv)
 {
 }

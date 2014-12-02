@@ -28,7 +28,7 @@ class TPSWorkerTask : public QObject, public QRunnable
 {
     Q_OBJECT
 public:
-    TPSWorkerTask(Server* srv);
+    TPSWorkerTask(ServerAPI* srv);
 
     void setSessionId(QUuid sessionId);
     void setRequest(TPSNetProtocol::NetRequest& request);
@@ -51,7 +51,7 @@ protected:
 
     // Reference to the server API for updating the system
     // model with each request
-    Server *server;
+    ServerAPI *server;
 
     // The request identifier
     TPSNetProtocol::NetRequest request;

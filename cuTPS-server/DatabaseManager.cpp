@@ -40,12 +40,10 @@ QSqlError DatabaseManager::getLastError()
     return db.lastError();
 }
 
-bool DatabaseManager::runQuery(const QString &queryString, QSqlQuery* returnQuery)
+bool DatabaseManager::runQuery(QSqlQuery& returnQuery)
 {
-    QSqlQuery query;
-    bool result = query.exec(queryString);
+    bool result = query.exec();
 
-    *returnQuery = query;
     return result;
 }
 

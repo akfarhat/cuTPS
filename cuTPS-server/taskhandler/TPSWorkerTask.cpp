@@ -6,7 +6,7 @@
 #include "Defines.h"
 #include "TPSClient.h"
 
-TPSWorkerTask::TPSWorkerTask(Server* srv)
+TPSWorkerTask::TPSWorkerTask(ServerAPI* srv)
 {
     server = srv;
 }

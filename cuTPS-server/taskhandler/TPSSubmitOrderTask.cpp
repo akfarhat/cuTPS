@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-TPSSubmitOrderTask::TPSSubmitOrderTask(Server* srv)
+TPSSubmitOrderTask::TPSSubmitOrderTask(ServerAPI* srv)
     : TPSWorkerTask(srv)
 {
 }

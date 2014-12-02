@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QString>
 
-TPSLoginTask::TPSLoginTask(Server* srv)
+TPSLoginTask::TPSLoginTask(ServerAPI* srv)
     : TPSWorkerTask(srv)
 {
 }

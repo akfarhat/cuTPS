@@ -23,7 +23,7 @@ public:
     explicit TPSServerAsync(QObject *parent = 0);
     void StartServer();
 
-    Server *getServer() const;
+    ServerAPI *getServer() const;
 
 protected:
 
@@ -41,7 +41,7 @@ public slots:
     void clientDisconnected(TPSClient*);
 
 private:
-    Server *server;
+    ServerAPI *server;
 
 };
 

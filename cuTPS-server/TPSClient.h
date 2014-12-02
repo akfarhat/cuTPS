@@ -49,7 +49,7 @@ public slots:
 private:
     // Reference to the server API that will handle updating
     // the system state or gathering data for a this request instance
-    Server *server;
+    ServerAPI *server;
     // The socket object wrapper provided by the QT framework
     QTcpSocket *socket;
     // The session ID belonging to this request

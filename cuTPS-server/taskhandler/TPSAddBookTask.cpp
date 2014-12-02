@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-TPSAddBookTask::TPSAddBookTask(Server* srv)
+TPSAddBookTask::TPSAddBookTask(ServerAPI* srv)
     : TPSWorkerTask(srv)
 {
 }
