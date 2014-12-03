@@ -17,6 +17,16 @@ CourseDetailsWindow::~CourseDetailsWindow()
     delete ui;
 }
 
+void CourseDetailsWindow::displayCourseList()
+{
+
+}
+
+void CourseDetailsWindow::dispayCouseDetails(Course c)
+{
+
+}
+
 void CourseDetailsWindow::on_backButton_clicked()
 {
     this->close();

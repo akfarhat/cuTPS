@@ -36,6 +36,9 @@ private:
     Ui::CourseDetailsWindow *ui;
     ManageCourseControl *manageCourseCtrl;
     CourseRequestAPI *requestAPI;
+
+    void displayCourseList();
+    void dispayCouseDetails(Course);
 };
 
 #endif // COURSEDETAILSWINDOW_H
