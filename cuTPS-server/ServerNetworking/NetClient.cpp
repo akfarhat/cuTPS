@@ -1,9 +1,7 @@
 #include "NetClient.h"
 #include "ServerAsync.h"
 #include "Utils.h"
-#include "TPSNetUtils.h"
 #include "Defines.h"
-#include "TPSNetUtils.h"
 
 #include <QByteArray>
 
@@ -13,6 +11,8 @@
 #include "ClientTaskHandling/GetBookDetailsTask.h"
 #include "ClientTaskHandling/GetRequiredBooksTask.h"
 #include "ClientTaskHandling/SubmitOrderTask.h"
+
+using namespace TPSNetProtocolDefs;
 
 NetClient::NetClient(QObject *parent) :
     QObject(parent)
@@ -64,7 +64,7 @@ void NetClient::disconnected()
 void NetClient::readyRead()
 {
     QDataStream in(socket);
-    in.setVersion(TPSConstants::PROTOCOL_VER);
+    in.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
 
     if (blockSize == 0)
     {
@@ -81,47 +81,47 @@ void NetClient::readyRead()
         return;
     }
 
-    TPSNetProtocol::NetRequest request;
+    // Validate message by magic number.
+    qint32 mMagic;
+    in >> mMagic;
 
-    // Calculate data block size
-    qint16 dataBlockSize = blockSize - sizeof(qint8) - sizeof(QUuid);
-    // Allocate ByteArray of that size
-    QByteArray* dataBlock = new QByteArray();
-    dataBlock->resize(dataBlockSize);
+    if (mMagic != TPSNetProtocolDefs::PROTOCOL_MAGIC)
+    {
+        qDebug() << "protocol ver mismatch: got magic " << mMagic;
+        this->disconnect();
+        return; // TODO: throw an exception instead
+    }
 
-    request.data = dataBlock;
+    // the worker task, assigned to this request, will delete it
+    NetRequest* request = new NetRequest();
 
-    TPSNetUtils::DeserializeRequest(&request, &in);
+    in >> *request;
 
     // Parse data
-
     WorkerTask* task;
 
-    QByteArray* responseBlock = new QByteArray(); // TODO: manage memory
-    QDataStream out(responseBlock, QIODevice::WriteOnly);
-
     // Temporary router
-    switch (request.invocation) {
+    switch (request->getInvocation()) {
 
-    case TPSConstants::AddBook:
+    case AddBook:
         task = new AddBookTask(server);
         break;
-    case TPSConstants::AddCourse:
+    case AddCourse:
         task = new AddCourseTask(server);
         break;
-    case TPSConstants::GetBookDetails:
+    case GetBookDetails:
         task = new GetBookDetailsTask(server);
         break;
-    case TPSConstants::GetRequiredBooks:
+    case GetRequiredBooks:
         task = new GetRequiredBooksTask(server);
         break;
-    case TPSConstants::Login:
+    case Login:
         task = new LoginTask(server);
         break;
-    case TPSConstants::SubmitOrder:
+    case SubmitOrder:
         task = new SubmitOrderTask(server);
         break;
-    case TPSConstants::Goodbye:
+    case Goodbye:
     default:
         // kill the client
         server->closeSession(sessionId);
@@ -129,13 +129,16 @@ void NetClient::readyRead()
         return;
     }
 
-    task->setInputDataBlock(dataBlock);
-    task->setResponseDataBlock(responseBlock);
     task->setRequest(request);
     task->setSessionId(sessionId);
-
     task->setAutoDelete(true);
-    connect(task, SIGNAL(result(int, QByteArray*)), this, SLOT(taskResult(int, QByteArray*)), Qt::QueuedConnection);
+
+    connect(task,
+            SIGNAL(result(int, QByteArray*)),
+            this,
+            SLOT(taskResult(int, QByteArray*)),
+            Qt::QueuedConnection);
+
     QThreadPool::globalInstance()->start(task); // schedule to run in the pool
 
     blockSize = 0;

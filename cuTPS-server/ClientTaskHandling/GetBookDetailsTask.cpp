@@ -1,5 +1,4 @@
 #include "GetBookDetailsTask.h"
-#include "TPSNetUtils.h"
 
 #include <QDebug>
 
@@ -12,35 +11,49 @@ void GetBookDetailsTask::run()
 {
     qDebug() << "Get book details task was run";
     qDebug() << "Doing job for session: " << sessionId
-             << "Request: " << request.requestId;
+             << "Request: " << request->getRequestId();
 
-    int bookId = -1;
+    qint32 numBooks;
+    bool pass = true;
+    QDataStream in(request->getData(), QIODevice::ReadOnly);
 
-    QDataStream in(iblock, QIODevice::ReadOnly);
-    in >> bookId;
+    in >> numBooks;
 
-    qDebug() << "Read in bookID = " << bookId;
+    QVector<Textbook*> results;
+    for (int i = 0; i < numBooks; ++i)
+    {
+        qint32 bookId;
+        in >> bookId;
+        Textbook* tPtr;
+        ServerResponse r = server->getTextbookDetails(sessionId,
+                                                      static_cast<int>(bookId),
+                                                      &tPtr);
+        results.append(tPtr);
+        if (r.code == Fail) pass = false;
+    }
 
-    //std::unique_ptr<Textbook>* ppText;
-    Textbook *returnBook = NULL;
-    ServerResponse r = server->getTextbookDetails(sessionId, bookId, &returnBook);
+    NetResponse response = NetResponse(*request);
+    response.setResponseCode(pass ? 0x1 : 0x0);
+    response.setSessionId(sessionId);
 
-    TPSNetProtocol::NetResponse response;
-    QByteArray data;
-    QDataStream out(oblock, QIODevice::WriteOnly);
-    QDataStream outData(&data, QIODevice::WriteOnly);
+    QByteArray* responseBytes = new QByteArray();   // NetClient will delete it
+    QByteArray responseDataBytes;
+    QDataStream out(responseBytes, QIODevice::WriteOnly);
+    QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeTextbook(&outData, returnBook);
+    if (pass)
+    {
+        numBooks = static_cast<qint32>(results.size());
+        outData << numBooks;
+        for (int i = 0; i < numBooks; ++i)
+        {
+            outData << *results.at(i);
+        }
+        response.setData(responseDataBytes);
+    }
 
-    qDebug() << "Get book details setup the response";
+    out << response;
 
-    setupResponse(response,
-                  r.code == Fail ? 0x0 : 0x1,
-                  &data,
-                  &out);
-
-    qDebug() << "Get book details, notify done";
-
-    emit result(response.responseCode, oblock);
+    emit result(response.getResponseCode(), responseBytes);
 }
 

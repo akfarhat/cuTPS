@@ -11,7 +11,7 @@ DeliveryInfo::DeliveryInfo(QString email) : emailAddress(email) {
 DeliveryInfo::~DeliveryInfo() {}
 
 
-QString DeliveryInfo::getEmailAddress() {
+QString DeliveryInfo::getEmailAddress() const {
     return emailAddress;
 }
 

@@ -13,16 +13,16 @@ ServerAsync::ServerAsync(QObject *parent) :
 void ServerAsync::StartServer()
 {
     ServerPrefs::GetDbPath();
-    if (listen(QHostAddress::Any, TPSConstants::PORT))
+    if (listen(QHostAddress::Any, TPSNetProtocolDefs::PORT))
     {
-        qDebug() << " >> Server Started on port " << TPSConstants::PORT;
+        qDebug() << " >> Server Started on port " << TPSNetProtocolDefs::PORT;
         // TODO: ensure that parent destroys its children
         server = new Server(this);
         emit serverStarted();
     }
     else
     {
-        qDebug() << " >> Server has failed to listen on port " << TPSConstants::PORT
+        qDebug() << " >> Server has failed to listen on port " << TPSNetProtocolDefs::PORT
                   << " Error: " << serverError();
 
         emit serverFailure();

@@ -19,6 +19,7 @@ QDataStream& operator<<(QDataStream& os, const NetRequest& r)
 
     // Do not change the sequence!
     os << (qint16) 0;
+    os << TPSNetProtocolDefs::PROTOCOL_MAGIC;
     os << invocationInteger;
     os << r.requestId;
 

@@ -1,6 +1,8 @@
 #ifndef LOGINTASKFACTORY_H
 #define LOGINTASKFACTORY_H
 
+#include "TaskAbsFactory.h"
+
 class LoginTaskFactory : public TaskAbsFactory
 {
 public:

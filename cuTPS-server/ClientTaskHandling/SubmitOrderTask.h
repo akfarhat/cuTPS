@@ -5,7 +5,6 @@
 #include <QDataStream>
 
 #include "WorkerTask.h"
-#include "TPSNetUtils.h"
 #include "Server.h"
 
 // TASK DATA FORMAT: |-- username --|-- password --|

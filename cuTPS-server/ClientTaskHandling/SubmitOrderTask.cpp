@@ -12,33 +12,24 @@ void SubmitOrderTask::run()
 {
     qDebug() << "Submit order task was run";
     qDebug() << "Doing job for session: " << sessionId
-             << "Request: " << request.requestId;
+             << "Request: " << request->getRequestId();
 
     Order order;
+    QDataStream in(request->getData(), QIODevice::ReadOnly);
 
-    QDataStream in(iblock, QIODevice::ReadOnly);
-
-    TPSNetUtils::DeserializeOrder(&order, &in);
-
-    qDebug() << "TPSSubmitOrderTask calling server submitOrder API";
+    in >> order;
 
     ServerResponse r = server->submitOrder(sessionId, order);
 
-    qDebug() << "TPSSubmitOrderTask finished server API call";
+    NetResponse response = NetResponse(*request);
+    response.setResponseCode(r.code == Fail ? 0x0 : 0x1);
+    response.setSessionId(sessionId);
 
-    TPSNetProtocol::NetResponse response;
-    QByteArray data;
-    QDataStream out(oblock, QIODevice::WriteOnly);
+    QByteArray* responseBytes = new QByteArray();   // NetClient will delete it
+    QDataStream out(responseBytes, QIODevice::WriteOnly);
 
-    qDebug() << "TPSSubmitOrderTask setting up response packet";
+    out << response;
 
-    setupResponse(response,
-                  r.code == Fail ? 0x0 : 0x1,
-                  &data,
-                  &out);
-
-    qDebug() << "TPSSubmitOrderTask emitting result";
-
-    emit result(response.responseCode, oblock);
+    emit result(response.getResponseCode(), responseBytes);
 }
 

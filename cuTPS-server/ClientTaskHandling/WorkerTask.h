@@ -21,6 +21,8 @@
 #include <QByteArray>
 
 #include <ServerNetworking/NetClient.h>
+#include <Entity/NetRequest.h>
+#include <Entity/NetResponse.h>
 #include "Defines.h"
 #include "Server.h"
 
@@ -31,9 +33,7 @@ public:
     WorkerTask(Server* srv);
 
     void setSessionId(QUuid sessionId);
-    void setRequest(TPSNetProtocol::NetRequest& request);
-    void setInputDataBlock(QByteArray* idata);
-    void setResponseDataBlock(QByteArray* odata);
+    void setRequest(NetRequest* request);
 
 signals:
     // emmit an event signaling the completion of the task.
@@ -44,20 +44,13 @@ signals:
 protected:
     // The thread method in which to perform this task
     virtual void run() = 0;
-    void setupResponse(TPSNetProtocol::NetResponse& response,
-                       qint8 code,
-                       QByteArray* dataBlock,
-                       QDataStream* outStream);
 
     // Reference to the server API for updating the system
     // model with each request
     Server *server;
 
-    // The request identifier
-    TPSNetProtocol::NetRequest request;
+    NetRequest* request;
     QUuid sessionId;
-    QByteArray *iblock;
-    QByteArray *oblock;
 };
 
 #endif // WORKERTASK_H

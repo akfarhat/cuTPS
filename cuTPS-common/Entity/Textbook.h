@@ -19,7 +19,7 @@ class Chapter;
 class Textbook : public SellableItem {
 public:
     Textbook();
-    Textbook( Textbook&); // Copy cTor
+    Textbook(const Textbook&); // Copy cTor
     Textbook(int, QString, int, bool, QString);
     Textbook(QString, int);
     virtual ~Textbook();
@@ -31,6 +31,7 @@ public:
 
     void addChapter(const Chapter& c);
     QVector<Chapter*> getChapterList();
+    const QVector<Chapter*> getConstChapterList() const;
     int numChapters() const;
 
     // Serialization routines

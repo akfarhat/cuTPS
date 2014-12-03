@@ -29,9 +29,6 @@ void CreditCardInfo::setExpiry(QString newExpiry) {
 }
 
 QString CreditCardInfo::getPaymentDetails() const {
-    QString separator = QString();
-    separator += STRSEP;
-
     QString paymentStr = QString("%1|%2|%3|%4|%5|%6|%7|%8")
             .arg(number, expiryDate, securityCode,
                  cardholder, billingName, billingAddress,

@@ -2,8 +2,6 @@
 #include "Section.h"
 #include "Defines.h"
 
-#include <QDebug>
-
 Chapter::Chapter() {}
 
 Chapter::Chapter(Chapter& src)
@@ -116,7 +114,6 @@ QDataStream& operator>>(QDataStream& is, Chapter& c)
         Section s;
         is >> s;
         s.setParentChapter(&c);
-        qDebug() << "READ SECTION:::----- " << s.getDetails();
         c.addSection(s);
     }
 

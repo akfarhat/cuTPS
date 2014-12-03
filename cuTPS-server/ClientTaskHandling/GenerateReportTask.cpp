@@ -1,5 +1,11 @@
 #include "GenerateReportTask.h"
 
-GenerateReportTask::GenerateReportTask()
+GenerateReportTask::GenerateReportTask(Server* srv)
+    : WorkerTask(srv)
 {
+}
+
+void GenerateReportTask::run()
+{
+
 }

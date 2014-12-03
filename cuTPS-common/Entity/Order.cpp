@@ -4,9 +4,9 @@
 Order::Order() {
 }
 
-Order::Order(const QVector<qint32>* items, const BillingInfo* bi, const DeliveryInfo* di)
+Order::Order(const QVector<qint32>& items, const BillingInfo& bi, const DeliveryInfo& di)
 {
-    addItems(*items);
+    addItems(items);
     setBillingInfo(bi);
     setDeliveryInfo(di);
 }
@@ -17,16 +17,16 @@ Order::~Order()
     if (deliveryInfo) delete deliveryInfo;
 }
 
-void Order::setBillingInfo(const BillingInfo* bi)
+void Order::setBillingInfo(const BillingInfo& bi)
 {
     if (billingInfo) delete billingInfo;
-    billingInfo = bi->clone();
+    billingInfo = bi.clone();
 }
 
-void Order::setDeliveryInfo(const DeliveryInfo* di)
+void Order::setDeliveryInfo(const DeliveryInfo& di)
 {
     if (deliveryInfo) delete deliveryInfo;
-    deliveryInfo = new DeliveryInfo(*di);
+    deliveryInfo = new DeliveryInfo(di);
 }
 
 void Order::addItems(const QVector<qint32>& v)
@@ -39,16 +39,16 @@ void Order::clearItems()
     itemIds.clear();
 }
 
-BillingInfo *Order::getBillingInfo() const {
-    return billingInfo;
+const BillingInfo* Order::getBillingInfo() const {
+    return const_cast<const BillingInfo*>(billingInfo);
 }
 
-DeliveryInfo *Order::getDeliveryInfo() const {
-    return deliveryInfo;
+const DeliveryInfo* Order::getDeliveryInfo() const {
+    return const_cast<const DeliveryInfo*>(deliveryInfo);
 }
 
-QVector<qint32>* Order::getItems() {
-    return &itemIds;
+const QVector<qint32>* Order::getItems() const {
+    return const_cast<const QVector<qint32>*>(&itemIds);
 }
 
 QString Order::getFormattedPaymentInfo()
@@ -84,7 +84,7 @@ QDataStream& operator>>(QDataStream& is, Order& o)
        >> paymentStr
        >> numItems;
 
-    o.setDeliveryInfo(&dInfo);
+    o.setDeliveryInfo(dInfo);
     QString& pStrRef = paymentStr;
     o.formattedPaymentInfo = QString(pStrRef);
     o.clearItems();

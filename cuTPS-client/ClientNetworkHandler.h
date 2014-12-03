@@ -1,6 +1,22 @@
 #ifndef CLIENTNETWORKHANDLER_H
 #define CLIENTNETWORKHANDLER_H
 
+// Class: ClientNetworkHandler
+// Type: Control
+// Description:
+//     This class offers the client side API for possible
+//     requests to the server.
+
+// === API change history === //
+// Dec, 2:   --- getBookDetails(qint32...) now takes a variable number of books ids.
+//                  returns: a unique_ptr<QVector> of textbook requested.
+//           --- Some memory leaks fixed by making signals return smart pointers.
+//           --- Some networking statistics are now collected, which optionally may be shown.
+//           --- getRequiredBooks() now returns only IDs of books for performance reasons.
+//               Use getBooksDetails(Textbook&
+//               <woyorus>
+// ========================== //
+
 #include <QObject>
 #include <QHostAddress>
 #include <QTcpSocket>
@@ -8,16 +24,13 @@
 #include <QVector>
 #include <QDataStream>
 
+#include "Defines.h"
 #include "Utils.h"
 #include "Entity/Textbook.h"
-// Class: ClientNetworkHandler
-// Type: Control
-// Description:
-//     This class offers the client side API for possible
-//     requests to the server.
-
 #include "Entity/Order.h"
 #include "Entity/Course.h"
+
+using namespace TPSNetProtocolDefs;
 
 // Note, this could inherit from a NetworkHandler
 // that manages the networking
@@ -41,10 +54,14 @@ public:
 
     // Request the list of available textbooks
     // for the user with this session.
-    QUuid getRequiredBooks(QString &);
+    // TODO: it makes sense to return course objects with linked textbooks
+    QUuid getRequiredBooks(QString&);
 
-    // Request the details of a particular textbook
-    QUuid getBookDetails(Textbook&);
+    // Request the details of a particular textbook id
+    QUuid getBookDetails(const qint32 id);
+
+    // Request details for a list of textbook ids
+    QUuid getBookDetails(const QVector<qint32>& ids);
 
     // Submit an order to the server
     QUuid submitOrder(Order&);
@@ -61,18 +78,19 @@ public:
     bool isValid() const; // i.e. connected && logged in
 
 signals:
-    // Events emitted regarding the network status
+    // Events emitted regarding the network events
     void connectedToServer();
     void disconnectedFromServer();
     void networkError(QAbstractSocket::SocketError);
     void serverError(QUuid requestId, int code);
 
-    // Events emitted regarding the completion of server API
+    // Events emitted regarding the completion of server API call
     void loginSuccessful(QUuid requestId);
     void orderStatusReceived(QUuid requestId, int code);
-    void updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid requestId, int code);
-    void textbookDetailsReceived(QUuid requestId, int code, Textbook*);
-    void textbookLookupCompleted(QUuid requestId, int code, QVector<Textbook*>*);
+    void updateCompleted(InvocationDescriptor, QUuid requestId, int code);
+    // Books in vector are created using new. Delete them using delete after use.
+    void textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*> books);
+    void textbookLookupCompleted(QUuid requestId, int code, QVector<qint32> booksIds);
 
 public slots:
     // Event handlers for events emitted by the TCP socket object

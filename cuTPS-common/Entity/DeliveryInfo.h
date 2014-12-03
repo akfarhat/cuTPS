@@ -19,7 +19,7 @@ public:
     DeliveryInfo();
     DeliveryInfo(QString);
     ~DeliveryInfo();
-    QString getEmailAddress();
+    QString getEmailAddress() const;
     void setEmailAddress(QString);
 
 

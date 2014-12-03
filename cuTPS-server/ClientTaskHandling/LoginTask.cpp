@@ -12,11 +12,12 @@ void LoginTask::run()
 {
     qDebug() << "Login task ruN!";
     qDebug() << "Doing job for session: " << sessionId
-             << "Request: " << request.requestId;
+             << "Request: " << request->getRequestId();
 
     UserCredentials credentials;
 
-    QDataStream in(iblock, QIODevice::ReadOnly);
+    QDataStream in(request->getData(), QIODevice::ReadOnly);
+
     in >> credentials.username >> credentials.password;
 
     qDebug() << credentials.username << credentials.password;
@@ -32,16 +33,14 @@ void LoginTask::run()
         qDebug() << "Successful login! >";
     }
 
-    qDebug() << credentials.username << " " << credentials.password;
+    NetResponse response = NetResponse(*request);
+    response.setResponseCode(r.code == Fail ? 0x0 : 0x1);
+    response.setSessionId(sessionId);
 
-    TPSNetProtocol::NetResponse response;
-    QByteArray data;
-    QDataStream out(oblock, QIODevice::WriteOnly);
+    QByteArray* responseBytes = new QByteArray();   // NetClient will delete it
+    QDataStream out(responseBytes, QIODevice::WriteOnly);
 
-    setupResponse(response,
-                  r.code == Fail ? 0x0 : 0x1,
-                  &data,
-                  &out);
+    out << response;
 
-    emit result(response.responseCode, oblock);
+    emit result(response.getResponseCode(), responseBytes);
 }

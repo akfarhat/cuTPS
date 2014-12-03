@@ -1,5 +1,4 @@
 #include "AddCourseTask.h"
-#include "TPSNetUtils.h"
 
 #include <QDebug>
 
@@ -12,15 +11,12 @@ void AddCourseTask::run()
 {
     qDebug() << "Add course task was run";
     qDebug() << "Doing job for session: " << sessionId
-             << "Request: " << request.requestId;
+             << "Request: " << request->getRequestId();
 
     Course course;
+    QDataStream in(request->getData(), QIODevice::ReadOnly);
 
-    QDataStream in(iblock, QIODevice::ReadOnly);
-
-    qDebug() << "TPSAddCourseTask about to deserialize";
-
-    TPSNetUtils::DeserializeCourse(&course, &in);
+    in >> course;
 
     qDebug() << "TPSAddCourseTask deserialized course:";
     qDebug() << " courseCode = " << course.getCourseCode();
@@ -33,20 +29,16 @@ void AddCourseTask::run()
 
     qDebug() << "TPSAddCourseTask finished server API call";
 
-    TPSNetProtocol::NetResponse response;
-    QByteArray data;
-    QDataStream out(oblock, QIODevice::WriteOnly);
+    NetResponse response = NetResponse(*request);
+    response.setResponseCode(r.code == Fail ? 0x0 : 0x1);
+    response.setSessionId(sessionId);
 
-    qDebug() << "TPSAddCourseTask setting up response packet";
+    QByteArray* responseBytes = new QByteArray();   // NetClient will delete it
+    QDataStream out(responseBytes, QIODevice::WriteOnly);
 
-    setupResponse(response,
-                  r.code == Fail ? 0x0 : 0x1,
-                  &data,
-                  &out);
+    out << response;
 
-    qDebug() << "TPSAddCourseTask emitting result";
-
-    emit result(response.responseCode, oblock);
+    emit result(response.getResponseCode(), responseBytes);
 }
 
 

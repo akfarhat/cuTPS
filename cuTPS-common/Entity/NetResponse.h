@@ -19,6 +19,7 @@ class NetResponse : public NetMessage
 {
 public:
     NetResponse();
+    NetResponse(NetMessage&);
 
     // Returns string representation of this request
     virtual QString stringRepr() const;

@@ -20,17 +20,19 @@ class Order
 public:
     Order();
     // Order(const Order&); // warning: there's no copy cTor here
-    Order(const QVector<qint32>*, const BillingInfo*, const DeliveryInfo*);
+    Order(const QVector<qint32>& items,
+          const BillingInfo&,
+          const DeliveryInfo&);
     ~Order();
 
-    void setBillingInfo(const BillingInfo*);
-    void setDeliveryInfo(const DeliveryInfo*);
-    void addItems(const QVector<qint32>&);
-    void clearItems(); // same effect as getItems()->clear()
+    void setBillingInfo(const BillingInfo&);
+    void setDeliveryInfo(const DeliveryInfo&);
+    void addItems(const QVector<qint32>& items);
+    void clearItems();
 
-    BillingInfo* getBillingInfo() const;
-    DeliveryInfo* getDeliveryInfo() const;
-    QVector<qint32>* getItems();
+    const BillingInfo* getBillingInfo() const; // may return nullptr if data is not there
+    const DeliveryInfo* getDeliveryInfo() const; // may return nullptr if data is not there
+    const QVector<qint32>* getItems() const; // use addItem() and clearItems() to manage items
     QString getFormattedPaymentInfo();
 
     friend QDataStream& operator<<(QDataStream& os, const Order& o); // output

@@ -4,6 +4,12 @@ NetResponse::NetResponse()
 {
 }
 
+NetResponse::NetResponse(NetMessage& m)
+{
+    this->setRequestId(m.getRequestId());
+    this->setInvocation(m.getInvocation());
+}
+
 QString NetResponse::stringRepr() const
 {
     return "[NetResponse (ID: " + getRequestId().toString()
@@ -41,6 +47,7 @@ QDataStream& operator<<(QDataStream& os, const NetResponse& r)
 
     // Do not change the sequence!
     os << (qint16) 0;
+    os << TPSNetProtocolDefs::PROTOCOL_MAGIC;
     os << invocationInteger;
     os << r.requestId;
     os << r.sessionId;

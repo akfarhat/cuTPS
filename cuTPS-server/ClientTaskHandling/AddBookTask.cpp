@@ -1,5 +1,4 @@
 #include "AddBookTask.h"
-#include "TPSNetUtils.h"
 
 #include <QDebug>
 
@@ -12,12 +11,12 @@ void AddBookTask::run()
 {
     qDebug() << "Add book task was run";
     qDebug() << "Doing job for session: " << sessionId
-             << "Request: " << request.requestId;
+             << "Request: " << request->getRequestId();
 
     Textbook book;
+    QDataStream in(request->getData(), QIODevice::ReadOnly);
 
-    QDataStream in(iblock, QIODevice::ReadOnly);
-    TPSNetUtils::DeserializeTextbook(&book, &in);
+    in >> book;
 
     qDebug() << "TPSAddBookTask Deserialized textbook: ";
     qDebug() << " id = " << QString::number(book.getId());
@@ -28,15 +27,15 @@ void AddBookTask::run()
 
     ServerResponse r = server->addTextbook(sessionId, book);
 
-    TPSNetProtocol::NetResponse response;
-    QByteArray data;
-    QDataStream out(oblock, QIODevice::WriteOnly);
+    NetResponse response = NetResponse(*request);
+    response.setResponseCode(r.code == Fail ? 0x0 : 0x1);
+    response.setSessionId(sessionId);
 
-    setupResponse(response,
-                  r.code == Fail ? 0x0 : 0x1,
-                  &data,
-                  &out);
+    QByteArray* responseBytes = new QByteArray();   // NetClient will delete it
+    QDataStream out(responseBytes, QIODevice::WriteOnly);
 
-    emit result(response.responseCode, oblock);
+    out << response;
+
+    emit result(response.getResponseCode(), responseBytes);
 }
 

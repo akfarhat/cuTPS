@@ -7,10 +7,10 @@ Textbook::Textbook(int textId, QString name, int price, bool isAvailable, QStrin
     ISBN = iISBN;
 }
 
-Textbook::Textbook(Textbook& src) : SellableItem(src.getId(), src.getName(), src.getPriceCents(), src.getAvailability()), ISBN(src.getISBN())
+Textbook::Textbook(const Textbook& src) : SellableItem(src.getId(), src.getName(), src.getPriceCents(), src.getAvailability()), ISBN(src.getISBN())
 {
     // Copy over all the chapters
-    for (Chapter* c : src.getChapterList())
+    for (Chapter* c : src.getConstChapterList())
     {
         addChapter(*c);
     }
@@ -53,6 +53,11 @@ void Textbook::addChapter(const Chapter& c)
 }
 
 QVector<Chapter*> Textbook::getChapterList()
+{
+    return chapters;
+}
+
+const QVector<Chapter*> Textbook::getConstChapterList() const
 {
     return chapters;
 }

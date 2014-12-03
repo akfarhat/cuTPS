@@ -1,5 +1,4 @@
 #include "GetRequiredBooksTask.h"
-#include "TPSNetUtils.h"
 
 #include <QDebug>
 
@@ -12,70 +11,43 @@ void GetRequiredBooksTask::run()
 {
     qDebug() << "GetRequiredBooks task was run";
     qDebug() << "Doing job for session: " << sessionId
-             << "Request: " << request.requestId;
+             << "Request: " << request->getRequestId();
 
     QString username;
-    bool error = false;
 
-    QDataStream in(iblock, QIODevice::ReadOnly);
+    QDataStream in(request->getData(), QIODevice::ReadOnly);
+
     in >> username;
 
-    QVector<int>* ids = new QVector<int>();
+    QVector<qint32> ids;
 
     qDebug() << "calling the getRequiredTextbooks API for user " << username;
 
-    ServerResponse getBooks = server->getRequiredTextbooks(sessionId, username, ids);
+    ServerResponse getBooks = server->getRequiredTextbooks(sessionId, username, &ids);
 
-    QVector<Textbook*>* textbooks = new QVector<Textbook*>(ids->size());
+    NetResponse response = NetResponse(*request);
+    response.setResponseCode(getBooks.code == Fail ? 0x0 : 0x1);
+    response.setSessionId(sessionId);
 
-    TPSNetProtocol::NetResponse response;
-    QByteArray data;
-    QDataStream out(oblock, QIODevice::WriteOnly);
+    QByteArray* responseBytes = new QByteArray();   // NetClient will delete it
+    QByteArray responseDataBytes;
+    QDataStream out(responseBytes, QIODevice::WriteOnly);
+    QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
 
-    qDebug() << "writing " << ids->size() << " books to outgoing buffer...";
-
-    for (int i = 0; i < ids->size(); ++i)
+    if (getBooks.code == Success)
     {
-        qint32 bookId = ((qint32) ids->at(i));
-        Textbook *book;
-        ServerResponse r = server->getTextbookDetails(sessionId, bookId, &book);
+        outData << static_cast<qint32>(ids.size());
 
-        if (r.code == Fail)
+        for (qint32 id : ids)
         {
-            qDebug() << "Error: a failure has occurred while fetching textbook details for id"
-                     << bookId;
-            error = true;
-            continue;
-        } else {
-            qDebug() << "Received book details: " << book->getName();
+            outData << id;
         }
 
-        textbooks->replace(i, book);
+        response.setData(responseDataBytes);
     }
 
-    // Write number of textbooks first
+    out << response;
 
-    QDataStream dataOut(&data,QIODevice::WriteOnly);
-
-    dataOut << textbooks->size();
-
-    // Write every textbook one by one
-
-    for (Textbook* t_p : *textbooks)
-    {
-        TPSNetUtils::SerializeTextbook(&dataOut, t_p);
-        delete t_p;
-    }
-
-    qDebug() << "formulating server response... ";
-
-    setupResponse(response,
-                  error ? 0x0 : 0x1,
-                  &data,
-                  &out);
-
-    qDebug() << "Result of getRequiredBooks: " << error << "\n";
-
-    emit result(response.responseCode, oblock);
+    emit result(response.getResponseCode(), responseBytes);
 }
 
