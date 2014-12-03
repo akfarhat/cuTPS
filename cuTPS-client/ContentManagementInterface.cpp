@@ -22,23 +22,37 @@ void ContentManagementInterface::on_manageContentButton_clicked()
 {
     qDebug() << "ContentManagementInterface::ManageContent";
 
-    // Create the control class for the management subsystem
+    // Create the control class for the content management subsystem
     contentManagementCtrl = new ManageContentControl(this, network);
 
-    // Hide this more general window for now
     this->hide();
 }
 
 void ContentManagementInterface::on_manageCoursesButton_clicked()
 {
     qDebug() << "ContentManagementInterface::ManageCourses";
+
+    // Create the control class for the course management subsystem
+    courseManagementCtrl = new ManageCourseControl(this, network);
+
+    this->hide();
 }
 
-void ContentManagementInterface::navigateBack() {
+void ContentManagementInterface::navigateBack()
+{
     // Handles signals from lower back button on
     // management windows.
 
-    delete contentManagementCtrl;
+    if (this->contentManagementCtrl != NULL)
+        delete this->contentManagementCtrl;
+
+    this->show();
+}
+
+void ContentManagementInterface::courseNavigateBack()
+{
+    if (this->courseManagementCtrl != NULL)
+        delete this->courseManagementCtrl;
 
     this->show();
 }

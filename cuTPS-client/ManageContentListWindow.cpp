@@ -5,7 +5,6 @@
 #include "Entity/Chapter.h"
 #include "Entity/Section.h"
 
-
 #include <QDebug>
 
 ManageContentListWindow::ManageContentListWindow(QWidget *parent,
@@ -52,10 +51,10 @@ void ManageContentListWindow::displayBookList()
 
     // Update the window's item list vector
     if (this->listedItems != NULL) {
-        //for (int i = 0; i < books->size(); i++)
-        //    delete books->at(i);
+        for (int i = 0; i < books->size(); i++)
+            delete this->listedItems->at(i);
 
-        //delete this->listedItems;
+        delete this->listedItems;
     }
 
     this->listedItems = books;
@@ -84,10 +83,10 @@ void ManageContentListWindow::displayChapterList(int bookId)
 
     // Update the window's item list vector
     if (this->listedItems != NULL) {
-        //for (int i = 0; i < chapters->size(); i++)
-        //    delete chapters->at(i);
+        for (int i = 0; i < chapters->size(); i++)
+            delete this->listedItems->at(i);
 
-        //delete this->listedItems;
+        delete this->listedItems;
     }
 
     this->listedItems = chapters;
@@ -95,10 +94,10 @@ void ManageContentListWindow::displayChapterList(int bookId)
     // Display the books in the itemList.
     this->ui->contentList->clear();
     for (SellableItem *chapter: *chapters) {
+        qDebug() << "adding chapter ptr: " << chapter;
+        qDebug() << "its id is " << chapter->getId();
         this->ui->contentList->addItem(chapter->getTitle());
     }
-
-    // Display the chapters in the itemList.
 }
 
 void ManageContentListWindow::displaySectionList(int chapterId)
@@ -106,8 +105,30 @@ void ManageContentListWindow::displaySectionList(int chapterId)
     qDebug() << "Displaying section list for chapterId = " << chapterId;
 
     // Request all sections (id, title) from server for chapterId
+    ////////// pretend for now that this list represents actual data: /////////
+    QVector<SellableItem*> *sections = new QVector<SellableItem*>();
+    Section *s1 = new Section(9, NULL, 1, "Section One", 325, true);
+    Section *s2 = new Section(10, NULL, 2, "Section Two", 354, true);
+    Section *s3 = new Section(11, NULL, 3, "Section Three", 311, true);
+    Section *s4 = new Section(12, NULL, 4, "Section Four", 166, true);
+    sections->append(s1); sections->append(s2); sections->append(s3); sections->append(s4);
+    /////////////////////////////////////////////////////////////////////////
 
-    // Display the sections in the itemList.
+    // Update the window's item list vector
+    if (this->listedItems != NULL) {
+        for (int i = 0; i < sections->size(); i++)
+            delete this->listedItems->at(i);
+
+        delete this->listedItems;
+    }
+
+    this->listedItems = sections;
+
+    // Display the books in the itemList.
+    this->ui->contentList->clear();
+    for (SellableItem *section: *sections) {
+        this->ui->contentList->addItem(section->getTitle());
+    }
 }
 
 void ManageContentListWindow::on_contentList_clicked(const QModelIndex &index)
@@ -123,12 +144,69 @@ void ManageContentListWindow::on_contentList_clicked(const QModelIndex &index)
 
 void ManageContentListWindow::on_contentList_doubleClicked(const QModelIndex &index)
 {
+    if (this->contentDepth >= MAX_ITEM_DEPTH)
+        return;
+
     SellableItem *selectedItem = this->listedItems->at(index.row());
 
     this->contentDepth++;
+
+    this->ui->contentBackButton->setEnabled(true);
+
+    this->ui->metadataView->setText("");
 
     if (this->contentDepth == 1)
         this->displayChapterList(selectedItem->getId());
     else if(this->contentDepth == 2)
         this->displaySectionList(selectedItem->getId());
+}
+
+void ManageContentListWindow::on_contentBackButton_clicked()
+{
+    if (this->contentDepth <= 0)
+        return;
+
+    if (this->contentDepth == 1)
+        this->ui->contentBackButton->setEnabled(false);
+
+    this->contentDepth--;
+
+    this->ui->metadataView->setText("");
+
+    // TODO: Depending on whether the parents are guaranteed to be defined,
+    // we can get the ID that way, or store it as a temp value when descending.
+    if (this->contentDepth == 0)
+        this->displayBookList();
+    else if(this->contentDepth == 1)
+        this->displayChapterList(-1);
+}
+
+void ManageContentListWindow::on_newContentButton_clicked()
+{
+    switch (this->contentDepth) {
+        case (0):
+            this->addTextbook();
+            break;
+        case (1):
+            this->addChapter();
+            break;
+        case (2):
+            this->addSection();
+            break;
+    }
+}
+
+void ManageContentListWindow::addTextbook()
+{
+    qDebug() << "ManageContentListWindow::addTextbook";
+}
+
+void ManageContentListWindow::addChapter()
+{
+    qDebug() << "ManageContentListWindow::addChapter";
+}
+
+void ManageContentListWindow::addSection()
+{
+   qDebug() << "ManageContentListWindow::addSection()";
 }

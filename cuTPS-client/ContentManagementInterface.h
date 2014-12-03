@@ -16,6 +16,7 @@
 
 #include "ClientNetworkHandler.h"
 #include "ManageContentControl.h"
+#include "ManageCourseControl.h"
 
 #include <QDialog>
 
@@ -34,6 +35,7 @@ public:
 
 public slots:
     void navigateBack();
+    void courseNavigateBack();
 
 private slots:
     void on_manageContentButton_clicked();
@@ -46,6 +48,8 @@ private:
     ClientNetworkHandler *network;
 
     ManageContentControl *contentManagementCtrl;
+
+    ManageCourseControl *courseManagementCtrl;
 };
 
 #endif // CONTENTMANAGEMENTINTERFACE_H

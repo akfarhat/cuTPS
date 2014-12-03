@@ -26,6 +26,8 @@ void Chapter::setChapterNumber(int newNumber) {
 }
 
 QString Chapter::getDetails() {
+    QString bookName = this->getParentTextbook() == NULL
+            ? "NULL" : this->getParentTextbook()->getName();
     QString details = "";
     details += "Type: Chapter\nID: ";
     details += QString::number(this->getId());
@@ -34,7 +36,7 @@ QString Chapter::getDetails() {
     details += "\nChapter Number: ";
     details += QString::number(this->getChapterNumber());
     details += "\nTextbook Name: ";
-    details += this->getParentTextbook()->getName();
+    details += bookName;
     details += "\nPrice (in cents): ";
     details += QString::number(this->getPriceCents());
     details += "\nAvailable: ";

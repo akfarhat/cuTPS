@@ -30,7 +30,10 @@ SOURCES += main.cpp \
     ViewCartOption.cpp \
     ViewRequiredBooksOption.cpp \
     ContentRequestAPI.cpp \
-    CartRequestsAPI.cpp
+    CartRequestsAPI.cpp \
+    ManageCourseControl.cpp \
+    CourseRequestAPI.cpp \
+    CourseDetailsWindow.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -50,7 +53,10 @@ HEADERS  += \
     ViewCartOption.h \
     ViewRequiredBooksOption.h \
     ContentRequestAPI.h \
-    CartRequestsAPI.h
+    CartRequestsAPI.h \
+    ManageCourseControl.h \
+    CourseRequestAPI.h \
+    CourseDetailsWindow.h
 
 FORMS    += \
     Tests.ui \
@@ -59,7 +65,8 @@ FORMS    += \
     ManageContentListWindow.ui \
     StudentMainMenuWindow.ui \
     ViewCartOption.ui \
-    ViewRequiredBooksOption.ui
+    ViewRequiredBooksOption.ui \
+    CourseDetailsWindow.ui
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++

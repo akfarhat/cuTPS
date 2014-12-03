@@ -3,6 +3,7 @@
 
 #ifndef MANAGECONTENTLISTWINDOW_H
 #define MANAGECONTENTLISTWINDOW_H
+#define MAX_ITEM_DEPTH 2
 
 #include <QMainWindow>
 #include <QModelIndex>
@@ -36,6 +37,10 @@ private slots:
 
     void on_contentList_doubleClicked(const QModelIndex &index);
 
+    void on_contentBackButton_clicked();
+
+    void on_newContentButton_clicked();
+
 private:
     int contentDepth;
 
@@ -50,7 +55,9 @@ private:
     void displayBookList();
     void displayChapterList(int);
     void displaySectionList(int);
-    void displaySectionData(int);
+    void addTextbook();
+    void addChapter();
+    void addSection();
 };
 
 #endif // MANAGECONTENTLISTWINDOW_H

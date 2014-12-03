@@ -26,6 +26,16 @@ void Section::setSectionNumber(int newNumber) {
 }
 
 QString Section::getDetails() {
+    QString textbookName = "NULL";
+    QString chapterName = "NULL";
+    QString chapterNum = "NULL";
+    if (this->getParentChapter() != NULL) {
+        chapterName = this->getParentChapter()->getName();
+        chapterNum = QString::number(this->getParentChapter()->getChapterNumber());
+        if (this->getParentChapter()->getParentTextbook() != NULL)
+            textbookName = this->getParentChapter()->getParentTextbook()->getName();
+    }
+
     QString details = "";
     details += "Type: Section\nID:";
     details += QString::number(this->getId());
@@ -34,11 +44,11 @@ QString Section::getDetails() {
     details += "\nSection Number: ";
     details += QString::number(this->getSectionNumber());
     details += "\nChapter Name: ";
-    details += this->getParentChapter()->getName();
+    details += chapterName;
     details += "\nChapter Number: ";
-    details += QString::number(this->getParentChapter()->getChapterNumber());
+    details += chapterNum;
     details += "\nTextbook Name: ";
-    details += this->getParentChapter()->getParentTextbook()->getName();
+    details += textbookName;
     details += "\nPrice (in cents): ";
     details += QString::number(this->getPriceCents());
     details += "\nAvailable: ";
