@@ -30,7 +30,7 @@ void ServerAsync::StartServer()
 }
 
 #if QT_VERSION < QT_VERSION_CHECK(5,0,0)
-void TPSServerAsync::incomingConnection(int handle)
+void ServerAsync::incomingConnection(int handle)
 #else
 void ServerAsync::incomingConnection(qintptr handle)
 #endif

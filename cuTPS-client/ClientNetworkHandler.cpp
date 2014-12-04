@@ -320,7 +320,11 @@ void ClientNetworkHandler::readyRead()
 
     switch (response.getInvocation()) {
 
-    case AddBook:
+    case AddBook: {
+        emit updateCompleted(response.getInvocation(), response.getRequestId(), response.getResponseCode());
+        break;
+    }
+
     case AddCourse: {
         emit updateCompleted(response.getInvocation(), response.getRequestId(), response.getResponseCode());
         break;

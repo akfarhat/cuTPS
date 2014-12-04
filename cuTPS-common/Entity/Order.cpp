@@ -1,11 +1,16 @@
 #include "Order.h"
 #include "Defines.h"
 
-Order::Order() {
+Order::Order()
+{
+    billingInfo = nullptr;
+    deliveryInfo = nullptr;
 }
 
 Order::Order(const QVector<qint32>& items, const BillingInfo& bi, const DeliveryInfo& di)
 {
+    billingInfo = nullptr;
+    deliveryInfo = nullptr;
     addItems(items);
     setBillingInfo(bi);
     setDeliveryInfo(di);

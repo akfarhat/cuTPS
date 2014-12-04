@@ -36,7 +36,8 @@ QDataStream& operator<<(QDataStream& os, const NetRequest& r)
     os.device()->seek(0);
     // Requests consist of invocation integer (qint8), req.id (QUUid)
     // dataSize (qint16) + extra data itself (as rqDataSize)!
-    qint16 blockSz = (quint16)(rqDataSize + sizeof(qint8) + sizeof(QUuid) + sizeof(qint16));
+    qint16 blockSz = (quint16)(rqDataSize + sizeof(qint8) + sizeof(QUuid)
+                               + sizeof(qint16) + sizeof(qint32));
     os << blockSz;
 
     return os;

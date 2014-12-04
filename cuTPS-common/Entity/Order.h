@@ -41,8 +41,8 @@ public:
 private:
     QVector<qint32> itemIds;
     QString formattedPaymentInfo;   // payment info that delivery system understands
-    BillingInfo* billingInfo = nullptr;
-    DeliveryInfo* deliveryInfo = nullptr;
+    BillingInfo* billingInfo;
+    DeliveryInfo* deliveryInfo;
 };
 
 #endif // ORDER_H

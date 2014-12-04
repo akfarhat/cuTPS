@@ -4,7 +4,7 @@
 #include "Entity/SellableItem.h"
 #include "Entity/Textbook.h"
 #include "Entity/Chapter.h"
-#include "Entity/CreditcardInfo.h"
+#include "Entity/CreditCardInfo.h"
 #include "Entity/DeliveryInfo.h"
 
 #include <QVector>

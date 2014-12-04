@@ -37,7 +37,7 @@ protected:
     TPSNetProtocolDefs::InvocationDescriptor invocation;
 
     // Holds any extra data to parametrize the request or provide response data.
-    QByteArray* data = nullptr;
+    QByteArray* data;
 };
 
 #endif // NETMESSAGE_H

@@ -66,7 +66,7 @@ QDataStream& operator<<(QDataStream& os, const NetResponse& r)
     os.device()->seek(0);
     // Requests consist of invocation integer + response code (2*qint8),
     // requestId + sessionId (2*QUUid), dataSize (qint16) + extra data itself.
-    qint16 blockSz = rqDataSize + 2*sizeof(qint8) + 2*sizeof(QUuid) + sizeof(qint16);
+    qint16 blockSz = rqDataSize + 2*sizeof(qint8) + 2*sizeof(QUuid) + sizeof(qint16) + sizeof(qint32);
     os << blockSz;
 
     return os;

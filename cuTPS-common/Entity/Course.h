@@ -52,7 +52,7 @@ private:
     // are required by this course + their IDs. To get actual Textbook by id, use
     // getBookDetails() API call.
     QVector<Textbook*> *requiredBooks; // TODO: make it legacy or remove?
-    QVector<qint32>* reqBooksIds = nullptr;
+    QVector<qint32>* reqBooksIds;
 };
 
 #endif // COURSE_H

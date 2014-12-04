@@ -4,6 +4,7 @@
 Course::Course() {
     code = "";
     requiredBooks = new QVector<Textbook*>();
+    reqBooksIds = nullptr;
 }
 
 Course::Course(QString course) {

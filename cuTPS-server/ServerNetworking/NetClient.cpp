@@ -147,7 +147,8 @@ void NetClient::readyRead()
 void NetClient::taskResult(int code, QByteArray* response)
 {
     qDebug() << "Task returned with code: " << code;
-    socket->write(*response);
+    qint64 written = socket->write(*response);
+    qDebug() << "Send to client (bytes): " << written;
 }
 
 QUuid NetClient::getSessionId() const

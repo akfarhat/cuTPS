@@ -34,7 +34,7 @@ SOURCES += \
     Entity/Chapter.cpp \
     Entity/ContentManager.cpp \
     Entity/Course.cpp \
-    Entity/CreditcardInfo.cpp \
+    Entity/CreditCardInfo.cpp \
     Entity/DeliveryInfo.cpp \
     Entity/Order.cpp \
     Entity/Section.cpp \

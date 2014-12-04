@@ -2,6 +2,7 @@
 
 NetMessage::NetMessage()
 {
+    data = nullptr;
 }
 
 NetMessage::~NetMessage()

@@ -1,4 +1,4 @@
-#include "CreditcardInfo.h"
+#include "CreditCardInfo.h"
 #include "Defines.h"
 
 using namespace TPSConstants;

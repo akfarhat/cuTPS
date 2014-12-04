@@ -38,6 +38,8 @@ void AddCourseTask::run()
 
     out << response;
 
+    qDebug() << "Response size (bytes): " << responseBytes->size();
+
     emit result(response.getResponseCode(), responseBytes);
 }
 
