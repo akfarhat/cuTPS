@@ -22,9 +22,9 @@ enum ResponseCode {
 
 enum Role {
     None,
-    Student,
-    ContentManager,
-    Administrator
+    StudentUser,
+    ContentManagerUser,
+    AdministratorUser
 };
 
 // Information returned by the server for requests

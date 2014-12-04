@@ -35,7 +35,7 @@ void LoginControl::loginSuccessful(QUuid requestId, Role userRole) {
 
     switch (userRole) {
 
-        case Role::Student:
+        case Role::StudentUser:
             qDebug() << "LoginControl::loginSuccessful creating studentInterface";
 
             studentIF = new StudentMainMenuWindow(0, network);
@@ -43,7 +43,7 @@ void LoginControl::loginSuccessful(QUuid requestId, Role userRole) {
             loginWin->close();
             break;
 
-        case Role::ContentManager:
+        case Role::ContentManagerUser:
             qDebug() << "LoginControl::loginSuccessful creating cmInterface";
 
             cmIF = new ContentManagementInterface(0, network);
@@ -51,7 +51,7 @@ void LoginControl::loginSuccessful(QUuid requestId, Role userRole) {
             loginWin->close(); // Assuming we aren't going to handle logouts..
             break;
 
-        case Role::Administrator:
+        case Role::AdministratorUser:
             qDebug() << "TODO: handle admin login";
             break;
     }

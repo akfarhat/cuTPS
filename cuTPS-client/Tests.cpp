@@ -91,12 +91,12 @@ void Tests::on_loginButton_clicked() {
         userCreds.username = "joesmith";
         userCreds.password = "alamepassword";
         sessCreds.username = "joesmith";
-        userRole = Role::Student;
+        userRole = Role::StudentUser;
     } else if (ui->contentManagerRadio->isChecked()) {
         userCreds.username = "cm";
         userCreds.password = "pass";
         sessCreds.username = "joesmith";
-        userRole = Role::ContentManager;
+        userRole = Role::ContentManagerUser;
     }
 
     sessCreds.sessionID = 0;
@@ -220,14 +220,14 @@ void Tests::loginSuccessful(QUuid requestId) {
         // Show the test cases
         ui->testCasesGroup->show();
 
-        if (userRole == Role::Student) {
+        if (userRole == Role::StudentUser) {
             // Show the student test cases and hide the content manager test cases from the student
             ui->viewReqTextsGroup->show();
             ui->viewTextDetailsGroup->show();
             ui->submitOrderGroup->show();
             ui->addBooksGroup->hide();
             ui->addCourseGroup->hide();
-        } else if (userRole == Role::ContentManager) {
+        } else if (userRole == Role::ContentManagerUser) {
             // Show the content manager test cases and hide the student test cases from the content manager
             ui->addBooksGroup->show();
             ui->addCourseGroup->show();

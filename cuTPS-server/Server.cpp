@@ -95,21 +95,21 @@ Role Server::getUserRole(QString &username)
                                  &query);
     if (result)
         if (query.first())
-            return Role::Student;
+            return Role::StudentUser;
 
     result = dbManager->runQuery("SELECT * FROM ContentManager cm JOIN User u ON (u.id=cm.user_id) "
                                  "WHERE u.username = \"" + username + "\";",
                                  &query);
     if (result)
         if (query.first())
-            return Role::ContentManager;
+            return Role::ContentManagerUser;
 
     result = dbManager->runQuery("SELECT * FROM Administrator a JOIN User u ON (u.id=a.user_id) "
                                  "WHERE u.username = \"" + username + "\";",
                                  &query);
     if (result)
         if (query.first())
-            return Role::Administrator;
+            return Role::AdministratorUser;
 
     return Role::None;
 }
