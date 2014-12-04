@@ -19,7 +19,6 @@ QDataStream& operator<<(QDataStream& os, const NetRequest& r)
 
     // Do not change the sequence!
     os << (qint16) 0;
-    os << TPSNetProtocolDefs::PROTOCOL_MAGIC;
     os << invocationInteger;
     os << r.requestId;
 
@@ -50,7 +49,7 @@ QDataStream& operator>>(QDataStream& is, NetRequest& r)
 
     qint8 invocationInteger;
     QUuid requestId;
-    qint16 dataSz;
+    qint32 dataSz;
 
     is >> invocationInteger
         >> requestId
@@ -62,6 +61,7 @@ QDataStream& operator>>(QDataStream& is, NetRequest& r)
     if (dataSz > 0) {
         r.clearData();
         QByteArray bytes;
+        bytes.resize(dataSz);
         is >> bytes;
         r.setData(bytes);
     }

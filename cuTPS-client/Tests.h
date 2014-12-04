@@ -56,9 +56,9 @@ class Tests : public QDialog
 
         void updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid, int);
 
-        void textbookDetailsReceived(QUuid, int, QVector<Textbook*>);
+        void textbookDetailsReceived(QUuid, int, QVector<Textbook*>*);
 
-        void textbookLookupCompleted(QUuid, int, QVector<qint32>);
+        void textbookLookupCompleted(QUuid, int, QVector<qint32>*);
 
         void serverError(QUuid, int);
 

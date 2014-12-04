@@ -36,10 +36,10 @@ Tests::Tests(QWidget *parent) :
     connect(&network, SIGNAL(orderStatusReceived(QUuid, int)), this, SLOT(orderStatusReceived(QUuid, int)));
     connect(&network, SIGNAL(updateCompleted(InvocationDescriptor, QUuid, int)),
                 this, SLOT(updateCompleted(InvocationDescriptor, QUuid, int)));
-    connect(&network, SIGNAL(textbookDetailsReceived(QUuid, int, QVector<Textbook*>)),
-                this, SLOT(textbookDetailsReceived(QUuid, int, QVector<Textbook*>)));
-    connect(&network, SIGNAL(textbookLookupCompleted(QUuid, int, QVector<qint32>)),
-                this, SLOT(textbookLookupCompleted(QUuid, int, QVector<qint32>)));
+    connect(&network, SIGNAL(textbookDetailsReceived(QUuid, int, QVector<Textbook*>*)),
+                this, SLOT(textbookDetailsReceived(QUuid, int, QVector<Textbook*>*)));
+    connect(&network, SIGNAL(textbookLookupCompleted(QUuid, int, QVector<qint32>*)),
+                this, SLOT(textbookLookupCompleted(QUuid, int, QVector<qint32>*)));
     connect(&network, SIGNAL(serverError(QUuid,int)), this, SLOT(serverError(QUuid, int)));
 
 }
@@ -265,32 +265,34 @@ void Tests::updateCompleted(TPSNetProtocolDefs::InvocationDescriptor invocation,
     updateResults(updateMsg);
 }
 
-void Tests::textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*> v) {
+void Tests::textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*>* v) {
     clearResults();
     setPassed();
 
-    QString res_str = QString("Received details about %1 books").arg(QString::number(v.size()));
+    QString res_str = QString("Received details about %1 books").arg(QString::number(v->size()));
 
-    for (int i = 0; i < v.size(); ++i)
+    for (int i = 0; i < v->size(); ++i)
     {
-        res_str += QString("\n\t%1: %2").arg(QString::number(i), v.at(i)->getDetails());
+        res_str += QString("\n\t%1: %2").arg(QString::number(i), v->at(i)->getDetails());
     }
 
     updateResults(res_str);
+    delete v;
 }
 
-void Tests::textbookLookupCompleted(QUuid requestId, int code, QVector<qint32> v) {
+void Tests::textbookLookupCompleted(QUuid requestId, int code, QVector<qint32>* v) {
     clearResults();
     setPassed();
 
-    QString res_str = QString("Textbook lookup found %1 books").arg(QString::number(v.size()));
+    QString res_str = QString("Textbook lookup found %1 books").arg(QString::number(v->size()));
 
-    for (int i = 0; i < v.size(); i++)
+    for (int i = 0; i < v->size(); i++)
     {
-        res_str += QString("\n\t%1: id=%2").arg(QString::number(i), QString::number(v.at(i)));
+        res_str += QString("\n\t%1: id=%2").arg(QString::number(i), QString::number(v->at(i)));
     }
 
     updateResults(res_str);
+    delete v;
 }
 
 void Tests::serverError(QUuid requestId, int error) {

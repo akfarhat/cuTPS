@@ -289,16 +289,16 @@ void ClientNetworkHandler::readyRead()
         return;
     }
 
-    // Validate message by magic number.
-    qint32 mMagic;
-    in >> mMagic;
+//    // Validate message by magic number.
+//    qint32 mMagic;
+//    in >> mMagic;
 
-    if (mMagic != TPSNetProtocolDefs::PROTOCOL_MAGIC)
-    {
-        qDebug() << "protocol ver mismatch: got magic " << mMagic;
-        this->disconnect();
-        return; // TODO: throw an exception instead
-    }
+//    if (mMagic != TPSNetProtocolDefs::PROTOCOL_MAGIC)
+//    {
+//        qDebug() << "protocol ver mismatch: got magic " << mMagic;
+//        this->disconnect();
+//        return; // TODO: throw an exception instead
+//    }
 
     // Parse the response
     NetResponse response;
@@ -336,13 +336,13 @@ void ClientNetworkHandler::readyRead()
         qint32 numBooks;
         in >> numBooks;
 
-        QVector<Textbook*> vec;
+        QVector<Textbook*>* vec = new QVector<Textbook*>();
 
         for (int i = 0; i < numBooks; ++i)
         {
             Textbook* book = new Textbook();
             in >> *book;
-            vec.append(book);
+            vec->append(book);
         }
 
         emit textbookDetailsReceived(response.getRequestId(),
@@ -357,13 +357,13 @@ void ClientNetworkHandler::readyRead()
         qint32 numBooks;
         in >> numBooks;
 
-        QVector<qint32> vec;
+        QVector<qint32>* vec = new QVector<qint32>();
 
         for (int i = 0; i < numBooks; ++i)
         {
             qint32 id;
             in >> id;
-            vec.append(id);
+            vec->append(id);
         }
 
         emit textbookLookupCompleted(response.getRequestId(),

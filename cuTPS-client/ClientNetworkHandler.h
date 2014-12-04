@@ -89,8 +89,8 @@ signals:
     void orderStatusReceived(QUuid requestId, int code);
     void updateCompleted(InvocationDescriptor, QUuid requestId, int code);
     // Books in vector are created using new. Delete them using delete after use.
-    void textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*> books);
-    void textbookLookupCompleted(QUuid requestId, int code, QVector<qint32> booksIds);
+    void textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*>* books);
+    void textbookLookupCompleted(QUuid requestId, int code, QVector<qint32>* booksIds);
 
 public slots:
     // Event handlers for events emitted by the TCP socket object

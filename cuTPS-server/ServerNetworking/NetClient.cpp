@@ -81,18 +81,18 @@ void NetClient::readyRead()
         return;
     }
 
-    // Validate message by magic number.
-    qint32 mMagic;
-    in >> mMagic;
+//    // Validate message by magic number.
+//    qint32 mMagic;
+//    in >> mMagic;
 
-    if (mMagic != TPSNetProtocolDefs::PROTOCOL_MAGIC)
-    {
-        qDebug() << "protocol ver mismatch: got magic " << mMagic;
-        this->disconnect();
-        return; // TODO: throw an exception instead
-    }
+//    if (mMagic != TPSNetProtocolDefs::PROTOCOL_MAGIC)
+//    {
+//        qDebug() << "protocol ver mismatch: got magic " << mMagic;
+//        this->disconnect();
+//        return; // TODO: throw an exception instead
+//    }
 
-    // the worker task, assigned to this request, will delete it
+    // the worker task will delete it
     NetRequest* request = new NetRequest();
 
     in >> *request;
