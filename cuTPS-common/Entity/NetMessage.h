@@ -4,6 +4,7 @@
 #include <QUuid>
 #include <QByteArray>
 #include <QString>
+#include <exception>
 
 #include "Defines.h"
 
@@ -28,6 +29,15 @@ public:
 
     virtual QString stringRepr() const = 0;
 
+    class BadRequestException : public std::exception
+    {
+    public:
+        virtual const char* what() const throw()
+        {
+          return "Bad data received from host";
+        }
+    };
+
 protected:
     // Every NetMessage is identified by a unique ID.
     QUuid requestId;
@@ -39,5 +49,8 @@ protected:
     // Holds any extra data to parametrize the request or provide response data.
     QByteArray* data;
 };
+
+
+
 
 #endif // NETMESSAGE_H

@@ -18,3 +18,4 @@ void WorkerTask::setRequest(NetRequest* request)
 {
     this->request = request;
 }
+

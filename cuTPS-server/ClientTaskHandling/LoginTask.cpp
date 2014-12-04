@@ -33,14 +33,11 @@ void LoginTask::run()
         qDebug() << "Successful login! >";
     }
 
-    NetResponse response = NetResponse(*request);
-    response.setResponseCode(r.code == Fail ? 0x0 : 0x1);
-    response.setSessionId(sessionId);
+    NetResponse* response = new NetResponse();
+    response->setInvocation(request->getInvocation());
+    response->setRequestId(request->getRequestId());
+    response->setResponseCode(r.code == Fail ? 0x0 : 0x1);
+    response->setSessionId(sessionId);
 
-    QByteArray* responseBytes = new QByteArray();   // NetClient will delete it
-    QDataStream out(responseBytes, QIODevice::WriteOnly);
-
-    out << response;
-
-    emit result(response.getResponseCode(), responseBytes);
+    emit result(response->getResponseCode(), response);
 }

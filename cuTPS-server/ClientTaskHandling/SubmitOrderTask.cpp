@@ -14,22 +14,19 @@ void SubmitOrderTask::run()
     qDebug() << "Doing job for session: " << sessionId
              << "Request: " << request->getRequestId();
 
-    Order order;
+    Order* order = new Order();
     QDataStream in(request->getData(), QIODevice::ReadOnly);
 
-    in >> order;
+    in >> *order;
 
-    ServerResponse r = server->submitOrder(sessionId, order);
+    ServerResponse r = server->submitOrder(sessionId, *order);
 
-    NetResponse response = NetResponse(*request);
-    response.setResponseCode(r.code == Fail ? 0x0 : 0x1);
-    response.setSessionId(sessionId);
+    NetResponse* response = new NetResponse();
+    response->setInvocation(request->getInvocation());
+    response->setRequestId(request->getRequestId());
+    response->setResponseCode(0x1);
+    response->setSessionId(sessionId);
 
-    QByteArray* responseBytes = new QByteArray();   // NetClient will delete it
-    QDataStream out(responseBytes, QIODevice::WriteOnly);
-
-    out << response;
-
-    emit result(response.getResponseCode(), responseBytes);
+    emit result(response->getResponseCode(), response);
 }
 

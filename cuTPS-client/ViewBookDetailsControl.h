@@ -23,7 +23,7 @@ class ViewBookDetailsControl{
 
         // Request details for the book provided, store the
         // request identifier
-        void getBookDetails(QUuid &, Textbook &);
+        void getBookDetails(QUuid &, int);
 };
 
 #endif // VIEWBOOKDETAILSCONTROL_H

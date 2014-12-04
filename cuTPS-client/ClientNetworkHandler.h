@@ -87,7 +87,7 @@ signals:
     // Events emitted regarding the completion of server API call
     void loginSuccessful(QUuid requestId);
     void orderStatusReceived(QUuid requestId, int code);
-    void updateCompleted(InvocationDescriptor, QUuid requestId, int code);
+    void updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid requestId, int code);
     // Books in vector are created using new. Delete them using delete after use.
     void textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*>* books);
     void textbookLookupCompleted(QUuid requestId, int code, QVector<qint32>* booksIds);

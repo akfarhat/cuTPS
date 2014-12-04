@@ -81,21 +81,16 @@ void NetClient::readyRead()
         return;
     }
 
-//    // Validate message by magic number.
-//    qint32 mMagic;
-//    in >> mMagic;
-
-//    if (mMagic != TPSNetProtocolDefs::PROTOCOL_MAGIC)
-//    {
-//        qDebug() << "protocol ver mismatch: got magic " << mMagic;
-//        this->disconnect();
-//        return; // TODO: throw an exception instead
-//    }
-
     // the worker task will delete it
     NetRequest* request = new NetRequest();
 
-    in >> *request;
+    try {
+        in >> *request;
+    } catch (NetMessage::BadRequestException* e) {
+        qDebug() << e->what();
+        socket->abort();
+        return;
+    }
 
     // Parse data
     WorkerTask* task;
@@ -134,9 +129,9 @@ void NetClient::readyRead()
     task->setAutoDelete(true);
 
     connect(task,
-            SIGNAL(result(int, QByteArray*)),
+            SIGNAL(result(int, NetResponse*)),
             this,
-            SLOT(taskResult(int, QByteArray*)),
+            SLOT(taskResult(int, NetResponse*)),
             Qt::QueuedConnection);
 
     QThreadPool::globalInstance()->start(task); // schedule to run in the pool
@@ -144,10 +139,14 @@ void NetClient::readyRead()
     blockSize = 0;
 }
 
-void NetClient::taskResult(int code, QByteArray* response)
+void NetClient::taskResult(int code, NetResponse* response)
 {
     qDebug() << "Task returned with code: " << code;
-    qint64 written = socket->write(*response);
+    qDebug() << "Task also returned response: " << response->stringRepr();
+    QByteArray responseBytes;
+    QDataStream out(&responseBytes, QIODevice::WriteOnly);
+    out << *response;
+    qint64 written = socket->write(responseBytes);
     qDebug() << "Send to client (bytes): " << written;
 }
 

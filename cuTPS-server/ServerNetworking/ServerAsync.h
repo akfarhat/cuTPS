@@ -5,8 +5,8 @@
 //     once started, this object listens on an available socket
 //     and handles each request by creating a TPSClient for communication
 
-#ifndef TPSSERVERASYNC_H
-#define TPSSERVERASYNC_H
+#ifndef SERVERASYNC_H
+#define SERVERASYNC_H
 
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -35,7 +35,7 @@ protected:
 
 signals:
     void serverStarted();
-    void serverFailure(); // not implemented
+    void serverFailure();
 
 public slots:
     void clientDisconnected(NetClient*);
@@ -45,4 +45,4 @@ private:
 
 };
 
-#endif // TPSSERVERASYNC_H
+#endif // SERVERASYNC_H

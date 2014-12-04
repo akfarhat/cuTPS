@@ -47,6 +47,7 @@ QDataStream& operator<<(QDataStream& os, const NetResponse& r)
 
     // Do not change the sequence!
     os << (qint16) 0;
+    os << TPSNetProtocolDefs::PROTOCOL_MAGIC;
     os << invocationInteger;
     os << r.requestId;
     os << r.sessionId;
@@ -65,7 +66,7 @@ QDataStream& operator<<(QDataStream& os, const NetResponse& r)
 
     qint16 blockSz = 2*sizeof(qint8)    // invocation + responseCode
             + 2*sizeof(QUuid)           // requestId + sessionId
-            + sizeof(qint32)            // dataSize
+            + 2*sizeof(qint32)          // dataSize + magic
             + rDataSz;                  // data
 
     os << blockSz;
@@ -79,7 +80,12 @@ QDataStream& operator>>(QDataStream& is, NetResponse& r)
 
     qint8 invocationInteger, responseCode;
     QUuid requestId, sessionId;
-    qint32 dataSz;
+    qint32 dataSz, magicCheck;
+
+    is >> magicCheck;
+
+    if (magicCheck != TPSNetProtocolDefs::PROTOCOL_MAGIC)
+        throw new NetMessage::BadRequestException();
 
     is >> invocationInteger
         >> requestId

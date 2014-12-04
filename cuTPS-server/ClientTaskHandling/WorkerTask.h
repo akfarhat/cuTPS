@@ -39,7 +39,7 @@ signals:
     // emmit an event signaling the completion of the task.
     // Params:
     //     code (int): a task-specific status indicator
-    void result(int code, QByteArray* response);
+    void result(int code, NetResponse* response);
 
 protected:
     // The thread method in which to perform this task
@@ -48,7 +48,6 @@ protected:
     // Reference to the server API for updating the system
     // model with each request
     Server *server;
-
     NetRequest* request;
     QUuid sessionId;
 };

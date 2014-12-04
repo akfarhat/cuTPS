@@ -34,8 +34,8 @@ Tests::Tests(QWidget *parent) :
     // Bind a handler to server responses to our requests
     connect(&network, SIGNAL(loginSuccessful(QUuid)), this, SLOT(loginSuccessful(QUuid)));
     connect(&network, SIGNAL(orderStatusReceived(QUuid, int)), this, SLOT(orderStatusReceived(QUuid, int)));
-    connect(&network, SIGNAL(updateCompleted(InvocationDescriptor, QUuid, int)),
-                this, SLOT(updateCompleted(InvocationDescriptor, QUuid, int)));
+    connect(&network, SIGNAL(updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid, int)),
+                this, SLOT(updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid, int)));
     connect(&network, SIGNAL(textbookDetailsReceived(QUuid, int, QVector<Textbook*>*)),
                 this, SLOT(textbookDetailsReceived(QUuid, int, QVector<Textbook*>*)));
     connect(&network, SIGNAL(textbookLookupCompleted(QUuid, int, QVector<qint32>*)),
@@ -132,13 +132,13 @@ void Tests::on_viewBookDetailsButton_clicked() {
     clearResults();
     updateResults("View book details:");
 
-    Textbook aBook(1, "Comp 3004 - The Book", 9949, true, "123-456-7890");
+    int requestBookId = 1;
 
     viewBookDetailsCtrl = new ViewBookDetailsControl(network);
 
     QUuid requestId;
 
-    viewBookDetailsCtrl->getBookDetails(requestId, aBook);
+    viewBookDetailsCtrl->getBookDetails(requestId, requestBookId);
 
     delete viewBookDetailsCtrl;
 
@@ -180,6 +180,7 @@ void Tests::on_addCourseButton_clicked() {
     books.append(new Textbook(3, "Comp 3004 Textbook 3", 9153, true, "123-456-711"));
 
     Course *c = new Course("COMP 3004", "Advanced Diagrams", books);
+    c->setId(1313);
 
     addCourseCtrl = new AddCourseControl(network);
 
@@ -244,6 +245,8 @@ void Tests::orderStatusReceived(QUuid requestId, int code) {
 void Tests::updateCompleted(TPSNetProtocolDefs::InvocationDescriptor invocation,
                             QUuid requestId, int code) {
     clearResults();
+
+    qDebug() << "Update COMPLETED: code=" << code;
 
     QString updateMsg;
 

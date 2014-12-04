@@ -32,13 +32,13 @@ void GetBookDetailsTask::run()
         if (r.code == Fail) pass = false;
     }
 
-    NetResponse response = NetResponse(*request);
-    response.setResponseCode(pass ? 0x1 : 0x0);
-    response.setSessionId(sessionId);
+    NetResponse* response = new NetResponse();
+    response->setInvocation(request->getInvocation());
+    response->setRequestId(request->getRequestId());
+    response->setResponseCode(pass ? 0x1 : 0x0);
+    response->setSessionId(sessionId);
 
-    QByteArray* responseBytes = new QByteArray();   // NetClient will delete it
     QByteArray responseDataBytes;
-    QDataStream out(responseBytes, QIODevice::WriteOnly);
     QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
 
     if (pass)
@@ -49,11 +49,12 @@ void GetBookDetailsTask::run()
         {
             outData << *results.at(i);
         }
-        response.setData(responseDataBytes);
+
+        response->setData(responseDataBytes);
+    } else {
+        outData << (qint32)0;
     }
 
-    out << response;
-
-    emit result(response.getResponseCode(), responseBytes);
+    emit result(response->getResponseCode(), response);
 }
 

@@ -25,13 +25,13 @@ void GetRequiredBooksTask::run()
 
     ServerResponse getBooks = server->getRequiredTextbooks(sessionId, username, &ids);
 
-    NetResponse response = NetResponse(*request);
-    response.setResponseCode(getBooks.code == Fail ? 0x0 : 0x1);
-    response.setSessionId(sessionId);
+    NetResponse* response = new NetResponse();
+    response->setInvocation(request->getInvocation());
+    response->setRequestId(request->getRequestId());
+    response->setResponseCode(getBooks.code == Fail ? 0x0 : 0x1);
+    response->setSessionId(sessionId);
 
-    QByteArray* responseBytes = new QByteArray();   // NetClient will delete it
     QByteArray responseDataBytes;
-    QDataStream out(responseBytes, QIODevice::WriteOnly);
     QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
 
     if (getBooks.code == Success)
@@ -43,11 +43,9 @@ void GetRequiredBooksTask::run()
             outData << id;
         }
 
-        response.setData(responseDataBytes);
+        response->setData(responseDataBytes);
     }
 
-    out << response;
-
-    emit result(response.getResponseCode(), responseBytes);
+    emit result(response->getResponseCode(), response);
 }
 

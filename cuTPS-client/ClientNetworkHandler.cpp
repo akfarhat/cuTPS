@@ -302,13 +302,21 @@ void ClientNetworkHandler::readyRead()
 
     // Parse the response
     NetResponse response;
-    in >> response;
+
+    try {
+        in >> response;
+    } catch (NetMessage::BadRequestException* e) {
+        qDebug() << e->what();
+        connection->abort();
+        return;
+    }
 
     if (response.getResponseCode() < 1)
     {
         emit serverError(response.getRequestId(), response.getResponseCode());
         qDebug() << "Server responded with error " << response.getResponseCode()
                  << " for request " << response.getRequestId();
+        blockSize = 0;
         return;
     }
 
@@ -321,12 +329,18 @@ void ClientNetworkHandler::readyRead()
     switch (response.getInvocation()) {
 
     case AddBook: {
-        emit updateCompleted(response.getInvocation(), response.getRequestId(), response.getResponseCode());
+        qDebug() << "emitting update completed evt";
+        emit updateCompleted(response.getInvocation(),
+                             response.getRequestId(),
+                             (int)response.getResponseCode());
         break;
     }
 
     case AddCourse: {
-        emit updateCompleted(response.getInvocation(), response.getRequestId(), response.getResponseCode());
+        qDebug() << "emitting update completed evt";
+        emit updateCompleted(response.getInvocation(),
+                             response.getRequestId(),
+                             response.getResponseCode());
         break;
     }
 
