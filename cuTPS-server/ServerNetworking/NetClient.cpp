@@ -1,16 +1,18 @@
 #include "NetClient.h"
+
+#include <functional>
+
 #include "ServerAsync.h"
 #include "Utils.h"
 #include "Defines.h"
 
 #include <QByteArray>
+#include <QMap>
 
-#include "ClientTaskHandling/AddBookTask.h"
-#include "ClientTaskHandling/LoginTask.h"
-#include "ClientTaskHandling/AddCourseTask.h"
-#include "ClientTaskHandling/GetBookDetailsTask.h"
-#include "ClientTaskHandling/GetRequiredBooksTask.h"
-#include "ClientTaskHandling/SubmitOrderTask.h"
+#include "ClientTaskHandling/LoginTaskFactory.h"
+#include "ClientTaskHandling/UserTaskFactory.h"
+#include "ClientTaskHandling/ContentMgrTaskFactory.h"
+#include "ClientTaskHandling/AdminTaskFactory.h"
 
 using namespace TPSNetProtocolDefs;
 
@@ -21,6 +23,7 @@ NetClient::NetClient(QObject *parent) :
 
     server = ((ServerAsync*) parent)->getServer();
     blockSize = 0;
+    taskFactory = nullptr;
 }
 
 void NetClient::setSocket(int sockdescriptor)
@@ -45,8 +48,14 @@ void NetClient::setSocket(int sockdescriptor)
     }
 
     sessionId = response.sessionID;
+    clientStatusUpdated();
 
     qDebug() << "New Session. ID=" << sessionId;
+}
+
+void NetClient::kick()
+{
+    if (isConnected()) socket->abort();
 }
 
 void NetClient::connected()
@@ -86,40 +95,23 @@ void NetClient::readyRead()
 
     try {
         in >> *request;
-    } catch (NetMessage::BadRequestException* e) {
-        qDebug() << e->what();
-        socket->abort();
+    } catch (NetMessage::BadRequestException& e) {
+        qDebug() << e.what();
+        kick();
         return;
     }
 
-    // Parse data
+    // Check if this is goodbye msg first
+    if (request->getInvocation() == Goodbye)
+        kick();
+
     WorkerTask* task;
 
-    // Temporary router
-    switch (request->getInvocation()) {
-
-    case AddBook:
-        task = new AddBookTask(server);
-        break;
-    case AddCourse:
-        task = new AddCourseTask(server);
-        break;
-    case GetBookDetails:
-        task = new GetBookDetailsTask(server);
-        break;
-    case GetRequiredBooks:
-        task = new GetRequiredBooksTask(server);
-        break;
-    case Login:
-        task = new LoginTask(server);
-        break;
-    case SubmitOrder:
-        task = new SubmitOrderTask(server);
-        break;
-    case Goodbye:
-    default:
-        // kill the client
-        socket->abort();
+    try {
+        task = taskFactory->createTask(server, request->getInvocation());
+    } catch (TaskAbsFactory::PermissionDeniedExc& e) {
+        qDebug() << e.what();
+        kick();
         return;
     }
 
@@ -140,6 +132,12 @@ void NetClient::readyRead()
 
 void NetClient::taskResult(int code, NetResponse* response)
 {
+    if (response->getInvocation() == Login &&
+            response->getResponseCode() == 0x1)
+    {
+        clientStatusUpdated();
+    }
+
     qDebug() << "Task returned with code: " << code;
     qDebug() << "Task also returned response: " << response->stringRepr();
     QByteArray responseBytes;
@@ -158,4 +156,40 @@ QUuid NetClient::getSessionId() const
 bool NetClient::isConnected()
 {
     return !(sessionId.isNull());
+}
+
+void NetClient::clientStatusUpdated()
+{
+    // Client has successfully went through login process
+    // TODO: request user permission group from the server passing sessionID
+
+    auto nobodyFactCreator = []()
+    {
+        return new LoginTaskFactory();
+    };
+
+    auto studentFactCreator = []()
+    {
+        return new UserTaskFactory();
+    };
+
+    auto cmFactCreator = []()
+    {
+        return new ContentMgrTaskFactory();
+    };
+
+    auto adminFactCreator = []()
+    {
+        return new AdminTaskFactory();
+    };
+
+    QMap<UsrPermissionGroup, std::function<TaskAbsFactory*(void)>> map;
+    map.insert(UsrNobody, nobodyFactCreator);
+    map.insert(UsrStu, studentFactCreator);
+    map.insert(UsrCm, cmFactCreator);
+    map.insert(UsrAdm, adminFactCreator);
+
+    UsrPermissionGroup grp = UsrNobody;
+    if (this->taskFactory) delete this->taskFactory;
+    this->taskFactory = map[grp]();
 }

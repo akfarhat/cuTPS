@@ -3,3 +3,7 @@
 TaskAbsFactory::TaskAbsFactory()
 {
 }
+
+TaskAbsFactory::~TaskAbsFactory()
+{
+}

@@ -1,8 +1,4 @@
-#include <QTcpSocket>
-
 #include "WorkerTask.h"
-#include "Defines.h"
-#include <ServerNetworking/NetClient.h>
 
 WorkerTask::WorkerTask(Server* srv)
 {

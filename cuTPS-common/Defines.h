@@ -9,6 +9,7 @@
 #include <QDataStream>
 #include <QByteArray>
 #include <QUuid>
+#include <QMap>
 
 namespace TPSConstants {
 
@@ -26,7 +27,6 @@ namespace TPSNetProtocolDefs {
 
 static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
 static const qint32 PROTOCOL_MAGIC = 0xDEADBEEF;
-static const int PORT = 10001;
 
 enum InvocationDescriptor {
     Login,
@@ -35,7 +35,15 @@ enum InvocationDescriptor {
     SubmitOrder,
     AddCourse,
     AddBook,
+    GenerateReport,
     Goodbye
+};
+
+enum UsrPermissionGroup {
+    UsrStu,
+    UsrCm,
+    UsrAdm,
+    UsrNobody
 };
 
 }

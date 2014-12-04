@@ -85,7 +85,7 @@ QDataStream& operator>>(QDataStream& is, NetResponse& r)
     is >> magicCheck;
 
     if (magicCheck != TPSNetProtocolDefs::PROTOCOL_MAGIC)
-        throw new NetMessage::BadRequestException();
+        throw NetMessage::BadRequestException();
 
     is >> invocationInteger
         >> requestId

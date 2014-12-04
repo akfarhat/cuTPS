@@ -14,17 +14,10 @@
 
 #include <QRunnable>
 #include <QObject> // for singals+slots
-#include <QUuid>
-#include <QDebug>
-#include <QTcpSocket>
-#include <QDataStream>
-#include <QByteArray>
 
-#include <ServerNetworking/NetClient.h>
+#include "Server.h"
 #include <Entity/NetRequest.h>
 #include <Entity/NetResponse.h>
-#include "Defines.h"
-#include "Server.h"
 
 class WorkerTask : public QObject, public QRunnable
 {

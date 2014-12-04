@@ -19,9 +19,12 @@
 #include <QThreadPool>
 #include <QUuid>
 
-#include <ClientTaskHandling/WorkerTask.h>
+#include "ClientTaskHandling/WorkerTask.h"
+#include "ClientTaskHandling/TaskAbsFactory.h"
+
 #include "Server.h"
-#include "Entity/User.h"
+
+#include "Entity/NetRequest.h"
 #include "Entity/NetResponse.h"
 
 class NetClient : public QObject
@@ -31,6 +34,8 @@ public:
     explicit NetClient(QObject *parent = 0);
     void setSocket(int sockdescriptor);
     bool isConnected();
+
+    void kick();
 
     QUuid getSessionId() const;
 
@@ -55,10 +60,11 @@ private:
     QTcpSocket *socket;
     // The session ID belonging to this request
     QUuid sessionId;
-    // A reference to the client user
-    User *user;
     // The size of of data from each read of the socket buffer
     qint16 blockSize;
+    TaskAbsFactory* taskFactory;
+
+    void clientStatusUpdated();
 };
 
 #endif // TPSCLIENT_H
