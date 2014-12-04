@@ -27,6 +27,7 @@ CartDetailsWindow::~CartDetailsWindow() {
 }
 
 void CartDetailsWindow::on_backButton_clicked() {
+    this->parentWidget()->show();
     this->close();
 }
 
@@ -43,7 +44,8 @@ void CartDetailsWindow::on_cancelOrderButton_clicked() {
     ui->priceList->clear();
     ui->totalPrice->setText("0");
 
-    this->hide();
+    this->parentWidget()->show();
+    this->close();
 }
 
 void CartDetailsWindow::on_placeOrderButton_clicked() {

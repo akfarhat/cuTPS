@@ -53,7 +53,7 @@ void LoginControl::loginSuccessful(QUuid requestId, Role userRole) {
             SellableItem *c1 = new Chapter(5, NULL, 1, "Chapter One", 432, true);
             SellableItem *s1 = new Section(9, NULL, 1, "Section One", 325, true);
 
-            studentIF = new StudentMainMenuWindow(0, network, newStudent);
+            studentIF = new CartManagementInterface(0, network, newStudent);
             newStudent->getCart()->addItem(t1);
             newStudent->getCart()->addItem(c1);
             newStudent->getCart()->addItem(s1);

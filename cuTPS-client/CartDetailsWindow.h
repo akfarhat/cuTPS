@@ -35,6 +35,8 @@ class CartDetailsWindow : public QMainWindow {
          explicit CartDetailsWindow(QWidget *parent = 0, ViewCartControl *ctrl = NULL, CartRequestsAPI *api = NULL);
         ~CartDetailsWindow();
 
+    signals:
+        void cartNavigateBack();
 
     private slots:
         void on_backButton_clicked();

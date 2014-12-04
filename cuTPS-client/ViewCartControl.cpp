@@ -1,6 +1,6 @@
 #include "ViewCartControl.h"
 
-ViewCartControl::ViewCartControl(ClientNetworkHandler *netHandler, Student *stu) : network(netHandler), student(stu) {
+ViewCartControl::ViewCartControl(QWidget *parent, ClientNetworkHandler *netHandler, Student *stu) : parentWidget(parent), network(netHandler), student(stu) {
 
     requestAPI = new CartRequestsAPI(0, network);
 
@@ -17,7 +17,7 @@ Student* ViewCartControl::getStudent() {
 }
 
 void ViewCartControl::launchCartDetailsWindow() {
-    detailsWindow = new CartDetailsWindow(0, this, requestAPI);
+    detailsWindow = new CartDetailsWindow(parentWidget, this, requestAPI);
 
     detailsWindow->show();
 }

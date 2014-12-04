@@ -7,11 +7,13 @@
 #include "CartDetailsWindow.h"
 #include "Entity/Student.h"
 
+#include <QWidget>
+
 class CartDetailsWindow;
 
 class ViewCartControl {
     public:
-        ViewCartControl(ClientNetworkHandler *, Student *);
+        ViewCartControl(QWidget *parent, ClientNetworkHandler *, Student *);
         ~ViewCartControl();
 
         void launchCartDetailsWindow();
@@ -19,6 +21,7 @@ class ViewCartControl {
         Student* getStudent();
 
     private:
+        QWidget *parentWidget;
         Student *student;
         ClientNetworkHandler *network;
         CartRequestsAPI *requestAPI;

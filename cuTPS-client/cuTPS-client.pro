@@ -26,9 +26,6 @@ SOURCES += main.cpp \
     ContentManagementInterface.cpp \
     ManageContentListWindow.cpp \
     ManageContentControl.cpp \
-    StudentMainMenuWindow.cpp \
-    ViewCartOption.cpp \
-    ViewRequiredBooksOption.cpp \
     ContentRequestAPI.cpp \
     CartRequestsAPI.cpp \
     ManageCourseControl.cpp \
@@ -36,7 +33,8 @@ SOURCES += main.cpp \
     CourseDetailsWindow.cpp \
     CartDetailsWindow.cpp \
     ViewCartControl.cpp \
-    CancelOrderControl.cpp
+    CancelOrderControl.cpp \
+    CartManagementInterface.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -52,9 +50,6 @@ HEADERS  += \
     ContentManagementInterface.h \
     ManageContentListWindow.h \
     ManageContentControl.h \
-    StudentMainMenuWindow.h \
-    ViewCartOption.h \
-    ViewRequiredBooksOption.h \
     ContentRequestAPI.h \
     CartRequestsAPI.h \
     ManageCourseControl.h \
@@ -62,7 +57,8 @@ HEADERS  += \
     CourseDetailsWindow.h \
     CartDetailsWindow.h \
     ViewCartControl.h \
-    CancelOrderControl.h
+    CancelOrderControl.h \
+    CartManagementInterface.h
 
 FORMS    += \
     Tests.ui \
@@ -73,7 +69,8 @@ FORMS    += \
     ViewCartOption.ui \
     ViewRequiredBooksOption.ui \
     CourseDetailsWindow.ui \
-    CartDetailsWindow.ui
+    CartDetailsWindow.ui \
+    CartManagementInterface.ui
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++
