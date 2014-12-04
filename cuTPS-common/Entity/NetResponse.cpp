@@ -53,20 +53,22 @@ QDataStream& operator<<(QDataStream& os, const NetResponse& r)
     os << r.sessionId;
     os << r.responseCode;
 
-    qint16 rqDataSize = r.getDataSize();
+    qint32 rDataSz = r.getDataSize();
+    os << rDataSz;
 
-    if (r.hasExtraData()) {
-        os << rqDataSize;
-        os << *(r.data);
-    } else {
-        rqDataSize = 0; // it's already must be 0, setting it here just to be sure
-        os << rqDataSize;
+    if (rDataSz) {
+        os << *r.data;
     }
 
     os.device()->seek(0);
     // Requests consist of invocation integer + response code (2*qint8),
     // requestId + sessionId (2*QUUid), dataSize (qint16) + extra data itself.
-    qint16 blockSz = rqDataSize + 2*sizeof(qint8) + 2*sizeof(QUuid) + sizeof(qint16) + sizeof(qint32);
+
+    qint16 blockSz = 2*sizeof(qint8)    // invocation + responseCode
+            + 2*sizeof(QUuid)           // requestId + sessionId
+            + sizeof(qint32)            // dataSize
+            + rDataSz;                  // data
+
     os << blockSz;
 
     return os;
@@ -78,7 +80,7 @@ QDataStream& operator>>(QDataStream& is, NetResponse& r)
 
     qint8 invocationInteger, responseCode;
     QUuid requestId, sessionId;
-    qint16 dataSz;
+    qint32 dataSz;
 
     is >> invocationInteger
         >> requestId

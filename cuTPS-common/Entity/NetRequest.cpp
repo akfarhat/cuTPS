@@ -23,21 +23,22 @@ QDataStream& operator<<(QDataStream& os, const NetRequest& r)
     os << invocationInteger;
     os << r.requestId;
 
-    qint16 rqDataSize = r.getDataSize();
+    qint32 rDataSz = r.getDataSize();
+    os << rDataSz;
 
-    if (r.hasExtraData()) {
-        os << rqDataSize;
-        os << *(r.data);
-    } else {
-        rqDataSize = 0; // it's already must be 0, setting it here just to be sure
-        os << rqDataSize;
+    if (rDataSz) {
+        os << *r.data;
     }
 
     os.device()->seek(0);
     // Requests consist of invocation integer (qint8), req.id (QUUid)
     // dataSize (qint16) + extra data itself (as rqDataSize)!
-    qint16 blockSz = (quint16)(rqDataSize + sizeof(qint8) + sizeof(QUuid)
-                               + sizeof(qint16) + sizeof(qint32));
+
+    qint16 blockSz = sizeof(qint8)    // invocation
+            + sizeof(QUuid)           // requestId
+            + sizeof(qint32)          // dataSize
+            + rDataSz;                // data
+
     os << blockSz;
 
     return os;

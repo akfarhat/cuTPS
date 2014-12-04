@@ -1,31 +1,31 @@
 #include "Course.h"
 #include "Defines.h"
 
-Course::Course() {
+Course::Course()
+{
     code = "";
-    requiredBooks = new QVector<Textbook*>();
-    reqBooksIds = nullptr;
 }
 
-Course::Course(QString course) {
+Course::Course(QString course)
+{
     code = course;
     name = "";
-    requiredBooks = new QVector<Textbook*>();
 }
 
-Course::Course(QString course, QString courseName, QVector<Textbook*> books) {
+Course::Course(const QString course,
+               const QString courseName,
+               const QVector<Textbook*>& books)
+{
     code = course;
     name = courseName;
-    requiredBooks = new QVector<Textbook*>();
 
     for (int i=0; i<books.size(); i++) {
-        requiredBooks->append(books[i]);
+        requiredBooks.append(books[i]);
+        reqBooksIds.append(books[i]->getId());
     }
 }
 
-Course::~Course() {
-    delete requiredBooks;
-}
+Course::~Course() {}
 
 int Course::getId() const {
     return id;
@@ -44,16 +44,17 @@ void Course::setCourseCode(const QString newCode) {
 }
 
 void Course::addRequiredText(Textbook *book) {
-    requiredBooks->append(book);
+    requiredBooks.append(book);
+    reqBooksIds.append(static_cast<qint32>(book->getId()));
 }
 
-QVector<Textbook*>* Course::getRequiredTexts() const {
+QVector<Textbook*>* Course::getRequiredTexts() {
     // Return a pointer to the vector contatining books
-    return this->requiredBooks;
+    return &this->requiredBooks;
 }
 
-QVector<qint32>* Course::getRequiredTextsIds() const {
-    return this->reqBooksIds;
+QVector<qint32>* Course::getRequiredTextsIds() {
+    return &this->reqBooksIds;
 }
 
 QString Course::getCourseName() const
@@ -81,12 +82,12 @@ QDataStream& operator<<(QDataStream& os, const Course& c)
        << c.code;
 
     // Then required textbooks count..
-    os << static_cast<quint16>(c.requiredBooks->size());
+    os << static_cast<quint16>(c.reqBooksIds.size());
 
     // .. followed by this many textbook IDs
-    for (Textbook* b : *(c.requiredBooks))
+    for (qint32 id : c.reqBooksIds)
     {
-        os << static_cast<qint32>(b->getId());
+        os << id;
     }
 
     return os;
@@ -106,17 +107,15 @@ QDataStream& operator>>(QDataStream& is, Course& c)
 
     c.name = name;
     c.code = code;
-    c.id = courseId;
+    c.id = static_cast<int>(courseId);
 
     is >> textCount;
 
-    c.reqBooksIds = new QVector<qint32>();
-    qint32 id;
-
     for (int i = 0; i < textCount; ++i)
     {
+        qint32 id;
         is >> id;
-        c.reqBooksIds->append(id);
+        c.reqBooksIds.append(id);
     }
 
     return is;

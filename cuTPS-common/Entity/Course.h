@@ -19,8 +19,8 @@ class Course
 {
 public:
     Course();
-    Course(QString);
-    Course(QString, QString, QVector<Textbook*>);
+    Course(const QString ccode);
+    Course(const QString ccode, const QString cname, const QVector<Textbook*>&);
     ~Course();
 
     int getId() const;
@@ -29,9 +29,9 @@ public:
     QString getCourseCode() const;
     void setCourseCode(const QString);
 
-    void addRequiredText(Textbook *);
-    QVector<Textbook*>* getRequiredTexts() const;
-    QVector<qint32>* getRequiredTextsIds() const;
+    void addRequiredText(Textbook*);
+    QVector<Textbook*>* getRequiredTexts();
+    QVector<qint32>* getRequiredTextsIds();
 
     QString getCourseName() const;
     void setCourseName(const QString &value);
@@ -51,8 +51,9 @@ private:
     // I.e. freshly received course object from the server only knows how many texts
     // are required by this course + their IDs. To get actual Textbook by id, use
     // getBookDetails() API call.
-    QVector<Textbook*> *requiredBooks; // TODO: make it legacy or remove?
-    QVector<qint32>* reqBooksIds;
+    QVector<Textbook*> requiredBooks; // TODO: make it legacy or remove?
+    QVector<qint32> reqBooksIds;
+
 };
 
 #endif // COURSE_H
