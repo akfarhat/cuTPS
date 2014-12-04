@@ -35,7 +35,8 @@ SOURCES += main.cpp \
     CourseRequestAPI.cpp \
     CourseDetailsWindow.cpp \
     CartDetailsWindow.cpp \
-    ViewCartControl.cpp
+    ViewCartControl.cpp \
+    CancelOrderControl.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -60,7 +61,8 @@ HEADERS  += \
     CourseRequestAPI.h \
     CourseDetailsWindow.h \
     CartDetailsWindow.h \
-    ViewCartControl.h
+    ViewCartControl.h \
+    CancelOrderControl.h
 
 FORMS    += \
     Tests.ui \

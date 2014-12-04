@@ -11,11 +11,15 @@ ViewCartOption::~ViewCartOption() {
     delete ui;
 }
 
+void ViewCartOption::setStudent(Student *newStudent) {
+    student = newStudent;
+}
+
 
 void ViewCartOption::on_viewCartButton_clicked() {
     qDebug() << "view cart button clicked...showing cart details window";
 
-    ViewCartControl *viewCartCtrl = new ViewCartControl(network);
+    ViewCartControl *viewCartCtrl = new ViewCartControl(network, student);
 
 
 

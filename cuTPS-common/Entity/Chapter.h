@@ -32,6 +32,7 @@ class Chapter: public SellableItem {
 
         QString getDetails();
         QString getTitle();
+        QString getType();
 };
 
 #endif // CHAPTER_H

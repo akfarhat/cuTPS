@@ -30,6 +30,7 @@ class Section: public SellableItem {
 
         QString getDetails();
         QString getTitle();
+        QString getType();
 };
 
 #endif // SECTION_H

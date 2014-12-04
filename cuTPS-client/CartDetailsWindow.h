@@ -4,6 +4,13 @@
 //     this class is responsible for displaying a student's shopping cart details
 //
 // Traceability: CartDetailsWindow class in the CartManagement subsystem
+// Class: CartDetailsWindow
+// Type: Boundary
+// Description:
+//     this class is responsible for displaying all items and their prices currently in a student's shopping cart.
+//     It also provides options for placing or cancelling an order
+//
+// Traceability: CartDetailsWindow class in the CartManagement subsystem
 
 #ifndef CARTDETAILSWINDOW_H
 #define CARTDETAILSWINDOW_H
@@ -11,6 +18,8 @@
 #include <QMainWindow>
 
 #include "CartRequestsAPI.h"
+#include "ViewCartControl.h"
+#include "CancelOrderControl.h"
 
 // Forward reference to avoid circular deps
 class ViewCartControl;

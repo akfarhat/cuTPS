@@ -36,6 +36,10 @@ ShoppingCart* Student::getCart() {
     return cart;
 }
 
+void Student::setCart(ShoppingCart *newCart) {
+    cart = newCart;
+}
+
 QString Student::getDetails() {
     QString details = "";
     details += "Type: Student\nUser ID: ";

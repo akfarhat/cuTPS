@@ -11,6 +11,7 @@
 
 #include <QWidget>
 #include "ClientNetworkHandler.h"
+#include "Entity/Student.h"
 
 namespace Ui {
     class ViewRequiredBooksOption;
@@ -20,7 +21,7 @@ class ViewRequiredBooksOption : public QWidget {
     Q_OBJECT
 
     public:
-        explicit ViewRequiredBooksOption(QWidget *parent = 0, ClientNetworkHandler *net = NULL);
+        explicit ViewRequiredBooksOption(QWidget *parent = 0, ClientNetworkHandler *net = NULL, Student *stu = NULL);
         ~ViewRequiredBooksOption();
 
     private slots:
@@ -29,6 +30,8 @@ class ViewRequiredBooksOption : public QWidget {
     private:
         Ui::ViewRequiredBooksOption *ui;
         ClientNetworkHandler *network;
+
+        Student *student;
 };
 
 #endif // VIEWREQUIREDBOOKSOPTION_H

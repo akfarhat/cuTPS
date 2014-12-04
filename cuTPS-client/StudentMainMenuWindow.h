@@ -24,9 +24,11 @@ class StudentMainMenuWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit StudentMainMenuWindow(QWidget *parent = 0, ClientNetworkHandler *net = NULL);
+    explicit StudentMainMenuWindow(QWidget *parent = 0, ClientNetworkHandler *net = NULL, Student *stu = NULL);
     ~StudentMainMenuWindow();
 
+    Student *getStudent();
+    void setStudent(Student *);
 
 private:
     Ui::StudentMainMenuWindow *ui;
@@ -35,7 +37,7 @@ private:
 
     ClientNetworkHandler *network;
 
-
+    Student *student;
 
 };
 

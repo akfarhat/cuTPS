@@ -3,6 +3,9 @@
 
 #include <QDebug>
 
+#include "Entity/Chapter.h"
+#include "Entity/Section.h"
+
 LoginControl::LoginControl(ClientNetworkHandler *serverAPI)
     : network(serverAPI)
 {
@@ -33,15 +36,31 @@ void LoginControl::loginSuccessful(QUuid requestId, Role userRole) {
     qDebug() << "LoginControl::successfulLogin for: " << userRole
              << " - " << requestId;
 
+    // TODO: Need to get user information such as name, etc. from DB to create the user (i.e. Student or ContentManager) object that will be passed around
     switch (userRole) {
 
         case Role::StudentUser:
+          {
             qDebug() << "LoginControl::loginSuccessful creating studentInterface";
 
-            studentIF = new StudentMainMenuWindow(0, network);
+            //---------------------------------------------------------
+            // TEMPORARY DATA. REAL DATA NEEDS TO BE OBTAINED FROM DB
+            //---------------------------------------------------------
+            Student *newStudent = new Student(15, "Joe Smith", "joesmith", 10101010);
+
+            // Create dummy items and add them to the shopping cart
+            SellableItem *t1 = new Textbook(1, "The First Book", 554563, 1, "123456678");
+            SellableItem *c1 = new Chapter(5, NULL, 1, "Chapter One", 432, true);
+            SellableItem *s1 = new Section(9, NULL, 1, "Section One", 325, true);
+
+            studentIF = new StudentMainMenuWindow(0, network, newStudent);
+            newStudent->getCart()->addItem(t1);
+            newStudent->getCart()->addItem(c1);
+            newStudent->getCart()->addItem(s1);
             studentIF->show();
             loginWin->close();
             break;
+          }
 
         case Role::ContentManagerUser:
             qDebug() << "LoginControl::loginSuccessful creating cmInterface";

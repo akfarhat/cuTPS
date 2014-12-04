@@ -37,8 +37,8 @@ QString Chapter::getDetails() {
     details += QString::number(this->getChapterNumber());
     details += "\nTextbook Name: ";
     details += bookName;
-    details += "\nPrice (in cents): ";
-    details += QString::number(this->getPriceCents());
+    details += "\nPrice: $";
+    details += QString::number(this->getPriceCents() / 100.00f);
     details += "\nAvailable: ";
     details += (this->getAvailability() == true) ? "yes" : "no";
     return details;
@@ -46,4 +46,8 @@ QString Chapter::getDetails() {
 
 QString Chapter::getTitle() {
     return "Chapter " + QString::number(this->getChapterNumber()) + ": " + this->getName();
+}
+
+QString Chapter::getType() {
+    return "Chapter";
 }

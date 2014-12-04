@@ -39,6 +39,8 @@ class SellableItem {
         virtual QString getDetails() = 0;
         // Return the one-line list string
         virtual QString getTitle() = 0;
+
+        virtual QString getType() = 0;
 };
 
 #endif // SELLABLEITEM_H

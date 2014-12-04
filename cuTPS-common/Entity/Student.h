@@ -40,6 +40,7 @@ class Student: public User {
         void enrollInCourse(Course*);
 
         ShoppingCart* getCart();
+        void setCart(ShoppingCart *);
 
         QString getDetails();
 };

@@ -5,16 +5,21 @@
 #include "ClientNetworkHandler.h"
 #include "CartRequestsAPI.h"
 #include "CartDetailsWindow.h"
+#include "Entity/Student.h"
+
+class CartDetailsWindow;
 
 class ViewCartControl {
     public:
-        ViewCartControl(ClientNetworkHandler *);
+        ViewCartControl(ClientNetworkHandler *, Student *);
         ~ViewCartControl();
 
         void launchCartDetailsWindow();
 
+        Student* getStudent();
+
     private:
-        User *student;
+        Student *student;
         ClientNetworkHandler *network;
         CartRequestsAPI *requestAPI;
 

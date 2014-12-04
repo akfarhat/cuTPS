@@ -40,3 +40,7 @@ QString Textbook::getDetails() {
 QString Textbook::getTitle() {
     return this->getName() + " - " + this->getISBN();
 }
+
+QString Textbook::getType() {
+    return "Textbook";
+}

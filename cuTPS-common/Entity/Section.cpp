@@ -49,8 +49,8 @@ QString Section::getDetails() {
     details += chapterNum;
     details += "\nTextbook Name: ";
     details += textbookName;
-    details += "\nPrice (in cents): ";
-    details += QString::number(this->getPriceCents());
+    details += "\nPrice: $";
+    details += QString::number(this->getPriceCents() / 100.00f);
     details += "\nAvailable: ";
     details += (this->getAvailability() == true) ? "yes" : "no";
     return details;
@@ -59,4 +59,8 @@ QString Section::getDetails() {
 QString Section::getTitle() {
     return "Section " + QString::number(this->getSectionNumber())
                       + ": " + this->getName();
+}
+
+QString Section::getType() {
+    return "Section";
 }

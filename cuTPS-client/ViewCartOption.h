@@ -12,6 +12,7 @@
 
 #include "ViewCartControl.h"
 #include "ClientNetworkHandler.h"
+#include "Entity/Student.h"
 
 namespace Ui {
     class ViewCartOption;
@@ -21,8 +22,10 @@ class ViewCartOption : public QWidget {
     Q_OBJECT
 
     public:
-        ViewCartOption(QWidget *parent, ClientNetworkHandler *net);
+        explicit ViewCartOption(QWidget *parent = 0, ClientNetworkHandler *net = NULL);
         ~ViewCartOption();
+
+    void setStudent(Student*);
 
     signals:
         void hideStudentMainMenuWindow();
@@ -34,7 +37,7 @@ class ViewCartOption : public QWidget {
         Ui::ViewCartOption *ui;
         ClientNetworkHandler *network;
 
-        User *student;
+        Student *student;
 };
 
 #endif // VIEWCARTOPTION_H

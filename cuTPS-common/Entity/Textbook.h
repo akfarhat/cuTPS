@@ -25,6 +25,7 @@ class Textbook: public SellableItem {
 
         QString getDetails();
         QString getTitle();
+        QString getType();
 };
 
 #endif // TEXTBOOK_H
