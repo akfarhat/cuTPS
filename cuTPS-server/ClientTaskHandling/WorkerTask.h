@@ -31,7 +31,7 @@ class WorkerTask : public QObject, public QRunnable
     Q_OBJECT
 public:
     WorkerTask(Server* srv);
-
+    virtual ~WorkerTask();
     void setSessionId(QUuid sessionId);
     void setRequest(NetRequest* request);
 

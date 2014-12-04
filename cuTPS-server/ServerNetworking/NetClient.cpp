@@ -119,8 +119,7 @@ void NetClient::readyRead()
     case Goodbye:
     default:
         // kill the client
-        server->closeSession(sessionId);
-        emit clientDisconnected(this);
+        socket->abort();
         return;
     }
 
@@ -148,6 +147,7 @@ void NetClient::taskResult(int code, NetResponse* response)
     out << *response;
     qint64 written = socket->write(responseBytes);
     qDebug() << "Send to client (bytes): " << written;
+    delete response;
 }
 
 QUuid NetClient::getSessionId() const

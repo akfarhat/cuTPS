@@ -8,9 +8,10 @@ class ServerPrefs
 public:
     ServerPrefs();
 
-    static QString GetDbPath();
-    static QString GetServerAddr();
+    static const QString GetDbPath();
     static int GetPort();
+    static int MaxThreads();
+
 };
 
 #endif // TPSSERVERPREFS_H

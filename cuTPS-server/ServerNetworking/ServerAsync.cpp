@@ -12,17 +12,21 @@ ServerAsync::ServerAsync(QObject *parent) :
 
 void ServerAsync::StartServer()
 {
-    ServerPrefs::GetDbPath();
-    if (listen(QHostAddress::Any, TPSNetProtocolDefs::PORT))
+    const int port = ServerPrefs::GetPort();
+    const int thrCap = ServerPrefs::MaxThreads();
+    QThreadPool::globalInstance()->setMaxThreadCount(thrCap);
+
+    if (listen(QHostAddress::Any, port))
     {
-        qDebug() << " >> Server Started on port " << TPSNetProtocolDefs::PORT;
+        qDebug() << " >> Server Started on port " << port;
+        qDebug() << "\tMax parallel threads: " << thrCap;
         // TODO: ensure that parent destroys its children
         server = new Server(this);
         emit serverStarted();
     }
     else
     {
-        qDebug() << " >> Server has failed to listen on port " << TPSNetProtocolDefs::PORT
+        qDebug() << " >> Server has failed to listen on port " << port
                   << " Error: " << serverError();
 
         emit serverFailure();
