@@ -10,6 +10,7 @@
 #define VIEWREQUIREDBOOKSOPTION_H
 
 #include <QWidget>
+#include "ClientNetworkHandler.h"
 
 namespace Ui {
     class ViewRequiredBooksOption;
@@ -19,7 +20,7 @@ class ViewRequiredBooksOption : public QWidget {
     Q_OBJECT
 
     public:
-        explicit ViewRequiredBooksOption(QWidget *parent = 0);
+        explicit ViewRequiredBooksOption(QWidget *parent = 0, ClientNetworkHandler *net = NULL);
         ~ViewRequiredBooksOption();
 
     private slots:
@@ -27,6 +28,7 @@ class ViewRequiredBooksOption : public QWidget {
 
     private:
         Ui::ViewRequiredBooksOption *ui;
+        ClientNetworkHandler *network;
 };
 
 #endif // VIEWREQUIREDBOOKSOPTION_H

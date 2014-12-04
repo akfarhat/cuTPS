@@ -8,14 +8,17 @@
 #ifndef CARTREQUESTSAPI_H
 #define CARTREQUESTSAPI_H
 
+#include <QObject>
 #include <QUuid>
 #include "ClientNetworkHandler.h"
 #include "Entity/Textbook.h"
 #include "Entity/Order.h"
 
-class CartRequestsAPI {
+class CartRequestsAPI: public QObject {
+    Q_OBJECT
+
     public:
-        CartRequestsAPI(ClientNetworkHandler*);
+        explicit CartRequestsAPI(QObject *parent = 0, ClientNetworkHandler *net = NULL);
         ~CartRequestsAPI();
 
         QUuid getRequiredBooks(QString&);

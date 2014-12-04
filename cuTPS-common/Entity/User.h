@@ -9,7 +9,6 @@
 #define USER_H
 
 #include <QString>
-using namespace std;
 
 
 class User {

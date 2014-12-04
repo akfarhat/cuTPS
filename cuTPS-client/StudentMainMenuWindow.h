@@ -13,6 +13,8 @@
 #include "ViewRequiredBooksOption.h"
 #include "ClientNetworkHandler.h"
 
+
+
 namespace Ui {
     class StudentMainMenuWindow;
 }
@@ -25,13 +27,13 @@ public:
     explicit StudentMainMenuWindow(QWidget *parent = 0, ClientNetworkHandler *net = NULL);
     ~StudentMainMenuWindow();
 
-
 private:
     Ui::StudentMainMenuWindow *ui;
     ViewCartOption *viewCartOption;
     ViewRequiredBooksOption *viewRequiredBooksOption;
 
     ClientNetworkHandler *network;
+
 
 };
 

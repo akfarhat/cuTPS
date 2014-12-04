@@ -1,6 +1,6 @@
 #include "CartRequestsAPI.h"
 
-CartRequestsAPI::CartRequestsAPI(ClientNetworkHandler *net) : network(net) {
+CartRequestsAPI::CartRequestsAPI(QObject *parent, ClientNetworkHandler *net) : QObject(parent), network(net) {
 
 
 }

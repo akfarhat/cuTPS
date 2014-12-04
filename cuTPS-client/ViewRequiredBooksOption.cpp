@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-ViewRequiredBooksOption::ViewRequiredBooksOption(QWidget *parent) : QWidget(parent), ui(new Ui::ViewRequiredBooksOption) {
+ViewRequiredBooksOption::ViewRequiredBooksOption(QWidget *parent, ClientNetworkHandler *net) : QWidget(parent), ui(new Ui::ViewRequiredBooksOption), network(net) {
     ui->setupUi(this);
 }
 

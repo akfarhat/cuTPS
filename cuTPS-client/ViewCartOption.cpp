@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-ViewCartOption::ViewCartOption(QWidget *parent) : QWidget(parent), ui(new Ui::ViewCartOption) {
+ViewCartOption::ViewCartOption(QWidget *parent, ClientNetworkHandler *net) : QWidget(parent), ui(new Ui::ViewCartOption), network(net) {
     ui->setupUi(this);
 }
 
@@ -13,5 +13,12 @@ ViewCartOption::~ViewCartOption() {
 
 
 void ViewCartOption::on_viewCartButton_clicked() {
-    qDebug() << "view cart button clicked...woohoo!!";
+    qDebug() << "view cart button clicked...showing cart details window";
+
+    ViewCartControl *viewCartCtrl = new ViewCartControl(network);
+
+
+
+    viewCartCtrl->launchCartDetailsWindow();
+
 }

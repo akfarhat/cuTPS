@@ -9,8 +9,8 @@ StudentMainMenuWindow::StudentMainMenuWindow(QWidget *parent, ClientNetworkHandl
     this->setWindowTitle("Carleton University Textbook Publishing System");
 
     // Create the buttons
-    viewCartOption = new ViewCartOption(this);
-    viewRequiredBooksOption = new ViewRequiredBooksOption(this);
+    viewCartOption = new ViewCartOption(this, network);
+    viewRequiredBooksOption = new ViewRequiredBooksOption(this, network);
 
     ui->verticalLayout->addWidget(viewCartOption);
     ui->verticalLayout->addWidget(viewRequiredBooksOption);

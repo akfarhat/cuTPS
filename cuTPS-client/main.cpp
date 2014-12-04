@@ -3,6 +3,7 @@
 #include <QApplication>
 
 
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -18,6 +19,7 @@ int main(int argc, char *argv[])
     LoginControl loginCtrl(&network);
 
     loginCtrl.startSession();
+
 
     return a.exec();
 }
