@@ -85,8 +85,8 @@ private:
 
 private:
     bool generateSessionID(QUuid &, QString &);
-    bool validateBillingInfo(BillingInfo *);
-    bool validateDeliveryInfo(DeliveryInfo *);
+    bool validateBillingInfo(const BillingInfo *);
+    bool validateDeliveryInfo(const DeliveryInfo *);
     bool validateOrder(Order &, QString *);
     Role getUserRole(QString &);
 };

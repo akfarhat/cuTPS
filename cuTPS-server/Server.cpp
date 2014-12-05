@@ -486,18 +486,18 @@ ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector
     return response;
 }
 
-bool Server::validateBillingInfo(BillingInfo *billingInfo)
+bool Server::validateBillingInfo(const BillingInfo *billingInfo)
 {
-    if (billingInfo == NULL)
+    if (billingInfo == nullptr)
         return false;
 
     // Could potentially call a validator API from the billing system
     return true;
 }
 
-bool Server::validateDeliveryInfo(DeliveryInfo *deliveryInfo)
+bool Server::validateDeliveryInfo(const DeliveryInfo *deliveryInfo)
 {
-    if (deliveryInfo == NULL)
+    if (deliveryInfo == nullptr)
         return false;
 
     // Validate the delivery email address
@@ -520,7 +520,7 @@ bool Server::validateOrder(Order& order, QString *errorMessage)
         return false;
     }
 
-    if (! order.getOrder()->size() > 0) {
+    if (! order.getItems()->size() > 0) {
         *errorMessage = QString("Order must have at least one item");
         return false;
     }

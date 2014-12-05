@@ -4,33 +4,42 @@
 //     Entity object representing a section that
 //     the system has available for purchase
 
-
 #ifndef SECTION_H
 #define SECTION_H
 
+#include "libcutps_global.h"
+
+#include "SellableItem.h"
 #include "Chapter.h"
+
 #include <QString>
+#include <QDataStream>
 
-class Section: public SellableItem {
-    private:
-        Chapter* parentChapter;
-        int number;
+class LIBCUTPS_EXPORT Section : public SellableItem
+{
+public:
+    Section();
+    Section(int, Chapter*, int, QString, int, bool);
+    Section(Chapter*, int, QString, int);
+    virtual ~Section();
 
-    public:
-        Section();
-        Section(int, Chapter*, int, QString, int, bool);
-        Section(Chapter*, int, QString, int);
-        ~Section();
+    Chapter* getParentChapter();
+    void setParentChapter(Chapter*);
 
-        Chapter* getParentChapter();
-        void setParentChapter(Chapter*);
+    int getSectionNumber() const;
+    void setSectionNumber(int);
 
-        int getSectionNumber();
-        void setSectionNumber(int);
+    QString getDetails() const;
+    QString getTitle();
+    QString getType();
 
-        QString getDetails();
-        QString getTitle();
-        QString getType();
+    friend QDataStream& operator<<(QDataStream& os, const Section& s); // output
+    friend QDataStream& operator>>(QDataStream& is, Section& s); // input
+
+private:
+    Chapter* parentChapter;
+    int number;
+    int parentChapterId;
 };
 
 #endif // SECTION_H

@@ -8,10 +8,13 @@
 #ifndef USER_H
 #define USER_H
 
+#include "libcutps_global.h"
+
 #include <QString>
 
+using namespace std;
 
-class User {
+class LIBCUTPS_EXPORT User {
 
     private:
         int userId;

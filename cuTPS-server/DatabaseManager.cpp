@@ -1,5 +1,5 @@
 #include "DatabaseManager.h"
-#include "TPSServerPrefs.h"
+#include "ServerPrefs.h"
 #include <iostream>
 
 DatabaseManager::DatabaseManager(QObject *parent) :
@@ -14,7 +14,7 @@ DatabaseManager::~DatabaseManager() {
 bool DatabaseManager::openDB()
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
-    QString dbPath = TPSServerPrefs::GetDbPath();
+    QString dbPath = ServerPrefs::GetDbPath();
     db.setDatabaseName(dbPath);
 
     bool result = db.open();
@@ -48,4 +48,3 @@ bool DatabaseManager::runQuery(const QString &queryString, QSqlQuery* returnQuer
     *returnQuery = query;
     return result;
 }
-

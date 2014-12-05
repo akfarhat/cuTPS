@@ -1,4 +1,7 @@
 #include "Section.h"
+#include "Defines.h"
+
+Section::Section() {}
 
 Section::Section(int id, Chapter* chapter, int num, QString name, int price, bool isAvailable) : SellableItem(id, name, price, isAvailable), parentChapter(chapter), number(num) {
 }
@@ -15,9 +18,10 @@ Chapter* Section::getParentChapter() {
 
 void Section::setParentChapter(Chapter* newChapter) {
     parentChapter = newChapter;
+    parentChapterId = newChapter->getId();
 }
 
-int Section::getSectionNumber() {
+int Section::getSectionNumber() const {
     return number;
 }
 
@@ -25,15 +29,15 @@ void Section::setSectionNumber(int newNumber) {
     number = newNumber;
 }
 
-QString Section::getDetails() {
+QString Section::getDetails() const {
     QString textbookName = "NULL";
     QString chapterName = "NULL";
     QString chapterNum = "NULL";
-    if (this->getParentChapter() != NULL) {
-        chapterName = this->getParentChapter()->getName();
-        chapterNum = QString::number(this->getParentChapter()->getChapterNumber());
-        if (this->getParentChapter()->getParentTextbook() != NULL)
-            textbookName = this->getParentChapter()->getParentTextbook()->getName();
+    if (parentChapter != NULL) {
+        chapterName = parentChapter->getName();
+        chapterNum = QString::number(parentChapter->getChapterNumber());
+        if (parentChapter->getParentTextbook() != NULL)
+            textbookName = parentChapter->getParentTextbook()->getName();
     }
 
     QString details = "";
@@ -63,4 +67,28 @@ QString Section::getTitle() {
 
 QString Section::getType() {
     return "Section";
+}
+
+QDataStream& operator<<(QDataStream& os, const Section& s)
+{
+    os.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+
+    os << dynamic_cast<const SellableItem&>(s);
+    os << static_cast<qint32>(s.number);
+    os << static_cast<qint32>(s.parentChapterId);
+
+    return os;
+}
+
+QDataStream& operator>>(QDataStream& is, Section& s)
+{
+    is.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+
+    is >> dynamic_cast<SellableItem&>(s);
+    qint32 parentId, sNumber;
+    is >> sNumber >> parentId;
+    s.parentChapterId = parentId;
+    s.number = sNumber;
+
+    return is;
 }

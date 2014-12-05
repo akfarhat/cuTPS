@@ -20,6 +20,7 @@
 #include "SubmitOrderControl.h"
 #include "AddCourseControl.h"
 #include "AddBookControl.h"
+#include "Defines.h"
 
 namespace Ui {
     class Tests;
@@ -53,11 +54,11 @@ class Tests : public QDialog
 
         void orderStatusReceived(QUuid, int);
 
-        void updateCompleted(TPSConstants::InvocationDescriptor, QUuid, int);
+        void updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid, int);
 
-        void textbookDetailsReceived(QUuid, int, Textbook*);
+        void textbookDetailsReceived(QUuid, int, QVector<Textbook*>*);
 
-        void textbookLookupCompleted(QUuid, int, QVector<Textbook*>*);
+        void textbookLookupCompleted(QUuid, int, QVector<qint32>*);
 
         void serverError(QUuid, int);
 

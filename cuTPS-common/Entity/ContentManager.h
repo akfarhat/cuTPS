@@ -8,11 +8,13 @@
 #ifndef CONTENTMANAGER_H
 #define CONTENTMANAGER_H
 
+#include "libcutps_global.h"
+
 #include "User.h"
 #include <QString>
 using namespace std;
 
-class ContentManager: public User {
+class LIBCUTPS_EXPORT ContentManager : public User {
 
     private:
         QString emailAddress;

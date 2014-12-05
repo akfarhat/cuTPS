@@ -5,16 +5,21 @@
 #include <QDebug>
 #include <iostream>
 
-#include "TPSNetUtils.h"
+#include "Entity/NetRequest.h"
+#include "Entity/NetResponse.h"
+
 #include "Defines.h"
 #include "Utils.h"
 
-#define ASSERT_VALID \
-    if (!isValid()) \
-    {               \
-        qDebug() << "error: invocation attempt on invalid socket";\
-        return QUuid(); \
-    } \
+
+#define ASSERT_VALID                                                    \
+    if (!isValid())                                                     \
+    {                                                                   \
+        qDebug() << "error: invocation attempt on invalid socket";      \
+        return QUuid();                                                 \
+    }                                                                   \
+
+using namespace TPSNetProtocolDefs;
 
 ClientNetworkHandler::ClientNetworkHandler()
 {
@@ -64,31 +69,29 @@ void ClientNetworkHandler::disconnectFromServer()
 
 QUuid ClientNetworkHandler::login(UserCredentials& credentials)
 {
-
     if (!isConnected())
     {
         qDebug() << "error: invocation attempt on invalid socket";
-        // TODO: Throw an exception
-        return QUuid(); // null QUuid
+        return QUuid();
     }
 
     QUuid requestId = QUuid::createUuid();
 
-    TPSNetProtocol::NetRequest request;
-    request.invocation = TPSConstants::Login;
-    request.requestId = requestId;
+    NetRequest request;
+    request.setInvocation(ILogin);
+    request.setRequestId(requestId);
 
-    QByteArray* data = new QByteArray(); // TODO: Manage memory
-    QDataStream outDataStream(data, QIODevice::WriteOnly);
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
 
     outDataStream << credentials.username << credentials.password;
 
-    request.data = data;
+    request.setData(data);
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeRequest(&outStream, &request);
+    outStream << request;
 
     connection->write(requestBytes);
 
@@ -101,51 +104,55 @@ QUuid ClientNetworkHandler::getRequiredBooks(QString &username)
 
     QUuid requestId = QUuid::createUuid();
 
-    TPSNetProtocol::NetRequest request;
-    request.invocation = TPSConstants::GetRequiredBooks;
-    request.requestId = requestId;
+    NetRequest request;
+    request.setInvocation(IGetRequiredBooks);
+    request.setRequestId(requestId);
 
-    QByteArray* data = new QByteArray(); // TODO: Manage memory
-    QDataStream outDataStream(data, QIODevice::WriteOnly);
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
 
     outDataStream << username;
 
-    request.data = data;
+    request.setData(data);
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeRequest(&outStream, &request);
+    outStream << request;
 
     connection->write(requestBytes);
 
     return requestId;
 }
 
-QUuid ClientNetworkHandler::getBookDetails(Textbook& text)
+QUuid ClientNetworkHandler::getBookDetails(const qint32 id)
+{
+    return getBookDetails(QVector<qint32>({id}));
+}
+
+QUuid ClientNetworkHandler::getBookDetails(const QVector<qint32>& ids)
 {
     ASSERT_VALID
 
     QUuid requestId = QUuid::createUuid();
 
-    TPSNetProtocol::NetRequest request;
-    request.invocation = TPSConstants::GetBookDetails;
-    request.requestId = requestId;
+    NetRequest request;
+    request.setInvocation(IGetBookDetails);
+    request.setRequestId(requestId);
 
-    QByteArray* data = new QByteArray(); // TODO: Manage memory
-    QDataStream outDataStream(data, QIODevice::WriteOnly);
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeTextbook(&outDataStream, &text);
+    qDebug() << "forming book request for these guys: " << ids;
 
-    qDebug() << "forming request with textbook id = " << text.getId();
-    outDataStream << text.getId();
+    outDataStream << ids;
 
-    request.data = data;
+    request.setData(data);
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeRequest(&outStream, &request);
+    outStream << request;
 
     connection->write(requestBytes);
 
@@ -158,21 +165,21 @@ QUuid ClientNetworkHandler::submitOrder(Order& order)
 
     QUuid requestId = QUuid::createUuid();
 
-    TPSNetProtocol::NetRequest request;
-    request.invocation = TPSConstants::SubmitOrder;
-    request.requestId = requestId;
+    NetRequest request;
+    request.setInvocation(ISubmitOrder);
+    request.setRequestId(requestId);
 
-    QByteArray* data = new QByteArray(); // TODO: Manage memory
-    QDataStream outDataStream(data, QIODevice::WriteOnly);
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeOrder(&outDataStream, &order);
+    outDataStream << order;
 
-    request.data = data;
+    request.setData(data);
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeRequest(&outStream, &request);
+    outStream << request;
 
     connection->write(requestBytes);
 
@@ -185,25 +192,21 @@ QUuid ClientNetworkHandler::addCourse(Course& course)
 
     QUuid requestId = QUuid::createUuid();
 
-    TPSNetProtocol::NetRequest request;
-    request.invocation = TPSConstants::AddCourse;
-    request.requestId = requestId;
+    NetRequest request;
+    request.setInvocation(IAddCourse);
+    request.setRequestId(requestId);
 
-    QByteArray* data = new QByteArray(); // TODO: Manage memory
-    QDataStream outDataStream(data, QIODevice::WriteOnly);
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
 
-    TPSNetUtils::SerializeCourse(&outDataStream, &course);
+    outDataStream << course;
 
-    request.data = data;
+    request.setData(data);
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
 
-    qDebug() << "ClientNetworkHandler::addCourse serializing course";
-
-    TPSNetUtils::SerializeRequest(&outStream, &request);
-
-    qDebug() << "ClientNetworkHandler::addCourse writing payload to network";
+    outStream << request;
 
     connection->write(requestBytes);
 
@@ -216,28 +219,21 @@ QUuid ClientNetworkHandler::addBook(Textbook& text)
 
     QUuid requestId = QUuid::createUuid();
 
-    TPSNetProtocol::NetRequest request;
-    request.invocation = TPSConstants::AddBook;
-    request.requestId = requestId;
+    NetRequest request;
+    request.setInvocation(IAddBook);
+    request.setRequestId(requestId);
 
-    QByteArray* data = new QByteArray(); // TODO: Manage memory
-    QDataStream outDataStream(data, QIODevice::WriteOnly);
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
 
-    qDebug() << "ClientNetworkHandler::addBook serializing book";
+    outDataStream << text;
 
-    TPSNetUtils::SerializeTextbook(&outDataStream, &text);
-
-    qDebug() << "ClientNetworkHandler::addBook finished serializing book";
-
-    request.data = data;
+    request.setData(data);
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
 
-    qDebug() << "ClientNetworkHandler::addBook serializing request invocation type: "
-             << request.invocation;
-
-    TPSNetUtils::SerializeRequest(&outStream, &request);
+    outStream << request;
 
     connection->write(requestBytes);
 
@@ -277,10 +273,8 @@ void ClientNetworkHandler::disconnected()
 
 void ClientNetworkHandler::readyRead()
 {
-    qDebug() << "READ";
-
     QDataStream in(connection);
-    in.setVersion(TPSConstants::PROTOCOL_VER);
+    in.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
 
     if (blockSize == 0)
     {
@@ -301,120 +295,123 @@ void ClientNetworkHandler::readyRead()
         return;
     }
 
-    // Parse the block.
+    // Parse the response
+    NetResponse response;
 
-    TPSNetProtocol::NetResponse response;
+    try {
+        in >> response;
+    } catch (NetMessage::BadRequestException* e) {
+        qDebug() << e->what();
+        connection->abort();
+        return;
+    }
 
-    // Calculate data block size
-    qint16 dataBlockSize = blockSize - (2*sizeof(qint8)) - (2*sizeof(QUuid));
-    // Allocate ByteArray of that size
-    QByteArray* dataBlock = new QByteArray(); // TODO: manage memory
-    dataBlock->resize(dataBlockSize);
-
-    response.data = dataBlock;
-
-    TPSNetUtils::DeserializeResponse(&response, &in);
-
-    // For login: read response, emit appropriatge signal.
-
-    if (response.responseCode < 1)
+    if (response.getResponseCode() < 1)
     {
-        emit serverError(response.requestId, response.responseCode);
-        qDebug() << "Login failed for request " << response.requestId << " with code "
-                 << response.responseCode;
+        emit serverError(response.getRequestId(), response.getResponseCode());
+        qDebug() << "Server responded with error " << response.getResponseCode()
+                 << " for request " << response.getRequestId();
+        blockSize = 0;
+        return;
     }
 
     qDebug() << "ClientNetworkHandler reading reponse for "
-             << "invocation: " << response.invocation
-             << ", requestId: " << response.requestId
-             << ", sessionId: " << response.sessionId
-             << ", responseCode: " << response.responseCode;
+             << "invocation: " << response.getInvocation()
+             << ", requestId: " << response.getRequestId()
+             << ", sessionId: " << response.getSessionId()
+             << ", responseCode: " << response.getResponseCode();
 
-    switch (response.invocation) {
+    switch (response.getInvocation()) {
 
-    case TPSConstants::AddBook: {
-        emit updateCompleted(response.invocation, response.requestId, response.responseCode);
-        qDebug() << "Server responded: book added. Request=" << response.requestId
-                 << " Code=" << response.responseCode;
+    case IAddBook: {
+        qDebug() << "emitting update completed evt";
+        emit updateCompleted(response.getInvocation(),
+                             response.getRequestId(),
+                             (int)response.getResponseCode());
         break;
     }
 
-    case TPSConstants::AddCourse: {
-        emit updateCompleted(response.invocation, response.requestId, response.responseCode);
-        qDebug() << "Server responded: course added. Request=" << response.requestId
-                 << " Code=" << response.responseCode;
+    case IAddCourse: {
+        qDebug() << "emitting update completed evt";
+        emit updateCompleted(response.getInvocation(),
+                             response.getRequestId(),
+                             response.getResponseCode());
         break;
     }
 
-    case TPSConstants::GetBookDetails: {
-        Textbook* book = new Textbook(); // TOOD: Manage memory
-        QDataStream in(dataBlock, QIODevice::ReadOnly);
+    case IGetBookDetails: {
+        QDataStream in(response.getData(), QIODevice::ReadOnly);
 
-        TPSNetUtils::DeserializeTextbook(book, &in);
-
-        emit textbookDetailsReceived(response.requestId, response.responseCode, book);
-        qDebug() << "Server responded: book details received. Request=" << response.requestId
-                 << " Code=" << response.responseCode
-                 << " Book_Id=" << book->getId();
-        break;
-    }
-
-    case TPSConstants::GetRequiredBooks: {
-        QVector<Textbook*>* vector = new QVector<Textbook*>(); // TODO: Manage memory
-        QDataStream in(dataBlock, QIODevice::ReadOnly);
         qint32 numBooks;
         in >> numBooks;
+
+        QVector<Textbook*>* vec = new QVector<Textbook*>();
 
         for (int i = 0; i < numBooks; ++i)
         {
             Textbook* book = new Textbook();
-            vector->append(book);
-            TPSNetUtils::DeserializeTextbook(book, &in);
+            in >> *book;
+            vec->append(book);
         }
 
-        qDebug() << "Server responded: "
-                 << vector->size()
-                 << " required books received. Request="
-                 << response.requestId
-                 << " Code=" << response.responseCode;
-        emit textbookLookupCompleted(response.requestId, response.responseCode, vector);
+        emit textbookDetailsReceived(response.getRequestId(),
+                                     response.getResponseCode(),
+                                     vec);
         break;
     }
 
-    case TPSConstants::Login: {
+    case IGetRequiredBooks: {
+        QDataStream in(response.getData(), QIODevice::ReadOnly);
 
-        QDataStream in(dataBlock, QIODevice::ReadOnly);
+        qint32 numBooks;
+        in >> numBooks;
+
+        QVector<qint32>* vec = new QVector<qint32>();
+
+        for (int i = 0; i < numBooks; ++i)
+        {
+            qint32 id;
+            in >> id;
+            vec->append(id);
+        }
+
+        emit textbookLookupCompleted(response.getRequestId(),
+                                     response.getResponseCode(),
+                                     vec);
+        break;
+    }
+
+    case ILogin: {
+        QDataStream in(response.getData(), QIODevice::ReadOnly);
+
         qint8 roleId; // TODO: check the actual size being writted for this int
         in >> roleId;
 
         qDebug() << "ClientNetworkHandler::Ready read Login, read role id: " << roleId;
 
-        if (response.responseCode < 1) {
+       if (response.getResponseCode() < 1) {
             qDebug() << "ClientNetworkHandler::Login failed for request "
-                     << response.requestId;
-            emit loginFailed(response.requestId);
+                     << response.getRequestId();
+            emit loginFailed(response.getRequestId());
             loggedIn = false;
         } else {
             qDebug() << "ClientNetworkHandler::Login successful for request "
-                     << response.requestId;
-            emit loginSuccessful(response.requestId, (Role)roleId);
+                     << response.getRequestId();
+            emit loginSuccessful(response.getRequestId(), (Role)roleId);
             loggedIn = true;
         }
 
         break;
     }
 
-    case TPSConstants::SubmitOrder: {
-        qDebug() << "Server responded: order status update. Request=" << response.requestId
-                 << " Code=" << response.responseCode;
-        emit orderStatusReceived(response.requestId, response.responseCode);
+    case ISubmitOrder: {
+        emit orderStatusReceived(response.getRequestId(), response.getResponseCode());
         break;
     }
 
-    case TPSConstants::Goodbye:
+    case IGoodbye:
     default:
-        // TODO: Disconnect from svr.
-        loggedIn = false;
+        this->disconnectFromServer();
         break;
     }
 

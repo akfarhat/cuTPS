@@ -8,6 +8,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "libcutps_global.h"
+
 #include <QString>
 #include <QDataStream>
 #include <QUuid>

@@ -8,24 +8,43 @@
 #ifndef TEXTBOOK_H
 #define TEXTBOOK_H
 
+#include "libcutps_global.h"
+
 #include "SellableItem.h"
+
 #include <QString>
+#include <QDataStream>
+#include <QVector>
 
-class Textbook: public SellableItem {
-    private:
-        QString ISBN;
-    public:
-        Textbook();
-        Textbook(int, QString, int, bool, QString);
-        Textbook(QString, int);
-        ~Textbook();
+class Chapter;
 
-        QString getISBN() const;
-        void setISBN(const QString);
+class LIBCUTPS_EXPORT Textbook : public SellableItem {
+public:
+    Textbook();
+    Textbook(const Textbook&); // Copy cTor
+    Textbook(int, QString, int, bool, QString);
+    Textbook(QString, int);
+    virtual ~Textbook();
 
-        QString getDetails();
-        QString getTitle();
-        QString getType();
+    QString getISBN() const;
+    void setISBN(const QString);
+
+    QString getDetails() const;
+    QString getTitle();
+    QString getType();
+
+    void addChapter(const Chapter& c);
+    QVector<Chapter*> getChapterList();
+    const QVector<Chapter*> getConstChapterList() const;
+    int numChapters() const;
+
+    // Serialization routines
+    friend QDataStream& operator<<(QDataStream& os, const Textbook& b); // output
+    friend QDataStream& operator>>(QDataStream& is, Textbook& b); // input
+
+private:
+    QString ISBN;
+    QVector<Chapter*> chapters;
 };
 
 #endif // TEXTBOOK_H

@@ -8,31 +8,48 @@
 #ifndef CHAPTER_H
 #define CHAPTER_H
 
+#include "libcutps_global.h"
+
 #include "SellableItem.h"
 #include "Textbook.h"
+
 #include <QString>
+#include <QDataStream>
+#include <QVector>
 
-class Chapter: public SellableItem {
+class Section;
 
-    private:
-        Textbook* parentTextbook;
-        int number;
+class LIBCUTPS_EXPORT Chapter: public SellableItem
+{
+public:
+    Chapter();
+    Chapter(Chapter&); // Copy cTor
+    Chapter(int, Textbook*, int, QString, int, bool);
+    Chapter(Textbook*, int, QString, int);
+    virtual ~Chapter();
 
-    public:
-        Chapter();
-        Chapter(int, Textbook*, int, QString, int, bool);
-        Chapter(Textbook*, int, QString, int);
-        ~Chapter();
+    Textbook* getParentTextbook();
+    void setParentTextbook(Textbook*);
 
-        Textbook* getParentTextbook();
-        void setParentTextbook(Textbook*);
+    int getChapterNumber() const;
+    void setChapterNumber(int);
 
-        int getChapterNumber();
-        void setChapterNumber(int);
+    void addSection(const Section& s);
+    QVector<Section*> getSectionList();
+    int numSections() const;
+    
+    QString getTitle();
+    QString getType();
+    QString getDetails() const;
 
-        QString getDetails();
-        QString getTitle();
-        QString getType();
+    friend QDataStream& operator<<(QDataStream& os, const Chapter& c); // output
+    friend QDataStream& operator>>(QDataStream& is, Chapter& c); // input
+
+private:
+    Textbook* parentTextbook;
+    int number;
+    int parentTextbookId;
+    QVector<Section*> sections;
 };
 
 #endif // CHAPTER_H

@@ -23,7 +23,7 @@ class CartRequestsAPI: public QObject {
         ~CartRequestsAPI();
 
         QUuid getRequiredBooks(QString&);
-        QUuid getBookDetails(Textbook&);
+        QUuid getBookDetails(int bookId);
         QUuid submitOrder(Order&);
 
         Student* getStudent();

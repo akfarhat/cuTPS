@@ -15,32 +15,49 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    TPSServerAsync.cpp \
-    TPSClient.cpp \
     DatabaseManager.cpp \
     Server.cpp \
-    taskhandler/TPSAddBookTask.cpp \
-    taskhandler/TPSAddCourseTask.cpp \
-    taskhandler/TPSGetBookDetailsTask.cpp \
-    taskhandler/TPSGetRequiredBooksTask.cpp \
-    taskhandler/TPSLoginTask.cpp \
-    taskhandler/TPSSubmitOrderTask.cpp \
-    taskhandler/TPSWorkerTask.cpp \
-    TPSServerPrefs.cpp
+    ClientTaskHandling/AddBookTask.cpp \
+    ClientTaskHandling/AddCourseTask.cpp \
+    ClientTaskHandling/GetBookDetailsTask.cpp \
+    ClientTaskHandling/GetRequiredBooksTask.cpp \
+    ClientTaskHandling/LoginTask.cpp \
+    ClientTaskHandling/SubmitOrderTask.cpp \
+    ClientTaskHandling/WorkerTask.cpp \
+    ServerNetworking/ServerAsync.cpp \
+    ServerNetworking/NetClient.cpp \
+    ServerPrefs.cpp \
+    ClientTaskHandling/TaskAbsFactory.cpp \
+    ClientTaskHandling/LoginTaskFactory.cpp \
+    ClientTaskHandling/ContentMgrTaskFactory.cpp \
+    ClientTaskHandling/UserTaskFactory.cpp \
+    ClientTaskHandling/AdminTaskFactory.cpp \
+    ClientTaskHandling/GenerateReportTask.cpp \
+    ClientTaskHandling/SUTaskFactory.cpp \
+    ServerAPI.cpp
 
 HEADERS += \
-    TPSServerAsync.h \
-    TPSClient.h \
     DatabaseManager.h \
     Server.h \
-    taskhandler/TPSAddBookTask.h \
-    taskhandler/TPSAddCourseTask.h \
-    taskhandler/TPSGetBookDetailsTask.h \
-    taskhandler/TPSGetRequiredBooksTask.h \
-    taskhandler/TPSLoginTask.h \
-    taskhandler/TPSSubmitOrderTask.h \
-    taskhandler/TPSWorkerTask.h \
-    TPSServerPrefs.h
+    ClientTaskHandling/AddBookTask.h \
+    ClientTaskHandling/AddCourseTask.h \
+    ClientTaskHandling/GetBookDetailsTask.h \
+    ClientTaskHandling/GetRequiredBooksTask.h \
+    ClientTaskHandling/LoginTask.h \
+    ClientTaskHandling/SubmitOrderTask.h \
+    ClientTaskHandling/WorkerTask.h \
+    ServerNetworking/ServerAsync.h \
+    ServerNetworking/NetClient.h \
+    ServerPrefs.h \
+    ClientTaskHandling/TaskAbsFactory.h \
+    ClientTaskHandling/LoginTaskFactory.h \
+    ClientTaskHandling/ContentMgrTaskFactory.h \
+    ClientTaskHandling/UserTaskFactory.h \
+    ClientTaskHandling/AdminTaskFactory.h \
+    ClientTaskHandling/GenerateReportTask.h \
+    ClientTaskHandling/SUTaskFactory.h \
+    ServerAPI.h
+
 
 OTHER_FILES += \
     db/cutpsd.db
@@ -54,19 +71,6 @@ unix:!macx {
 QMAKE_CXXFLAGS += -std=c++0x
 }
 
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/release/ -lcutps
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/debug/ -lcutps
-else:unix: LIBS += -L$$OUT_PWD/../cuTPS-common/ -lcutps
-
-INCLUDEPATH += $$PWD/../cuTPS-common
-DEPENDPATH += $$PWD/../cuTPS-common
-
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/release/libcutps.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/debug/libcutps.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/release/cutps.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/debug/cutps.lib
-else:unix: PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/libcutps.a
-
 # copy db folder to the build path
 copydata.commands = $(COPY_DIR) $$PWD/db $$OUT_PWD
 first.depends = $(first) copydata
@@ -74,3 +78,10 @@ export(first.depends)
 export(copydata.commands)
 QMAKE_EXTRA_TARGETS += first copydata
 
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/release/ -lcutps
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../cuTPS-common/debug/ -lcutps
+else:unix: LIBS += -L$$OUT_PWD/../cuTPS-common/ -lcutps
+
+INCLUDEPATH += $$PWD/../cuTPS-common
+DEPENDPATH += $$PWD/../cuTPS-common

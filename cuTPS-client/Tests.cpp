@@ -1,17 +1,18 @@
 #include "Tests.h"
 #include "ui_Tests.h"
 
-
 #include "Entity/SellableItem.h"
 #include "Entity/Textbook.h"
 #include "Entity/Chapter.h"
-#include "Entity/CreditcardInfo.h"
+#include "Entity/CreditCardInfo.h"
 #include "Entity/DeliveryInfo.h"
 
 #include <QVector>
 #include <QTextStream>
 
 #include <QDebug>
+
+using namespace TPSNetProtocolDefs;
 
 Tests::Tests(QWidget *parent) :
     QDialog(parent),
@@ -27,17 +28,18 @@ Tests::Tests(QWidget *parent) :
 
     // Connect the network handler to the server
     // TODO: get the server connection details from a config
-    QHostAddress addr(QHostAddress::LocalHost);
-    network.connectToServer(addr, TPSConstants::PORT);
+    QHostAddress localhost(QHostAddress::LocalHost);
+    QHostAddress remoteSrv("192.241.250.122");
+    network.connectToServer(localhost, 12754);
 
     // Bind a handler to server responses to our requests
     connect(&network, SIGNAL(orderStatusReceived(QUuid, int)), this, SLOT(orderStatusReceived(QUuid, int)));
-    connect(&network, SIGNAL(updateCompleted(TPSConstants::InvocationDescriptor, QUuid, int)),
-                this, SLOT(updateCompleted(TPSConstants::InvocationDescriptor, QUuid, int)));
-    connect(&network, SIGNAL(textbookDetailsReceived(QUuid, int, Textbook*)),
-                this, SLOT(textbookDetailsReceived(QUuid, int, Textbook*)));
-    connect(&network, SIGNAL(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)),
-                this, SLOT(textbookLookupCompleted(QUuid, int, QVector<Textbook*>*)));
+    connect(&network, SIGNAL(updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid, int)),
+                this, SLOT(updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid, int)));
+    connect(&network, SIGNAL(textbookDetailsReceived(QUuid, int, QVector<Textbook*>*)),
+                this, SLOT(textbookDetailsReceived(QUuid, int, QVector<Textbook*>*)));
+    connect(&network, SIGNAL(textbookLookupCompleted(QUuid, int, QVector<qint32>*)),
+                this, SLOT(textbookLookupCompleted(QUuid, int, QVector<qint32>*)));
     connect(&network, SIGNAL(serverError(QUuid,int)), this, SLOT(serverError(QUuid, int)));
 
 }
@@ -130,13 +132,13 @@ void Tests::on_viewBookDetailsButton_clicked() {
     clearResults();
     updateResults("View book details:");
 
-    Textbook aBook(1, "Comp 3004 - The Book", 9949, true, "123-456-7890");
+    int requestBookId = 1;
 
     viewBookDetailsCtrl = new ViewBookDetailsControl(network);
 
     QUuid requestId;
 
-    viewBookDetailsCtrl->getBookDetails(requestId, aBook);
+    viewBookDetailsCtrl->getBookDetails(requestId, requestBookId);
 
     delete viewBookDetailsCtrl;
 
@@ -146,14 +148,9 @@ void Tests::on_submitOrderButton_clicked() {
     clearResults();
     updateResults("Submit order:");
 
-    Textbook *book;
-
-    Chapter c1(book, 1, "someItem", 1.54f);
-    Chapter c2(book, 2, "anotherItem", 99.42f);
     QVector<qint32> items;
-
-    items.append(c1.getId());
-    items.append(c2.getId());
+    items.append(3232);
+    items.append(3333);
 
     CreditCardInfo creditInfo("Joe Smith", "smith@gmail.com", "43 streetName",
                               "613-555-1234", "Mastercard", "1305123234234",
@@ -161,8 +158,7 @@ void Tests::on_submitOrderButton_clicked() {
 
     DeliveryInfo deliveryInfo("smith@gmail.com");
 
-    Order order(&items, &creditInfo, &deliveryInfo);
-
+    Order order(items, creditInfo, deliveryInfo);
 
     submitOrderCtrl = new SubmitOrderControl(network);
 
@@ -184,6 +180,7 @@ void Tests::on_addCourseButton_clicked() {
     books.append(new Textbook(3, "Comp 3004 Textbook 3", 9153, true, "123-456-711"));
 
     Course *c = new Course("COMP 3004", "Advanced Diagrams", books);
+    c->setId(1313);
 
     addCourseCtrl = new AddCourseControl(network);
 
@@ -245,9 +242,11 @@ void Tests::orderStatusReceived(QUuid requestId, int code) {
     updateResults("Order request recieved by server");
 }
 
-void Tests::updateCompleted(TPSConstants::InvocationDescriptor invocation,
+void Tests::updateCompleted(TPSNetProtocolDefs::InvocationDescriptor invocation,
                             QUuid requestId, int code) {
     clearResults();
+
+    qDebug() << "Update COMPLETED: code=" << code;
 
     QString updateMsg;
 
@@ -259,9 +258,9 @@ void Tests::updateCompleted(TPSConstants::InvocationDescriptor invocation,
         updateMsg += "Succesfully added ";
     }
 
-    if (invocation == TPSConstants::AddCourse) {
+    if (invocation == TPSNetProtocolDefs::IAddCourse) {
         updateMsg += "course ";
-    } else if (invocation == TPSConstants::AddBook) {
+    } else if (invocation == TPSNetProtocolDefs::IAddBook) {
         updateMsg += "textbook";
     }
 
@@ -269,19 +268,34 @@ void Tests::updateCompleted(TPSConstants::InvocationDescriptor invocation,
     updateResults(updateMsg);
 }
 
-void Tests::textbookDetailsReceived(QUuid requestId, int code, Textbook* resBook) {
+void Tests::textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*>* v) {
     clearResults();
     setPassed();
-    updateResults(resBook->getDetails());
+
+    QString res_str = QString("Received details about %1 books").arg(QString::number(v->size()));
+
+    for (int i = 0; i < v->size(); ++i)
+    {
+        res_str += QString("\n\t%1: %2").arg(QString::number(i), v->at(i)->getDetails());
+    }
+
+    updateResults(res_str);
+    delete v;
 }
 
-void Tests::textbookLookupCompleted(QUuid requestId, int code, QVector<Textbook*>* resBooks) {
+void Tests::textbookLookupCompleted(QUuid requestId, int code, QVector<qint32>* v) {
     clearResults();
     setPassed();
 
-    for (int i = 0; i < resBooks->size(); i++) {
-        updateResults(resBooks->at(i)->getDetails() + "\n\n");
+    QString res_str = QString("Textbook lookup found %1 books").arg(QString::number(v->size()));
+
+    for (int i = 0; i < v->size(); i++)
+    {
+        res_str += QString("\n\t%1: id=%2").arg(QString::number(i), QString::number(v->at(i)));
     }
+
+    updateResults(res_str);
+    delete v;
 }
 
 void Tests::serverError(QUuid requestId, int error) {

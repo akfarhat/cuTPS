@@ -92,9 +92,3 @@ else:unix: LIBS += -L$$OUT_PWD/../cuTPS-common/ -lcutps
 
 INCLUDEPATH += $$PWD/../cuTPS-common
 DEPENDPATH += $$PWD/../cuTPS-common
-
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/release/libcutps.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/debug/libcutps.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/release/cutps.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/debug/cutps.lib
-else:unix: PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/libcutps.a
