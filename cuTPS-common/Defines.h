@@ -2,7 +2,6 @@
 // Description:
 //     A header containing namespace definitions
 
-
 #ifndef DEFINES_H
 #define DEFINES_H
 
@@ -12,10 +11,10 @@
 
 namespace TPSNetProtocolDefs {
 
-LIBCUTPS_EXPORT static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
-LIBCUTPS_EXPORT static const qint32 PROTOCOL_MAGIC = 0xDEADBEEF;
+static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
+static const qint32 PROTOCOL_MAGIC = 0xDEADBEEF;
 
-enum LIBCUTPS_EXPORT InvocationDescriptor {
+enum InvocationDescriptor {
     Login,
     GetRequiredBooks,
     GetBookDetails,
@@ -26,11 +25,12 @@ enum LIBCUTPS_EXPORT InvocationDescriptor {
     Goodbye
 };
 
-enum LIBCUTPS_EXPORT UsrPermissionGroup {
+enum UsrPermissionGroup {
     UsrStu,
     UsrCm,
     UsrAdm,
-    UsrNobody
+    UsrAnonymous,
+    UsrSuperuser
 };
 
 }

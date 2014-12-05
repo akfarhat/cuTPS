@@ -13,6 +13,7 @@
 #include "ClientTaskHandling/UserTaskFactory.h"
 #include "ClientTaskHandling/ContentMgrTaskFactory.h"
 #include "ClientTaskHandling/AdminTaskFactory.h"
+#include "ClientTaskHandling/SUTaskFactory.h"
 
 using namespace TPSNetProtocolDefs;
 
@@ -160,36 +161,44 @@ bool NetClient::isConnected()
 
 void NetClient::clientStatusUpdated()
 {
-    // Client has successfully went through login process
-    // TODO: request user permission group from the server passing sessionID
+    // Client has successfully went through login process.
+    // Now must get an appororiate task factory for new priv.
 
-    auto nobodyFactCreator = []()
+    auto anonymousFactoryCreator = []()
     {
         return new LoginTaskFactory();
     };
 
-    auto studentFactCreator = []()
+    auto studentFactoryCreator = []()
     {
         return new UserTaskFactory();
     };
 
-    auto cmFactCreator = []()
+    auto cmFactoryCreator = []()
     {
         return new ContentMgrTaskFactory();
     };
 
-    auto adminFactCreator = []()
+    auto adminFactoryCreator = []()
     {
         return new AdminTaskFactory();
     };
 
-    QMap<UsrPermissionGroup, std::function<TaskAbsFactory*(void)>> map;
-    map.insert(UsrNobody, nobodyFactCreator);
-    map.insert(UsrStu, studentFactCreator);
-    map.insert(UsrCm, cmFactCreator);
-    map.insert(UsrAdm, adminFactCreator);
+    auto superuserFactoryCreator = []()
+    {
+        return new SUTaskFactory();
+    };
 
-    UsrPermissionGroup grp = UsrNobody;
+    QMap<UsrPermissionGroup, std::function<TaskAbsFactory*(void)>> map;
+    map.insert(UsrAnonymous, anonymousFactoryCreator);
+    map.insert(UsrStu, studentFactoryCreator);
+    map.insert(UsrCm, cmFactoryCreator);
+    map.insert(UsrAdm, adminFactoryCreator);
+    map.insert(UsrSuperuser, superuserFactoryCreator);
+
+    // TODO: request user permission group from the server passing sessionID
+    UsrPermissionGroup grp = UsrSuperuser;
+
     if (this->taskFactory) delete this->taskFactory;
     this->taskFactory = map[grp]();
 }
