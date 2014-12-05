@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>542</width>
-    <height>433</height>
+    <height>454</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,16 +25,6 @@
     </property>
     <property name="text">
      <string>Main Menu</string>
-    </property>
-   </widget>
-   <widget class="QListView" name="courseList">
-    <property name="geometry">
-     <rect>
-      <x>260</x>
-      <y>40</y>
-      <width>271</width>
-      <height>341</height>
-     </rect>
     </property>
    </widget>
    <widget class="QGroupBox" name="groupBox">
@@ -62,8 +52,98 @@
       <string>Save</string>
      </property>
     </widget>
+    <widget class="QLabel" name="coueseCodeLbl">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Course Code</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="courseCodeEdit">
+     <property name="geometry">
+      <rect>
+       <x>102</x>
+       <y>20</y>
+       <width>131</width>
+       <height>26</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="courseNameLbl">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Course Name</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="courseNameEdit">
+     <property name="geometry">
+      <rect>
+       <x>102</x>
+       <y>70</y>
+       <width>131</width>
+       <height>26</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="deleteButton">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>130</y>
+       <width>51</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Delete </string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="addBook">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>130</y>
+       <width>21</width>
+       <height>27</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>+</string>
+     </property>
+    </widget>
+    <zorder>saveCourseButton</zorder>
+    <zorder>coueseCodeLbl</zorder>
+    <zorder>courseCodeEdit</zorder>
+    <zorder>courseNameLbl</zorder>
+    <zorder>courseNameEdit</zorder>
+    <zorder>deleteButton</zorder>
+    <zorder>deleteButton</zorder>
+    <zorder>addBook</zorder>
    </widget>
-   <widget class="QListView" name="bookList">
+   <widget class="QListWidget" name="courseList">
+    <property name="geometry">
+     <rect>
+      <x>255</x>
+      <y>20</y>
+      <width>271</width>
+      <height>361</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QListWidget" name="bookList">
     <property name="geometry">
      <rect>
       <x>10</x>

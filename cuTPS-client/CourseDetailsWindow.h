@@ -6,6 +6,7 @@
 #define COURSEDETAILSWINDOW_H
 
 #include <QMainWindow>
+#include <QModelIndex>
 
 #include "CourseRequestAPI.h"
 
@@ -32,13 +33,16 @@ public:
 private slots:
     void on_backButton_clicked();
 
+    void on_courseList_clicked(const QModelIndex &index);
+
 private:
     Ui::CourseDetailsWindow *ui;
     ManageCourseControl *manageCourseCtrl;
     CourseRequestAPI *requestAPI;
+    QVector<Course*> *courses;
 
     void displayCourseList();
-    void dispayCouseDetails(Course);
+    void displayCourseDetails(Course *);
 };
 
 #endif // COURSEDETAILSWINDOW_H
