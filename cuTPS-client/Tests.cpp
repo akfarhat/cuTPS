@@ -28,8 +28,9 @@ Tests::Tests(QWidget *parent) :
 
     // Connect the network handler to the server
     // TODO: get the server connection details from a config
-    QHostAddress addr(QHostAddress::LocalHost);
-    network.connectToServer(addr, 12754);
+    QHostAddress localhost(QHostAddress::LocalHost);
+    QHostAddress remoteSrv("192.241.250.122");
+    network.connectToServer(localhost, 12754);
 
     // Bind a handler to server responses to our requests
     connect(&network, SIGNAL(loginSuccessful(QUuid)), this, SLOT(loginSuccessful(QUuid)));
