@@ -1,8 +1,6 @@
 #include "CreditCardInfo.h"
 #include "Defines.h"
 
-using namespace TPSConstants;
-
 CreditCardInfo::CreditCardInfo(QString name, QString email, QString addr, QString pnumber,
                                QString cholder, QString cnumber, QString expiry, QString sCode)
                                : BillingInfo(name, email, addr, pnumber) {

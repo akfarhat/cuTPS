@@ -6,6 +6,8 @@
 #ifndef ORDER_H
 #define ORDER_H
 
+#include "libcutps_global.h"
+
 #include "SellableItem.h"
 
 #include <QVector>
@@ -15,7 +17,7 @@
 #include "CreditCardInfo.h"
 #include "DeliveryInfo.h"
 
-class Order
+class LIBCUTPS_EXPORT Order
 {
 public:
     Order();

@@ -4,9 +4,10 @@
 //     Entity object representing a section that
 //     the system has available for purchase
 
-
 #ifndef SECTION_H
 #define SECTION_H
+
+#include "libcutps_global.h"
 
 #include "SellableItem.h"
 #include "Chapter.h"
@@ -14,7 +15,7 @@
 #include <QString>
 #include <QDataStream>
 
-class Section: public SellableItem
+class LIBCUTPS_EXPORT Section : public SellableItem
 {
 public:
     Section();

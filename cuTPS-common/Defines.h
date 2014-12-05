@@ -6,29 +6,16 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
+#include "libcutps_global.h"
+
 #include <QDataStream>
-#include <QByteArray>
-#include <QUuid>
-#include <QMap>
-
-namespace TPSConstants {
-
-static const QString PREF_DB_PATH_SEC   = "Database/Database_Path";
-
-static const QString PREF_PORT          = "Network/Port";
-static const int     PREF_PORT_DEF      = 12754;
-
-static const QString PREF_MAX_THR       = "Network/Max_Threads";
-static const int     PREF_MAX_THR_DEF   = 15;
-
-}
 
 namespace TPSNetProtocolDefs {
 
-static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
-static const qint32 PROTOCOL_MAGIC = 0xDEADBEEF;
+LIBCUTPS_EXPORT static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
+LIBCUTPS_EXPORT static const qint32 PROTOCOL_MAGIC = 0xDEADBEEF;
 
-enum InvocationDescriptor {
+enum LIBCUTPS_EXPORT InvocationDescriptor {
     Login,
     GetRequiredBooks,
     GetBookDetails,
@@ -39,7 +26,7 @@ enum InvocationDescriptor {
     Goodbye
 };
 
-enum UsrPermissionGroup {
+enum LIBCUTPS_EXPORT UsrPermissionGroup {
     UsrStu,
     UsrCm,
     UsrAdm,

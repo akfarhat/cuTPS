@@ -29,7 +29,7 @@ Tests::Tests(QWidget *parent) :
     // Connect the network handler to the server
     // TODO: get the server connection details from a config
     QHostAddress addr(QHostAddress::LocalHost);
-    network.connectToServer(addr, TPSNetProtocolDefs::PORT);
+    network.connectToServer(addr, 12754);
 
     // Bind a handler to server responses to our requests
     connect(&network, SIGNAL(loginSuccessful(QUuid)), this, SLOT(loginSuccessful(QUuid)));

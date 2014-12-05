@@ -8,9 +8,11 @@
 #ifndef DELIVERYINFO_H
 #define DELIVERYINFO_H
 
+#include "libcutps_global.h"
+
 #include <QString>
 
-class DeliveryInfo
+class LIBCUTPS_EXPORT DeliveryInfo
 {
 private:
     QString emailAddress;

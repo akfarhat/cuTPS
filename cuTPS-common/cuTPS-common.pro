@@ -4,9 +4,12 @@
 #
 #-------------------------------------------------
 
+QT      -= gui
+
 TARGET = cutps # will produce libcutps.a
 TEMPLATE = lib
-CONFIG += staticlib
+
+DEFINES += LIBCUTPS_LIBRARY
 
 HEADERS += \
     Utils.h \
@@ -27,7 +30,8 @@ HEADERS += \
     Defines.h \
     Entity/NetMessage.h \
     Entity/NetRequest.h \
-    Entity/NetResponse.h
+    Entity/NetResponse.h \
+    libcutps_global.h
 
 SOURCES += \
     Entity/BillingInfo.cpp \
@@ -47,6 +51,11 @@ SOURCES += \
     Entity/NetRequest.cpp \
     Entity/NetResponse.cpp
 
+unix {
+    target.path = /usr/lib
+    INSTALLS += target
+}
+
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
@@ -55,3 +64,4 @@ QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.7
 unix:!macx {
 QMAKE_CXXFLAGS += -std=c++0x
 }
+

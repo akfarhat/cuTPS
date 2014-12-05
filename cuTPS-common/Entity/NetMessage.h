@@ -1,6 +1,8 @@
 #ifndef NETMESSAGE_H
 #define NETMESSAGE_H
 
+#include "libcutps_global.h"
+
 #include <QUuid>
 #include <QByteArray>
 #include <QString>
@@ -8,7 +10,7 @@
 
 #include "Defines.h"
 
-class NetMessage
+class LIBCUTPS_EXPORT NetMessage
 {
 public:
     NetMessage();

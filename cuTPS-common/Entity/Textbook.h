@@ -8,6 +8,8 @@
 #ifndef TEXTBOOK_H
 #define TEXTBOOK_H
 
+#include "libcutps_global.h"
+
 #include "SellableItem.h"
 
 #include <QString>
@@ -16,7 +18,7 @@
 
 class Chapter;
 
-class Textbook : public SellableItem {
+class LIBCUTPS_EXPORT Textbook : public SellableItem {
 public:
     Textbook();
     Textbook(const Textbook&); // Copy cTor

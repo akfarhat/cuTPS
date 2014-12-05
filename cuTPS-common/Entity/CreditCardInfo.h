@@ -8,12 +8,14 @@
 #ifndef CREDITCARDINFO_H
 #define CREDITCARDINFO_H
 
+#include "libcutps_global.h"
+
 #include <memory>
 #include <QString>
 
 #include "BillingInfo.h"
 
-class CreditCardInfo : public BillingInfo
+class LIBCUTPS_EXPORT CreditCardInfo : public BillingInfo
 {
 public:
     CreditCardInfo(QString name, QString email, QString addr, QString pnumber,

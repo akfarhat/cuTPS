@@ -1,6 +1,8 @@
 #ifndef NETREQUEST_H
 #define NETREQUEST_H
 
+#include "libcutps_global.h"
+
 #include "NetMessage.h"
 
 #include <QString>
@@ -12,7 +14,7 @@
 //          | (qint16) dataLen |
 //          | (QByteArray) data |
 
-class NetRequest : public NetMessage
+class LIBCUTPS_EXPORT NetRequest : public NetMessage
 {
 public:
     NetRequest();

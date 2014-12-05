@@ -8,6 +8,8 @@
 #ifndef CHAPTER_H
 #define CHAPTER_H
 
+#include "libcutps_global.h"
+
 #include "SellableItem.h"
 #include "Textbook.h"
 
@@ -17,7 +19,7 @@
 
 class Section;
 
-class Chapter: public SellableItem
+class LIBCUTPS_EXPORT Chapter: public SellableItem
 {
 public:
     Chapter();

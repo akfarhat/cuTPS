@@ -7,6 +7,8 @@
 #ifndef COURSE_H
 #define COURSE_H
 
+#include "libcutps_global.h"
+
 #include <QVector>
 #include <QString>
 #include <QDataStream>
@@ -15,7 +17,7 @@
 
 using namespace std;
 
-class Course
+class LIBCUTPS_EXPORT Course
 {
 public:
     Course();

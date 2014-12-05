@@ -7,10 +7,12 @@
 #ifndef BILLINGINFO_H
 #define BILLINGINFO_H
 
+#include "libcutps_global.h"
+
 #include <memory>
 #include <QString>
 
-class BillingInfo
+class LIBCUTPS_EXPORT BillingInfo
 {
 public:
     BillingInfo(QString name, QString email, QString addr, QString number);

@@ -8,10 +8,12 @@
 #ifndef SELLABLEITEM_H
 #define SELLABLEITEM_H
 
+#include "libcutps_global.h"
+
 #include <QString>
 #include <QDataStream>
 
-class SellableItem
+class LIBCUTPS_EXPORT SellableItem
 {
 public:
     SellableItem();

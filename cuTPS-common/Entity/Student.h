@@ -8,6 +8,8 @@
 #ifndef STUDENT_H
 #define STUDENT_H
 
+#include "libcutps_global.h"
+
 #include "User.h"
 #include "Course.h"
 #include <QString>
@@ -15,7 +17,7 @@
 
 using namespace std;
 
-class Student: public User {
+class LIBCUTPS_EXPORT Student : public User {
 
     private:
         int studentNumber;

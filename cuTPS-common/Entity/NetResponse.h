@@ -1,6 +1,8 @@
 #ifndef NETRESPONSE_H
 #define NETRESPONSE_H
 
+#include "libcutps_global.h"
+
 #include "NetMessage.h"
 
 #include <QString>
@@ -15,7 +17,7 @@
 //          | (qint16) dataLen |
 //          | (QByteArray) data |
 
-class NetResponse : public NetMessage
+class LIBCUTPS_EXPORT NetResponse : public NetMessage
 {
 public:
     NetResponse();
