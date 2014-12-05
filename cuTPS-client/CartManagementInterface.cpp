@@ -1,12 +1,14 @@
 #include "CartManagementInterface.h"
 #include "ui_CartManagementInterface.h"
 
-CartManagementInterface::CartManagementInterface(QWidget *parent, ClientNetworkHandler *net, Student *stu) :
+CartManagementInterface::CartManagementInterface(QWidget *parent, ClientNetworkHandler *netHandler, Student *newStudent) :
     QDialog(parent),
     ui(new Ui::CartManagementInterface),
-    network(net),
-    student(stu)
+    network(netHandler),
+    student(newStudent)
 {
+    requestAPI = new CartRequestsAPI(0, network, student);
+
     ui->setupUi(this);
 
     this->setWindowTitle("Carleton University Textbook Publishing System");
@@ -15,6 +17,7 @@ CartManagementInterface::CartManagementInterface(QWidget *parent, ClientNetworkH
     if (student->getCart() == NULL) {
         student->setCart(new ShoppingCart());
     }
+
 }
 
 CartManagementInterface::~CartManagementInterface()
@@ -31,11 +34,10 @@ void CartManagementInterface::on_viewCartButton_clicked()
 {
     qDebug() << "view cart button clicked...showing cart details window";
 
+    // Hide this window
     this->hide();
 
-    ViewCartControl *viewCartCtrl = new ViewCartControl(this, network, student);
-
-
+    ViewCartControl *viewCartCtrl = new ViewCartControl(this, requestAPI);
 
     viewCartCtrl->launchCartDetailsWindow();
 

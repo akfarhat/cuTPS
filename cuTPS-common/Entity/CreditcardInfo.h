@@ -29,6 +29,8 @@ class CreditCardInfo : public BillingInfo {
         void setCardNumber(QString);
         QString getExpiry();
         void setExpiry(QString);
+        QString getSecurityCode();
+        void setSecurityCode(QString);
 
         virtual QString getPaymentDetails();
 

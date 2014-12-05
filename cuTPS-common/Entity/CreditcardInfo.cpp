@@ -33,6 +33,14 @@ void CreditCardInfo::setExpiry(QString newExpiry) {
     expiryDate = newExpiry;
 }
 
+QString CreditCardInfo::getSecurityCode() {
+    return securityCode;
+}
+
+void CreditCardInfo::setSecurityCode(QString newCode) {
+    securityCode = newCode;
+}
+
 QString CreditCardInfo::getPaymentDetails() {
     return QString( type + ": " + billingName + "|"
                   + number + "|" + securityCode + "|"

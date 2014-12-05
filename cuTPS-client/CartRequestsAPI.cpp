@@ -1,19 +1,38 @@
 #include "CartRequestsAPI.h"
 
-CartRequestsAPI::CartRequestsAPI(QObject *parent, ClientNetworkHandler *net) : QObject(parent), network(net) {
+CartRequestsAPI::CartRequestsAPI(QObject *parent, ClientNetworkHandler *netHandler, Student *user) :
+    QObject(parent),
+    network(netHandler),
+    student(user)
+{
 
 
 }
 
-CartRequestsAPI::~CartRequestsAPI() {
+CartRequestsAPI::~CartRequestsAPI()
+{
 
 }
 
+ClientNetworkHandler* CartRequestsAPI::getNetwork() {
+    return network;
+}
 
-QUuid CartRequestsAPI::getRequiredBooks(QString &username) {
+Student* CartRequestsAPI::getStudent() {
+    return student;
+}
+
+QUuid CartRequestsAPI::getRequiredBooks(QString &username)
+{
     return network->getRequiredBooks(username);
 }
 
-QUuid CartRequestsAPI::getBookDetails(Textbook &book) {
+QUuid CartRequestsAPI::getBookDetails(Textbook &book)
+{
     return network->getBookDetails(book);
+}
+
+QUuid CartRequestsAPI::submitOrder(Order &newOrder)
+{
+    return network->submitOrder(newOrder);
 }

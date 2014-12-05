@@ -13,20 +13,26 @@
 #include "ClientNetworkHandler.h"
 #include "Entity/Textbook.h"
 #include "Entity/Order.h"
+#include "Entity/Student.h"
 
 class CartRequestsAPI: public QObject {
     Q_OBJECT
 
     public:
-        explicit CartRequestsAPI(QObject *parent = 0, ClientNetworkHandler *net = NULL);
+        explicit CartRequestsAPI(QObject *parent = 0, ClientNetworkHandler *net = NULL, Student *stu = NULL);
         ~CartRequestsAPI();
 
         QUuid getRequiredBooks(QString&);
         QUuid getBookDetails(Textbook&);
         QUuid submitOrder(Order&);
 
+        Student* getStudent();
+
+        ClientNetworkHandler* getNetwork();
+
     private:
         ClientNetworkHandler *network;
+        Student *student;
 
 
 };

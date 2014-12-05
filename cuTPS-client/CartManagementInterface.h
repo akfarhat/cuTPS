@@ -18,6 +18,7 @@
 #include "Entity/Student.h"
 #include "ViewBookDetailsControl.h"
 #include "ViewCartControl.h"
+#include "CartRequestsAPI.h"
 
 namespace Ui {
     class CartManagementInterface;
@@ -28,7 +29,7 @@ class CartManagementInterface : public QDialog
     Q_OBJECT
 
 public:
-    explicit CartManagementInterface(QWidget *parent = 0, ClientNetworkHandler *net = NULL, Student *stu = NULL);
+    explicit CartManagementInterface(QWidget *, ClientNetworkHandler *, Student *);
     ~CartManagementInterface();
 
     Student* getStudent();
@@ -43,8 +44,10 @@ private:
     Ui::CartManagementInterface *ui;
 
     ClientNetworkHandler *network;
+    CartRequestsAPI *requestAPI;
 
     Student *student;
+
 };
 
 #endif // CARTMANAGEMENTINTERFACE_H
