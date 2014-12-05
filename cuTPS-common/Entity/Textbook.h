@@ -30,6 +30,8 @@ public:
     void setISBN(const QString);
 
     QString getDetails() const;
+    QString getTitle();
+    QString getType();
 
     void addChapter(const Chapter& c);
     QVector<Chapter*> getChapterList();

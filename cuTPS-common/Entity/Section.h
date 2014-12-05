@@ -30,6 +30,8 @@ public:
     void setSectionNumber(int);
 
     QString getDetails() const;
+    QString getTitle();
+    QString getType();
 
     friend QDataStream& operator<<(QDataStream& os, const Section& s); // output
     friend QDataStream& operator>>(QDataStream& is, Section& s); // input

@@ -41,7 +41,7 @@ QString Textbook::getDetails() const {
             .arg(QString::number(getId()),
                  getName(),
                  getISBN(),
-                 QString::number(getPriceCents()),
+                 QString::number(this->getPriceCents() / 100.00f),
                  (getAvailability() ? "yes" : "no"));
 }
 
@@ -65,6 +65,14 @@ const QVector<Chapter*> Textbook::getConstChapterList() const
 int Textbook::numChapters() const
 {
     return chapters.size();
+}
+
+QString Textbook::getTitle() {
+    return this->getName() + " - " + this->getISBN();
+}
+
+QString Textbook::getType() {
+    return "Textbook";
 }
 
 QDataStream& operator<<(QDataStream& os, const Textbook& b)

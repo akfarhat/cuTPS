@@ -16,15 +16,15 @@ WorkerTask* UserTaskFactory::createTask(
     switch (invoc)
     {
 
-    case GetBookDetails: {
+    case IGetBookDetails: {
         return new GetBookDetailsTask(srvInst);
     }
 
-    case GetRequiredBooks: {
+    case IGetRequiredBooks: {
         return new GetRequiredBooksTask(srvInst);
     }
 
-    case SubmitOrder: {
+    case ISubmitOrder: {
         return new SubmitOrderTask(srvInst);
     }
 

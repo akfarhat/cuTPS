@@ -12,6 +12,7 @@
 
 #include "User.h"
 #include "Course.h"
+#include "ShoppingCart.h"
 #include <QString>
 #include <QVector>
 
@@ -23,6 +24,8 @@ class LIBCUTPS_EXPORT Student : public User {
         int studentNumber;
         QString emailAddress;
         QVector<Course*> courses;
+        ShoppingCart *cart;
+
 
 
     public:
@@ -37,6 +40,9 @@ class LIBCUTPS_EXPORT Student : public User {
 
         QVector<Course*> getCourses();
         void enrollInCourse(Course*);
+
+        ShoppingCart* getCart();
+        void setCart(ShoppingCart *);
 
         QString getDetails();
 };

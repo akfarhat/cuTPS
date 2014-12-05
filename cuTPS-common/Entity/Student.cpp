@@ -1,10 +1,12 @@
 #include "Student.h"
 
 Student::Student(int id, QString name, QString username, int studentNum) : User(id, name, username), studentNumber(studentNum) {
-
+    cart = new ShoppingCart();
 }
 
-Student::~Student() {}
+Student::~Student() {
+    delete cart;
+}
 
 int Student::getStudentNumber() {
     return studentNumber;
@@ -28,6 +30,14 @@ QVector<Course*> Student::getCourses() {
 
 void Student::enrollInCourse(Course *newCourse) {
     courses.append(newCourse);
+}
+
+ShoppingCart* Student::getCart() {
+    return cart;
+}
+
+void Student::setCart(ShoppingCart *newCart) {
+    cart = newCart;
 }
 
 QString Student::getDetails() {

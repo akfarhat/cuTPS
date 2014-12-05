@@ -8,14 +8,24 @@
 //     requests to the server.
 
 // === API change history === //
-// Dec, 2:   --- getBookDetails(qint32...) now takes a variable number of books ids.
-//                  returns: a unique_ptr<QVector> of textbook requested.
-//           --- Some memory leaks fixed by making signals return smart pointers.
-//           --- Some networking statistics are now collected, which optionally may be shown.
-//           --- getRequiredBooks() now returns only IDs of books for performance reasons.
-//               Use getBooksDetails(Textbook&
-//               <woyorus>
-// ========================== //
+// Dec, 2:      --- getBookDetails() now take just the IDs of textbooks
+//                  getBookDetail(qint32) <- will return a single textbook with that id
+//                  getBookDetail(QVector<qint32>&) <- will return a vector of books.
+//
+//              --- textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*>* books)
+//                  now returns vector of textbook pointers. All textbooks and vector itself are
+//                  created using new, so delete them after use. qDeleteAll().
+//                  You may want to use qDeleteAll(const Container& c) from <QtAlgorithms> header.
+//
+//              --- void textbookLookupCompleted(QUuid requestId, int code, QVector<qint32>* booksIds)
+//                  also returns a vector of book ids. You can pass the output right to getBookDetails() 
+//                  to receive details about all of them in one bunch, via textbookDetailsReceived().
+//
+//              --- getRequiredBooks() now returns only IDs of books for performance reasons.
+//                  Use chained requests to receive ids first, then details.
+//
+//                  <woyorus>
+
 
 #include <QObject>
 #include <QHostAddress>
@@ -85,7 +95,8 @@ signals:
     void serverError(QUuid requestId, int code);
 
     // Events emitted regarding the completion of server API call
-    void loginSuccessful(QUuid requestId);
+    void loginSuccessful(QUuid requestId, Role userRole);
+    void loginFailed(QUuid requestId);
     void orderStatusReceived(QUuid requestId, int code);
     void updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid requestId, int code);
     // Books in vector are created using new. Delete them using delete after use.

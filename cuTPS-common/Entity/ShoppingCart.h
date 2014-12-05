@@ -26,6 +26,7 @@ class LIBCUTPS_EXPORT ShoppingCart {
         int getTotalPrice();
         void addItem(SellableItem *);
         QVector<SellableItem*> getItems();
+        void clearCart();
 
 };
 

@@ -103,7 +103,7 @@ void NetClient::readyRead()
     }
 
     // Check if this is goodbye msg first
-    if (request->getInvocation() == Goodbye)
+    if (request->getInvocation() == IGoodbye)
         kick();
 
     WorkerTask* task;
@@ -133,7 +133,7 @@ void NetClient::readyRead()
 
 void NetClient::taskResult(int code, NetResponse* response)
 {
-    if (response->getInvocation() == Login &&
+    if (response->getInvocation() == ILogin &&
             response->getResponseCode() == 0x1)
     {
         clientStatusUpdated();

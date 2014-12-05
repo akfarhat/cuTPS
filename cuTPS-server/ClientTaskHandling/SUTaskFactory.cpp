@@ -24,31 +24,31 @@ WorkerTask* SUTaskFactory::createTask(
     switch (invoc)
     {
 
-    case Login: {
+    case ILogin: {
         return new LoginTask(srvInst);
     }
 
-    case AddBook: {
+    case IAddBook: {
         return new AddBookTask(srvInst);
     }
 
-    case AddCourse: {
+    case IAddCourse: {
         return new AddCourseTask(srvInst);
     }
 
-    case GetBookDetails: {
+    case IGetBookDetails: {
         return new GetBookDetailsTask(srvInst);
     }
 
-    case GetRequiredBooks: {
+    case IGetRequiredBooks: {
         return new GetRequiredBooksTask(srvInst);
     }
 
-    case SubmitOrder: {
+    case ISubmitOrder: {
         return new SubmitOrderTask(srvInst);
     }
 
-    case GenerateReport: {
+    case IGenerateReport: {
         return new GenerateReportTask(srvInst);
     }
 

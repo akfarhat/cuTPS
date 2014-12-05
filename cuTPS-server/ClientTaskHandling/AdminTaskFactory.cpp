@@ -14,7 +14,7 @@ WorkerTask* AdminTaskFactory::createTask(
     switch (invoc)
     {
 
-    case GenerateReport: {
+    case IGenerateReport: {
         return new GenerateReportTask(srvInst);
     }
 

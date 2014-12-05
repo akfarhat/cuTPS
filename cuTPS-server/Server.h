@@ -46,7 +46,7 @@ public:
     // as the first parameter
 
     // All Users
-    ServerResponse authenticateUser(QUuid, UserCredentials);
+    ServerResponse authenticateUser(QUuid, Role&, UserCredentials);
 
     // Content Manager request API. Each of these requests
     // adds some content into the system availability
@@ -88,6 +88,7 @@ private:
     bool validateBillingInfo(const BillingInfo *);
     bool validateDeliveryInfo(const DeliveryInfo *);
     bool validateOrder(Order &, QString *);
+    Role getUserRole(QString &);
 };
 
 #endif // SERVER_H

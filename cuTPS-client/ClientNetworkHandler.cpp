@@ -33,6 +33,7 @@ ClientNetworkHandler::ClientNetworkHandler()
             this, SLOT(error(QAbstractSocket::SocketError)));
 
     loggedIn = false;
+    blockSize = 0;
 }
 
 ClientNetworkHandler::~ClientNetworkHandler()
@@ -77,7 +78,7 @@ QUuid ClientNetworkHandler::login(UserCredentials& credentials)
     QUuid requestId = QUuid::createUuid();
 
     NetRequest request;
-    request.setInvocation(Login);
+    request.setInvocation(ILogin);
     request.setRequestId(requestId);
 
     QByteArray data;
@@ -104,7 +105,7 @@ QUuid ClientNetworkHandler::getRequiredBooks(QString &username)
     QUuid requestId = QUuid::createUuid();
 
     NetRequest request;
-    request.setInvocation(GetRequiredBooks);
+    request.setInvocation(IGetRequiredBooks);
     request.setRequestId(requestId);
 
     QByteArray data;
@@ -136,7 +137,7 @@ QUuid ClientNetworkHandler::getBookDetails(const QVector<qint32>& ids)
     QUuid requestId = QUuid::createUuid();
 
     NetRequest request;
-    request.setInvocation(GetBookDetails);
+    request.setInvocation(IGetBookDetails);
     request.setRequestId(requestId);
 
     QByteArray data;
@@ -165,7 +166,7 @@ QUuid ClientNetworkHandler::submitOrder(Order& order)
     QUuid requestId = QUuid::createUuid();
 
     NetRequest request;
-    request.setInvocation(SubmitOrder);
+    request.setInvocation(ISubmitOrder);
     request.setRequestId(requestId);
 
     QByteArray data;
@@ -192,7 +193,7 @@ QUuid ClientNetworkHandler::addCourse(Course& course)
     QUuid requestId = QUuid::createUuid();
 
     NetRequest request;
-    request.setInvocation(AddCourse);
+    request.setInvocation(IAddCourse);
     request.setRequestId(requestId);
 
     QByteArray data;
@@ -219,7 +220,7 @@ QUuid ClientNetworkHandler::addBook(Textbook& text)
     QUuid requestId = QUuid::createUuid();
 
     NetRequest request;
-    request.setInvocation(AddBook);
+    request.setInvocation(IAddBook);
     request.setRequestId(requestId);
 
     QByteArray data;
@@ -246,8 +247,9 @@ QTcpSocket::SocketState ClientNetworkHandler::getSocketState() const
 
 bool ClientNetworkHandler::isConnected() const
 {
+    qDebug() << "SocketState: " << getSocketState();
     return getSocketState() == QTcpSocket::ConnectedState ||
-            getSocketState() == QTcpSocket::BoundState;
+           getSocketState() == QTcpSocket::BoundState;
 }
 
 bool ClientNetworkHandler::isValid() const
@@ -278,27 +280,20 @@ void ClientNetworkHandler::readyRead()
     {
         if (connection->bytesAvailable() < sizeof(qint16))
         {
+            qDebug() << "ClientNetworkHandler::bytes avail < size(qint16)";
             return;
         }
 
         in >> blockSize;
+        qDebug() << "Read in block size of " << blockSize;
     }
 
     if (connection->bytesAvailable() < blockSize)
     {
+        qDebug() << "ClientNetworkHandler::bytes avail < blocksize("
+                 << blockSize << "), finished";
         return;
     }
-
-//    // Validate message by magic number.
-//    qint32 mMagic;
-//    in >> mMagic;
-
-//    if (mMagic != TPSNetProtocolDefs::PROTOCOL_MAGIC)
-//    {
-//        qDebug() << "protocol ver mismatch: got magic " << mMagic;
-//        this->disconnect();
-//        return; // TODO: throw an exception instead
-//    }
 
     // Parse the response
     NetResponse response;
@@ -328,7 +323,7 @@ void ClientNetworkHandler::readyRead()
 
     switch (response.getInvocation()) {
 
-    case AddBook: {
+    case IAddBook: {
         qDebug() << "emitting update completed evt";
         emit updateCompleted(response.getInvocation(),
                              response.getRequestId(),
@@ -336,7 +331,7 @@ void ClientNetworkHandler::readyRead()
         break;
     }
 
-    case AddCourse: {
+    case IAddCourse: {
         qDebug() << "emitting update completed evt";
         emit updateCompleted(response.getInvocation(),
                              response.getRequestId(),
@@ -344,7 +339,7 @@ void ClientNetworkHandler::readyRead()
         break;
     }
 
-    case GetBookDetails: {
+    case IGetBookDetails: {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
 
         qint32 numBooks;
@@ -365,7 +360,7 @@ void ClientNetworkHandler::readyRead()
         break;
     }
 
-    case GetRequiredBooks: {
+    case IGetRequiredBooks: {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
 
         qint32 numBooks;
@@ -386,18 +381,35 @@ void ClientNetworkHandler::readyRead()
         break;
     }
 
-    case Login: {
-        emit loginSuccessful(response.getRequestId());
-        loggedIn = true;
+    case ILogin: {
+        QDataStream in(response.getData(), QIODevice::ReadOnly);
+
+        qint8 roleId; // TODO: check the actual size being writted for this int
+        in >> roleId;
+
+        qDebug() << "ClientNetworkHandler::Ready read Login, read role id: " << roleId;
+
+       if (response.getResponseCode() < 1) {
+            qDebug() << "ClientNetworkHandler::Login failed for request "
+                     << response.getRequestId();
+            emit loginFailed(response.getRequestId());
+            loggedIn = false;
+        } else {
+            qDebug() << "ClientNetworkHandler::Login successful for request "
+                     << response.getRequestId();
+            emit loginSuccessful(response.getRequestId(), (Role)roleId);
+            loggedIn = true;
+        }
+
         break;
     }
 
-    case SubmitOrder: {
+    case ISubmitOrder: {
         emit orderStatusReceived(response.getRequestId(), response.getResponseCode());
         break;
     }
 
-    case Goodbye:
+    case IGoodbye:
     default:
         this->disconnectFromServer();
         break;

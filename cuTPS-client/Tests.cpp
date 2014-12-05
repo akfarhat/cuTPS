@@ -33,7 +33,6 @@ Tests::Tests(QWidget *parent) :
     network.connectToServer(localhost, 12754);
 
     // Bind a handler to server responses to our requests
-    connect(&network, SIGNAL(loginSuccessful(QUuid)), this, SLOT(loginSuccessful(QUuid)));
     connect(&network, SIGNAL(orderStatusReceived(QUuid, int)), this, SLOT(orderStatusReceived(QUuid, int)));
     connect(&network, SIGNAL(updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid, int)),
                 this, SLOT(updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid, int)));
@@ -94,17 +93,17 @@ void Tests::on_loginButton_clicked() {
         userCreds.username = "joesmith";
         userCreds.password = "alamepassword";
         sessCreds.username = "joesmith";
-        userRole = Role::Student;
+        userRole = Role::StudentUser;
     } else if (ui->contentManagerRadio->isChecked()) {
         userCreds.username = "cm";
         userCreds.password = "pass";
         sessCreds.username = "joesmith";
-        userRole = Role::ContentManager;
+        userRole = Role::ContentManagerUser;
     }
 
     sessCreds.sessionID = 0;
 
-    loginCtrl = new LoginControl(network);
+    loginCtrl = new LoginControl(&network);
 
     QUuid requestId;
 
@@ -218,14 +217,14 @@ void Tests::loginSuccessful(QUuid requestId) {
         // Show the test cases
         ui->testCasesGroup->show();
 
-        if (userRole == Role::Student) {
+        if (userRole == Role::StudentUser) {
             // Show the student test cases and hide the content manager test cases from the student
             ui->viewReqTextsGroup->show();
             ui->viewTextDetailsGroup->show();
             ui->submitOrderGroup->show();
             ui->addBooksGroup->hide();
             ui->addCourseGroup->hide();
-        } else if (userRole == Role::ContentManager) {
+        } else if (userRole == Role::ContentManagerUser) {
             // Show the content manager test cases and hide the student test cases from the content manager
             ui->addBooksGroup->show();
             ui->addCourseGroup->show();
@@ -259,9 +258,9 @@ void Tests::updateCompleted(TPSNetProtocolDefs::InvocationDescriptor invocation,
         updateMsg += "Succesfully added ";
     }
 
-    if (invocation == TPSNetProtocolDefs::AddCourse) {
+    if (invocation == TPSNetProtocolDefs::IAddCourse) {
         updateMsg += "course ";
-    } else if (invocation == TPSNetProtocolDefs::AddBook) {
+    } else if (invocation == TPSNetProtocolDefs::IAddBook) {
         updateMsg += "textbook";
     }
 

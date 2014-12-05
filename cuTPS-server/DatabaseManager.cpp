@@ -48,4 +48,3 @@ bool DatabaseManager::runQuery(const QString &queryString, QSqlQuery* returnQuer
     *returnQuery = query;
     return result;
 }
-

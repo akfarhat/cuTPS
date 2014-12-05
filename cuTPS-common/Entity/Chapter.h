@@ -37,7 +37,9 @@ public:
     void addSection(const Section& s);
     QVector<Section*> getSectionList();
     int numSections() const;
-
+    
+    QString getTitle();
+    QString getType();
     QString getDetails() const;
 
     friend QDataStream& operator<<(QDataStream& os, const Chapter& c); // output

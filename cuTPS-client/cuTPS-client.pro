@@ -21,7 +21,20 @@ SOURCES += main.cpp \
     SubmitOrderControl.cpp \
     ViewBookDetailsControl.cpp \
     ViewRequiredBooksControl.cpp \
-    LoginControl.cpp
+    LoginControl.cpp \
+    Login.cpp \
+    ContentManagementInterface.cpp \
+    ManageContentListWindow.cpp \
+    ManageContentControl.cpp \
+    ContentRequestAPI.cpp \
+    CartRequestsAPI.cpp \
+    ManageCourseControl.cpp \
+    CourseRequestAPI.cpp \
+    CourseDetailsWindow.cpp \
+    CartDetailsWindow.cpp \
+    ViewCartControl.cpp \
+    CancelOrderControl.cpp \
+    CartManagementInterface.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -33,9 +46,31 @@ HEADERS  += \
     ViewBookDetailsControl.h \
     ViewRequiredBooksControl.h \
     LoginControl.h \
+    Login.h \
+    ContentManagementInterface.h \
+    ManageContentListWindow.h \
+    ManageContentControl.h \
+    ContentRequestAPI.h \
+    CartRequestsAPI.h \
+    ManageCourseControl.h \
+    CourseRequestAPI.h \
+    CourseDetailsWindow.h \
+    CartDetailsWindow.h \
+    ViewCartControl.h \
+    CancelOrderControl.h \
+    CartManagementInterface.h
 
 FORMS    += \
-    Tests.ui
+    Tests.ui \
+    Login.ui \
+    ContentManagementInterface.ui \
+    ManageContentListWindow.ui \
+    StudentMainMenuWindow.ui \
+    ViewCartOption.ui \
+    ViewRequiredBooksOption.ui \
+    CourseDetailsWindow.ui \
+    CartDetailsWindow.ui \
+    CartManagementInterface.ui
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++

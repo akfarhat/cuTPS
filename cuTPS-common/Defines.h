@@ -15,14 +15,14 @@ static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
 static const qint32 PROTOCOL_MAGIC = 0xDEADBEEF;
 
 enum InvocationDescriptor {
-    Login,
-    GetRequiredBooks,
-    GetBookDetails,
-    SubmitOrder,
-    AddCourse,
-    AddBook,
-    GenerateReport,
-    Goodbye
+    ILogin,
+    IGetRequiredBooks,
+    IGetBookDetails,
+    ISubmitOrder,
+    IAddCourse,
+    IAddBook,
+    IGenerateReport,
+    IGoodbye
 };
 
 enum UsrPermissionGroup {

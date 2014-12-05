@@ -16,7 +16,7 @@ WorkerTask* LoginTaskFactory::createTask(
     switch (invoc)
     {
 
-    case Login: {
+    case ILogin: {
         return new LoginTask(srvInst);
     }
 

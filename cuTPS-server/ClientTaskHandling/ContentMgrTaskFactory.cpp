@@ -16,15 +16,15 @@ WorkerTask* ContentMgrTaskFactory::createTask(
     switch (invoc)
     {
 
-    case AddBook: {
+    case IAddBook: {
         return new AddBookTask(srvInst);
     }
 
-    case AddCourse: {
+    case IAddCourse: {
         return new AddCourseTask(srvInst);
     }
 
-    case GetBookDetails: {
+    case IGetBookDetails: {
         return new GetBookDetailsTask(srvInst);
     }
 

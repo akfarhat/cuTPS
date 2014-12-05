@@ -22,7 +22,8 @@ void LoginTask::run()
 
     qDebug() << credentials.username << credentials.password;
 
-    ServerResponse r = server->authenticateUser(sessionId, credentials);
+    Role userRole;
+    ServerResponse r = server->authenticateUser(sessionId, userRole, credentials);
 
     if (r.code == Fail)
     {
@@ -33,11 +34,17 @@ void LoginTask::run()
         qDebug() << "Successful login! >";
     }
 
+    QByteArray responseDataBytes;
+    QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
+
+    outData << (qint8) userRole;
+
     NetResponse* response = new NetResponse();
     response->setInvocation(request->getInvocation());
     response->setRequestId(request->getRequestId());
     response->setResponseCode(r.code == Fail ? 0x0 : 0x1);
     response->setSessionId(sessionId);
+    response->setData(responseDataBytes);
 
     emit result(response->getResponseCode(), response);
 }

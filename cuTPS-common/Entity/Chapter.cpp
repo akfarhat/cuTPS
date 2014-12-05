@@ -44,6 +44,8 @@ void Chapter::setChapterNumber(int newNumber) {
 }
 
 QString Chapter::getDetails() const {
+    QString bookName = parentTextbook == NULL
+            ? "NULL" : parentTextbook->getName();
     QString details = "";
     details += "Type: Chapter\nID: ";
     details += QString::number(this->getId());
@@ -51,10 +53,10 @@ QString Chapter::getDetails() const {
     details += this->getName();
     details += "\nChapter Number: ";
     details += QString::number(this->getChapterNumber());
-//    details += "\nTextbook Name: ";
-//    details += this->getParentTextbook()->getName();
-    details += "\nPrice (in cents): ";
-    details += QString::number(this->getPriceCents());
+    details += "\nTextbook Name: ";
+    details += bookName;
+    details += "\nPrice: $";
+    details += QString::number(this->getPriceCents() / 100.00f);
     details += "\nAvailable: ";
     details += (this->getAvailability() == true) ? "yes" : "no";
     return details;
@@ -65,6 +67,14 @@ void Chapter::addSection(const Section& s)
     Section* s_copy = new Section(s);
     s_copy->setParentChapter(this);
     sections.append(s_copy);
+}
+
+QString Chapter::getTitle() {
+    return "Chapter " + QString::number(this->getChapterNumber()) + ": " + this->getName();
+}
+
+QString Chapter::getType() {
+    return "Chapter";
 }
 
 QVector<Section*> Chapter::getSectionList()

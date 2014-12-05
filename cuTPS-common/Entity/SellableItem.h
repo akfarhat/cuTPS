@@ -31,8 +31,13 @@ public:
     int getPriceCents() const;
     bool getAvailability() const;
 
+    // Return the formatted details for the item
     virtual QString getDetails() const = 0;
 
+    // Return the one-line list string
+    virtual QString getTitle() = 0;
+    virtual QString getType() = 0;
+    
     // Serialization routines
     friend QDataStream& operator<< (QDataStream& os, const SellableItem& i); // output
     friend QDataStream& operator>> (QDataStream& is, SellableItem& i); // input

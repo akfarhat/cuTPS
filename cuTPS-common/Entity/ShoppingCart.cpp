@@ -15,9 +15,15 @@ int ShoppingCart::getTotalPrice() {
 
 void ShoppingCart::addItem(SellableItem *newItem) {
     items->append(newItem);
+    totalPrice += newItem->getPriceCents();
 }
 
 QVector<SellableItem*> ShoppingCart::getItems() {
     // Return a copy of the vector
     return QVector<SellableItem*>(*(this->items));
+}
+
+void ShoppingCart::clearCart() {
+    items->clear();
+    totalPrice = 0;
 }

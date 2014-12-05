@@ -33,7 +33,8 @@ SOURCES += main.cpp \
     ClientTaskHandling/UserTaskFactory.cpp \
     ClientTaskHandling/AdminTaskFactory.cpp \
     ClientTaskHandling/GenerateReportTask.cpp \
-    ClientTaskHandling/SUTaskFactory.cpp
+    ClientTaskHandling/SUTaskFactory.cpp \
+    ServerAPI.cpp
 
 HEADERS += \
     DatabaseManager.h \
@@ -54,7 +55,9 @@ HEADERS += \
     ClientTaskHandling/UserTaskFactory.h \
     ClientTaskHandling/AdminTaskFactory.h \
     ClientTaskHandling/GenerateReportTask.h \
-    ClientTaskHandling/SUTaskFactory.h
+    ClientTaskHandling/SUTaskFactory.h \
+    ServerAPI.h
+
 
 OTHER_FILES += \
     db/cutpsd.db
