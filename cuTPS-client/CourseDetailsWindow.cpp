@@ -1,3 +1,4 @@
+
 #include "CourseDetailsWindow.h"
 #include "ui_CourseDetailsWindow.h"
 
@@ -26,12 +27,14 @@ CourseDetailsWindow::~CourseDetailsWindow()
 
 void CourseDetailsWindow::displayCourseList()
 {
-    if (this->courses != NULL)
+    if (this->courses != NULL) {
         delete this->courses;
+        this->courses = NULL;
+    }
 
     this->courses = new QVector<Course*>();
 
-    /// This stuff will come from a request to the server for courses ///
+    /// TODO: This stuff will come from a request to the server for courses ///
     QVector<Textbook*> *books = new QVector<Textbook*>();
     books->append(new Textbook(1, "Crazy Diagrams", 30593, true, "1234567"));
     books->append(new Textbook(2, "Whoa diagrams, bro", 435943, true, "1234568"));
@@ -43,7 +46,10 @@ void CourseDetailsWindow::displayCourseList()
     this->courses->append(c);
     this->courses->append(c2);
 
+    this->ui->bookList->clear();
     this->ui->courseList->clear();
+    this->ui->deleteBookButton->setEnabled(false);
+
     for (Course *course: *this->courses) {
         this->ui->courseList->addItem(course->getCourseCode() + "-"
                                     + course->getCourseName());
@@ -52,6 +58,13 @@ void CourseDetailsWindow::displayCourseList()
 
 void CourseDetailsWindow::displayCourseDetails(Course *c)
 {
+    this->ui->deleteBookButton->setEnabled(false);
+    this->ui->courseCodeEdit->setEnabled(true);
+    this->ui->courseNameEdit->setEnabled(true);
+    this->ui->saveCourseButton->setEnabled(true);
+    this->ui->addBookButton->setEnabled(true);
+    this->ui->deleteCourseButton->setEnabled(true);
+
     this->ui->courseCodeEdit->setText(c->getCourseCode());
     this->ui->courseNameEdit->setText(c->getCourseName());
 
@@ -70,4 +83,55 @@ void CourseDetailsWindow::on_backButton_clicked()
 void CourseDetailsWindow::on_courseList_clicked(const QModelIndex &index)
 {
     this->displayCourseDetails(this->courses->at(index.row()));
+}
+
+void CourseDetailsWindow::on_addCourseButton_clicked()
+{
+    this->addCourseWin = new AddCourseWindow(this);
+
+    // TODO: connect the addCourseWin saveCourse signal to a slow
+    // either in this class or the control above it.
+    connect(addCourseWin, SIGNAL(saveNewCourse(QString,QString)),
+            (QObject *)manageCourseCtrl, SLOT(saveNewCourse(QString, QString)));
+
+    this->addCourseWin->setModal(true);
+    this->addCourseWin->show();
+}
+
+void CourseDetailsWindow::on_saveCourseButton_clicked()
+{
+    QString code = this->ui->courseCodeEdit->text();
+    QString name = this->ui->courseNameEdit->text();
+
+    int index = this->ui->courseList->currentIndex().row();
+    int courseId = this->courses->at(index)->getId();
+
+    emit modifyCourse(courseId, code, name);
+}
+
+void CourseDetailsWindow::on_bookList_clicked(const QModelIndex &index)
+{
+    this->ui->deleteBookButton->setEnabled(true);
+}
+
+void CourseDetailsWindow::on_deleteCourseButton_clicked()
+{
+    int index = this->ui->courseList->currentIndex().row();
+    int courseId = this->courses->at(index)->getId();
+
+    emit deleteCourse(courseId);
+}
+
+void CourseDetailsWindow::on_deleteBookButton_clicked()
+{
+    int courseIndex = this->ui->courseList->currentIndex().row();
+
+    Course *c = this->courses->at(courseIndex);
+
+    QVector<qint32> *requiredBookIds = c->getRequiredTextsIds();
+    int courseId = c->getId();
+
+    int bookIndex = this->ui->bookList->currentIndex().row();
+
+    emit removeRequiredBook((int)requiredBookIds->at(bookIndex), courseId);
 }

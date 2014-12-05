@@ -1,7 +1,7 @@
 #include "AddCourseControl.h"
 
-AddCourseControl::AddCourseControl(ClientNetworkHandler &serverAPI)
-    : network(serverAPI)
+AddCourseControl::AddCourseControl(CourseRequestAPI *serverAPI)
+    : api(serverAPI)
 {}
 
 AddCourseControl::~AddCourseControl() {
@@ -9,7 +9,5 @@ AddCourseControl::~AddCourseControl() {
 }
 
 void AddCourseControl::addCourse(QUuid &reqId, Course &newCourse) {
-    reqId = network.addCourse(newCourse);
-
-    delete &newCourse;
+    reqId = api->addCourse(newCourse);
 }

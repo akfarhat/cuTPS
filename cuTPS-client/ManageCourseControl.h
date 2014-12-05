@@ -8,6 +8,7 @@
 #define MANAGECOURSECONTROL_H
 
 #include <QObject>
+#include <QString>
 
 #include "CourseDetailsWindow.h"
 #include "CourseRequestAPI.h"
@@ -24,6 +25,14 @@ class ManageCourseControl : public QObject
     public:
         ManageCourseControl(ContentManagementInterface *, ClientNetworkHandler *);
         ~ManageCourseControl();
+
+    public slots:
+        // Emitted by the save button in the new course
+        // dialog, spawned from CourseDetailsWindow
+        void saveNewCourse(QString, QString);
+        void modifyCourse(int, QString, QString);
+        void deleteCourse(int);
+        void removeRequiredBook(int, int);
 
     private:
         ClientNetworkHandler *networking;

@@ -9,16 +9,16 @@
 #define ADDCOURSECONTROL_H
 
 #include "Utils.h"
-#include "ClientNetworkHandler.h"
+#include "CourseRequestAPI.h"
 #include "Entity/Course.h"
 
 class AddCourseControl {
 
     private:
-        ClientNetworkHandler &network;
+        CourseRequestAPI *api;
 
     public:
-        AddCourseControl(ClientNetworkHandler &);
+        AddCourseControl(CourseRequestAPI *);
         ~AddCourseControl();
 
         // Add the course to availability through the

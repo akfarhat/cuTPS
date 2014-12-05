@@ -8,6 +8,7 @@
 #include <QObject>
 
 #include "ClientNetworkHandler.h"
+#include "Entity/Course.h"
 
 class CourseRequestAPI : public QObject
 {
@@ -15,6 +16,7 @@ class CourseRequestAPI : public QObject
 public:
     explicit CourseRequestAPI(QObject *parent = 0,
                               ClientNetworkHandler *net = NULL);
+    QUuid addCourse(Course&);
 
 signals:
 

@@ -15,7 +15,6 @@ CONFIG   += -std=gnu++11
 
 SOURCES += main.cpp \
     ClientNetworkHandler.cpp \
-    Tests.cpp \
     AddBookControl.cpp \
     AddCourseControl.cpp \
     SubmitOrderControl.cpp \
@@ -34,12 +33,13 @@ SOURCES += main.cpp \
     CartDetailsWindow.cpp \
     ViewCartControl.cpp \
     CancelOrderControl.cpp \
-    CartManagementInterface.cpp
+    CartManagementInterface.cpp \
+    AddCourseWindow.cpp \
+    AddRequiredBookWindow.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
     LoginWindow.h \
-    Tests.h \
     AddBookControl.h \
     AddCourseControl.h \
     SubmitOrderControl.h \
@@ -58,10 +58,11 @@ HEADERS  += \
     CartDetailsWindow.h \
     ViewCartControl.h \
     CancelOrderControl.h \
-    CartManagementInterface.h
+    CartManagementInterface.h \
+    AddCourseWindow.h \
+    AddRequiredBookWindow.h
 
 FORMS    += \
-    Tests.ui \
     Login.ui \
     ContentManagementInterface.ui \
     ManageContentListWindow.ui \
@@ -70,7 +71,9 @@ FORMS    += \
     ViewRequiredBooksOption.ui \
     CourseDetailsWindow.ui \
     CartDetailsWindow.ui \
-    CartManagementInterface.ui
+    CartManagementInterface.ui \
+    AddCourseWindow.ui \
+    AddRequiredBookWindow.ui
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++

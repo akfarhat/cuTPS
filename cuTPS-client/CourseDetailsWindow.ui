@@ -37,19 +37,22 @@
      </rect>
     </property>
     <property name="title">
-     <string>Course</string>
+     <string/>
     </property>
     <widget class="QPushButton" name="saveCourseButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>130</y>
-       <width>41</width>
+       <width>81</width>
        <height>27</height>
       </rect>
      </property>
      <property name="text">
-      <string>Save</string>
+      <string>Save Course</string>
      </property>
     </widget>
     <widget class="QLabel" name="coueseCodeLbl">
@@ -66,6 +69,9 @@
      </property>
     </widget>
     <widget class="QLineEdit" name="courseCodeEdit">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>102</x>
@@ -89,6 +95,9 @@
      </property>
     </widget>
     <widget class="QLineEdit" name="courseNameEdit">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>102</x>
@@ -98,20 +107,26 @@
       </rect>
      </property>
     </widget>
-    <widget class="QPushButton" name="deleteButton">
+    <widget class="QPushButton" name="deleteBookButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>100</x>
        <y>130</y>
-       <width>51</width>
+       <width>121</width>
        <height>27</height>
       </rect>
      </property>
      <property name="text">
-      <string>Delete </string>
+      <string>Book Not Required</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="addBook">
+    <widget class="QPushButton" name="addBookButton">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>220</x>
@@ -129,17 +144,17 @@
     <zorder>courseCodeEdit</zorder>
     <zorder>courseNameLbl</zorder>
     <zorder>courseNameEdit</zorder>
-    <zorder>deleteButton</zorder>
-    <zorder>deleteButton</zorder>
-    <zorder>addBook</zorder>
+    <zorder>deleteBookButton</zorder>
+    <zorder>deleteBookButton</zorder>
+    <zorder>addBookButton</zorder>
    </widget>
    <widget class="QListWidget" name="courseList">
     <property name="geometry">
      <rect>
       <x>255</x>
-      <y>20</y>
+      <y>40</y>
       <width>271</width>
-      <height>361</height>
+      <height>371</height>
      </rect>
     </property>
    </widget>
@@ -149,8 +164,40 @@
       <x>10</x>
       <y>200</y>
       <width>241</width>
-      <height>181</height>
+      <height>211</height>
      </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="deleteCourseButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>410</x>
+      <y>10</y>
+      <width>91</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Delete Course</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="addCourseButton">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>10</y>
+      <width>21</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>+</string>
     </property>
    </widget>
   </widget>
