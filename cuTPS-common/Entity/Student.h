@@ -13,6 +13,8 @@
 #include "User.h"
 #include "Course.h"
 #include "ShoppingCart.h"
+#include "CreditcardInfo.h"
+#include "DeliveryInfo.h"
 #include <QString>
 #include <QVector>
 
@@ -25,6 +27,8 @@ class LIBCUTPS_EXPORT Student : public User {
         QString emailAddress;
         QVector<Course*> courses;
         ShoppingCart *cart;
+        CreditCardInfo *billing;
+        DeliveryInfo *delivery;
 
 
 
@@ -42,7 +46,13 @@ class LIBCUTPS_EXPORT Student : public User {
         void enrollInCourse(Course*);
 
         ShoppingCart* getCart();
-        void setCart(ShoppingCart *);
+        void setCart(ShoppingCart*);
+
+        CreditCardInfo* getCreditCardInfo();
+        void setCreditCardInfo(CreditCardInfo*);
+
+        DeliveryInfo* getDeliveryInfo();
+        void setDeliveryInfo(DeliveryInfo*);
 
         QString getDetails();
 };

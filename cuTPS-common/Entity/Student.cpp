@@ -6,6 +6,13 @@ Student::Student(int id, QString name, QString username, int studentNum) : User(
 
 Student::~Student() {
     delete cart;
+
+    if (billing) {
+        delete billing;
+    }
+    if (delivery) {
+        delete delivery;
+    }
 }
 
 int Student::getStudentNumber() {
@@ -26,6 +33,22 @@ void Student::setEmailAddress(QString newEmail) {
 
 QVector<Course*> Student::getCourses() {
     return courses;
+}
+
+CreditCardInfo* Student::getCreditCardInfo() {
+    return billing;
+}
+
+void Student::setCreditCardInfo(CreditCardInfo *info) {
+    billing = info;
+}
+
+DeliveryInfo* Student::getDeliveryInfo() {
+    return delivery;
+}
+
+void Student::setDeliveryInfo(DeliveryInfo *info) {
+    delivery = info;
 }
 
 void Student::enrollInCourse(Course *newCourse) {

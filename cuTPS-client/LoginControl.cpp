@@ -5,6 +5,7 @@
 
 #include "Entity/Chapter.h"
 #include "Entity/Section.h"
+#include "Entity/CreditcardInfo.h"
 
 LoginControl::LoginControl(ClientNetworkHandler *serverAPI)
     : network(serverAPI)
@@ -52,6 +53,9 @@ void LoginControl::loginSuccessful(QUuid requestId, Role userRole) {
             SellableItem *t1 = new Textbook(1, "The First Book", 554563, 1, "123456678");
             SellableItem *c1 = new Chapter(5, NULL, 1, "Chapter One", 432, true);
             SellableItem *s1 = new Section(9, NULL, 1, "Section One", 325, true);
+
+            newStudent->setCreditCardInfo(new CreditCardInfo("Test", "Test@sfddsf", "fake address", "12344556", "VISA", "12334343", "25/2/1", "123"));
+            newStudent->setDeliveryInfo(new DeliveryInfo("Test@sfddsf"));
 
             studentIF = new CartManagementInterface(0, network, newStudent);
             newStudent->getCart()->addItem(t1);

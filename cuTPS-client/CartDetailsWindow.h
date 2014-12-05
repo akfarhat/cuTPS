@@ -15,25 +15,29 @@
 #ifndef CARTDETAILSWINDOW_H
 #define CARTDETAILSWINDOW_H
 
-#include <QMainWindow>
+#include <QDialog>
 
 #include "CartRequestsAPI.h"
-#include "ViewCartControl.h"
 #include "CancelOrderControl.h"
+#include "PlaceOrderControl.h"
 
-// Forward reference to avoid circular deps
-class ViewCartControl;
 
 namespace Ui {
     class CartDetailsWindow;
 }
 
-class CartDetailsWindow : public QMainWindow {
+class PlaceOrderControl;
+
+class CartDetailsWindow : public QDialog {
     Q_OBJECT
 
     public:
-         explicit CartDetailsWindow(QWidget *parent = 0, ViewCartControl *ctrl = NULL, CartRequestsAPI *api = NULL);
+         explicit CartDetailsWindow(QWidget *parent = 0, CartRequestsAPI *api = NULL);
         ~CartDetailsWindow();
+
+    void updateView();
+    void setError(QString);
+    void setMessage(QString);
 
     signals:
         void cartNavigateBack();
@@ -44,10 +48,12 @@ class CartDetailsWindow : public QMainWindow {
         void on_placeOrderButton_clicked();
 
 
+
     private:
         Ui::CartDetailsWindow *ui;
-        ViewCartControl *viewCartCtrl;
         CartRequestsAPI *requestAPI;
+
+        PlaceOrderControl *placeOrderCtrl;
 
 };
 

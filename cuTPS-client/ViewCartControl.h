@@ -13,17 +13,15 @@ class CartDetailsWindow;
 
 class ViewCartControl {
     public:
-        ViewCartControl(QWidget *parent, ClientNetworkHandler *, Student *);
+        ViewCartControl(QWidget *, CartRequestsAPI *);
         ~ViewCartControl();
 
         void launchCartDetailsWindow();
 
-        Student* getStudent();
 
     private:
         QWidget *parentWidget;
         Student *student;
-        ClientNetworkHandler *network;
         CartRequestsAPI *requestAPI;
 
         CartDetailsWindow *detailsWindow;

@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-CartDetailsWindow::CartDetailsWindow(QWidget *parent, ViewCartControl *ctrl, CartRequestsAPI *api)  : QMainWindow(parent),  ui(new Ui::CartDetailsWindow), viewCartCtrl(ctrl), requestAPI(api) {
+CartDetailsWindow::CartDetailsWindow(QWidget *parent, CartRequestsAPI *api)  : QDialog(parent),  ui(new Ui::CartDetailsWindow), requestAPI(api) {
 
     ui->setupUi(this);
 
@@ -12,22 +12,58 @@ CartDetailsWindow::CartDetailsWindow(QWidget *parent, ViewCartControl *ctrl, Car
     ui->priceList->setEnabled(false);
     ui->totalPrice->setEnabled(false);
 
+    ui->message->hide();
+
+    updateView();
+
+}
+
+CartDetailsWindow::~CartDetailsWindow() {
+    delete placeOrderCtrl;
+    delete ui;
+}
+
+void CartDetailsWindow::setError(QString message) {
+    ui->message->setStyleSheet("QLabel { color : red; }");
+    ui->message->setText(message);
+    ui->message->show();
+}
+
+void CartDetailsWindow::setMessage(QString message) {
+    ui->message->setStyleSheet("QLabel { color : green; }");
+    ui->message->setText(message);
+    ui->message->show();
+}
+
+void CartDetailsWindow::updateView() {
+    ui->message->hide();
+
+    // Clear the lists
+    ui->itemList->clear();
+    ui->typeList->clear();
+    ui->priceList->clear();
+
     // Populate the lists
-    for (SellableItem *item: viewCartCtrl->getStudent()->getCart()->getItems()) {
+    for (SellableItem *item: requestAPI->getStudent()->getCart()->getItems()) {
         ui->itemList->addItem(item->getName());
         ui->typeList->addItem(item->getType());
         ui->priceList->addItem("$" + QString::number(item->getPriceCents() / 100.00f));
     }
 
-    ui->totalPrice->setText(QString::number(viewCartCtrl->getStudent()->getCart()->getTotalPrice() / 100.00f));
+    ui->totalPrice->setText(QString::number(requestAPI->getStudent()->getCart()->getTotalPrice() / 100.00f));
+
+    // Disable place order and cancel order buttons if cart is empty
+    if (requestAPI->getStudent()->getCart()->getItems().empty()) {
+        ui->cancelOrderButton->setEnabled(false);
+        ui->placeOrderButton->setEnabled(false);
+    }
 }
 
-CartDetailsWindow::~CartDetailsWindow() {
-    delete ui;
-}
 
 void CartDetailsWindow::on_backButton_clicked() {
+    // Show the main menu window (CartManagmentInterface)
     this->parentWidget()->show();
+    // Close this window
     this->close();
 }
 
@@ -36,13 +72,9 @@ void CartDetailsWindow::on_cancelOrderButton_clicked() {
 
     CancelOrderControl *cancelOrderCtrl = new CancelOrderControl();
 
-    cancelOrderCtrl->clearCart(viewCartCtrl->getStudent());
+    cancelOrderCtrl->clearCart(requestAPI->getStudent());
     delete cancelOrderCtrl;
 
-    ui->itemList->clear();
-    ui->typeList->clear();
-    ui->priceList->clear();
-    ui->totalPrice->setText("0");
 
     this->parentWidget()->show();
     this->close();
@@ -50,4 +82,11 @@ void CartDetailsWindow::on_cancelOrderButton_clicked() {
 
 void CartDetailsWindow::on_placeOrderButton_clicked() {
     qDebug() << "Place order button clicked";
+
+
+    placeOrderCtrl = new PlaceOrderControl(this, requestAPI);
+
+    placeOrderCtrl->launchBillingWindow();
+
+
 }

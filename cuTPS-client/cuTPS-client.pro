@@ -35,7 +35,9 @@ SOURCES += main.cpp \
     CancelOrderControl.cpp \
     CartManagementInterface.cpp \
     AddCourseWindow.cpp \
-    AddRequiredBookWindow.cpp
+    AddRequiredBookWindow.cpp \
+    PlaceOrderControl.cpp \
+    BillingWindow.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -60,7 +62,9 @@ HEADERS  += \
     CancelOrderControl.h \
     CartManagementInterface.h \
     AddCourseWindow.h \
-    AddRequiredBookWindow.h
+    AddRequiredBookWindow.h \
+    PlaceOrderControl.h \
+    BillingWindow.h
 
 FORMS    += \
     Login.ui \
@@ -73,7 +77,8 @@ FORMS    += \
     CartDetailsWindow.ui \
     CartManagementInterface.ui \
     AddCourseWindow.ui \
-    AddRequiredBookWindow.ui
+    AddRequiredBookWindow.ui \
+    BillingWindow.ui \
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++

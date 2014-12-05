@@ -1,24 +1,23 @@
 #include "ViewCartControl.h"
 
-ViewCartControl::ViewCartControl(QWidget *parent, ClientNetworkHandler *netHandler, Student *stu) : parentWidget(parent), network(netHandler), student(stu) {
+#include "Entity/CreditcardInfo.h"
 
-    requestAPI = new CartRequestsAPI(0, network);
+ViewCartControl::ViewCartControl(QWidget *parent, CartRequestsAPI *api) : parentWidget(parent), requestAPI(api) {
+
 
 }
 
 ViewCartControl::~ViewCartControl() {
     delete detailsWindow;
-    delete network;
-    delete requestAPI;
 }
 
-Student* ViewCartControl::getStudent() {
-    return student;
-}
+
 
 void ViewCartControl::launchCartDetailsWindow() {
-    detailsWindow = new CartDetailsWindow(parentWidget, this, requestAPI);
 
-    detailsWindow->show();
+    detailsWindow = new CartDetailsWindow(parentWidget, requestAPI);
+
+    detailsWindow->exec();
+
 }
 
