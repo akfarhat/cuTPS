@@ -33,7 +33,6 @@
 #include <QUuid>
 #include <QVector>
 #include <QDataStream>
-#include <memory>
 
 #include "Defines.h"
 #include "Utils.h"
@@ -102,7 +101,7 @@ signals:
     void updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid requestId, int code);
     // Books in vector are created using new. Delete them using delete after use.
     void textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*>* books);
-    void textbookLookupCompleted(QUuid requestId, int code, std::shared_ptr<QVector<int>>& ids);
+    void textbookLookupCompleted(QUuid requestId, int code, QVector<qint32>* booksIds);
 
 public slots:
     // Event handlers for events emitted by the TCP socket object
