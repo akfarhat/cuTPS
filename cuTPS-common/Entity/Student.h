@@ -13,7 +13,7 @@
 #include "User.h"
 #include "Course.h"
 #include "ShoppingCart.h"
-#include "CreditcardInfo.h"
+#include "CreditCardInfo.h"
 #include "DeliveryInfo.h"
 #include <QString>
 #include <QVector>

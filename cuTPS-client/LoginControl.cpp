@@ -5,7 +5,7 @@
 
 #include "Entity/Chapter.h"
 #include "Entity/Section.h"
-#include "Entity/CreditcardInfo.h"
+#include "Entity/CreditCardInfo.h"
 
 LoginControl::LoginControl(ClientNetworkHandler *serverAPI)
     : network(serverAPI)

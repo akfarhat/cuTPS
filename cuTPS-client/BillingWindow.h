@@ -4,7 +4,7 @@
 #include <QDialog>
 #include "CartRequestsAPI.h"
 #include "Entity/Student.h"
-#include "Entity/CreditcardInfo.h"
+#include "Entity/CreditCardInfo.h"
 #include "PlaceOrderControl.h"
 
 namespace Ui {
