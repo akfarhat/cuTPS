@@ -1,3 +1,7 @@
+// Traceability:
+//   An extension on the CourseDetailsWindow class
+//   in the CourseManagement subsystem
+
 #ifndef ADDCHAPTERWINDOW_H
 #define ADDCHAPTERWINDOW_H
 

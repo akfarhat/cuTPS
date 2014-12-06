@@ -1,3 +1,8 @@
+// Traceability:
+//   An extention on the ManageableContentListWindow
+//   class in the ContentManagement subsystem.
+//   Provides a dialog to add section details to a chapter
+
 #ifndef ADDSECTIONWINDOW_H
 #define ADDSECTIONWINDOW_H
 

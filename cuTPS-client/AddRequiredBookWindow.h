@@ -1,3 +1,8 @@
+// Traceability:
+//   An extension on the CourseDetailsWindow in the ManageCourses
+//   subsystem. Provides a dialog to allow selected textbooks to
+//   be added as required for the selected course.
+
 #ifndef ADDREQUIREDBOOKWINDOW_H
 #define ADDREQUIREDBOOKWINDOW_H
 

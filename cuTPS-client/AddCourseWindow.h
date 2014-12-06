@@ -1,3 +1,8 @@
+// Traceability:
+//   An extension on the CourseDetailsWindow class
+//   in the CourseManagement subsystem.
+//   A dialog to provide user input to the add course operation
+
 #ifndef ADDCOURSEWINDOW_H
 #define ADDCOURSEWINDOW_H
 
