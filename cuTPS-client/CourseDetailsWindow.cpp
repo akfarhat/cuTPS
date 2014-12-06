@@ -23,6 +23,12 @@ CourseDetailsWindow::~CourseDetailsWindow()
 
     if (this->courses != NULL)
         delete this->courses;
+
+    if (this->addCourseWin != NULL)
+        delete this->addCourseWin;
+
+    if (this->addReqBooksWin != NULL)
+        delete this->addReqBooksWin;
 }
 
 void CourseDetailsWindow::displayCourseList()
@@ -134,4 +140,21 @@ void CourseDetailsWindow::on_deleteBookButton_clicked()
     int bookIndex = this->ui->bookList->currentIndex().row();
 
     emit removeRequiredBook((int)requiredBookIds->at(bookIndex), courseId);
+}
+
+void CourseDetailsWindow::on_addBookButton_clicked()
+{
+    int selectedCourseIndex = this->ui->courseList->currentIndex().row();
+    int selectedCourseId = this->courses->at(selectedCourseIndex)->getId();
+
+    this->addReqBooksWin = new AddRequiredBookWindow(this,
+                                                     this->requestAPI,
+                                                     selectedCourseId);
+
+    connect(this->addReqBooksWin, SIGNAL(addRequiredBooks(QVector<int>&,int)),
+            (QObject *)this->manageCourseCtrl, SLOT(addRequiredBooks(QVector<int>&, int)));
+
+    this->addReqBooksWin->setModal(true);
+
+    this->addReqBooksWin->show();
 }

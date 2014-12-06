@@ -52,6 +52,8 @@ private slots:
 
     void on_deleteBookButton_clicked();
 
+    void on_addBookButton_clicked();
+
 private:
     Ui::CourseDetailsWindow *ui;
     ManageCourseControl *manageCourseCtrl;

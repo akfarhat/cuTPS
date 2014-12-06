@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Add Required Textbooks</string>
   </property>
-  <widget class="QListWidget" name="listWidget">
+  <widget class="QListWidget" name="bookList">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -21,6 +21,9 @@
      <width>401</width>
      <height>251</height>
     </rect>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::MultiSelection</enum>
    </property>
   </widget>
   <widget class="QPushButton" name="addButton">

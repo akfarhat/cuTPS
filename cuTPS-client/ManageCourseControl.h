@@ -9,6 +9,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QVector>
 
 #include "CourseDetailsWindow.h"
 #include "CourseRequestAPI.h"
@@ -33,6 +34,8 @@ class ManageCourseControl : public QObject
         void modifyCourse(int, QString, QString);
         void deleteCourse(int);
         void removeRequiredBook(int, int);
+        // From the AddRequiredBooksWindow
+        void addRequiredBooks(QVector<int>&, int);
 
     private:
         ClientNetworkHandler *networking;
