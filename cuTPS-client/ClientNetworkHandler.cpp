@@ -127,7 +127,8 @@ QUuid ClientNetworkHandler::getRequiredBooks(QString &username)
 
 QUuid ClientNetworkHandler::getBookDetails(const qint32 id)
 {
-    return getBookDetails(QVector<qint32>({id}));
+    QVector<qint32> v = QVector<qint32>(1, id);
+    return getBookDetails(v);
 }
 
 QUuid ClientNetworkHandler::getBookDetails(const QVector<qint32>& ids)
@@ -366,18 +367,18 @@ void ClientNetworkHandler::readyRead()
         qint32 numBooks;
         in >> numBooks;
 
-        QVector<qint32>* vec = new QVector<qint32>();
+        auto vectPtr = std::make_shared<QVector<int>>();
 
         for (int i = 0; i < numBooks; ++i)
         {
             qint32 id;
             in >> id;
-            vec->append(id);
+            vectPtr->append(static_cast<int>(id));
         }
 
         emit textbookLookupCompleted(response.getRequestId(),
                                      response.getResponseCode(),
-                                     vec);
+                                     vectPtr);
         break;
     }
 
