@@ -9,6 +9,7 @@
 #include <QModelIndex>
 
 #include "ContentRequestAPI.h"
+#include "AddTextbookWindow.h"
 
 // Forward decleration to avoid circular dep
 class ManageContentControl;
@@ -51,6 +52,8 @@ private:
     ContentRequestAPI *requestAPI;
 
     QVector<SellableItem*> *listedItems;
+
+    AddTextbookWindow *addBookWin;
 
     void displayBookList();
     void displayChapterList(int);

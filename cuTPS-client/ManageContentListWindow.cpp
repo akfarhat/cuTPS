@@ -21,12 +21,17 @@ ManageContentListWindow::ManageContentListWindow(QWidget *parent,
 
     this->listedItems = NULL;
 
+    this->addBookWin = NULL;
+
     this->displayBookList();
 }
 
 ManageContentListWindow::~ManageContentListWindow()
 {
     delete ui;
+
+    if (this->addBookWin != NULL)
+        delete this->addBookWin;
 }
 
 void ManageContentListWindow::on_backButton_clicked()
@@ -199,6 +204,12 @@ void ManageContentListWindow::on_newContentButton_clicked()
 void ManageContentListWindow::addTextbook()
 {
     qDebug() << "ManageContentListWindow::addTextbook";
+    this->addBookWin = new AddTextbookWindow(this);
+
+    // connect its signal to a slot in the ctrl object
+
+    this->addBookWin->setModal(true);
+    this->addBookWin->show();
 }
 
 void ManageContentListWindow::addChapter()
