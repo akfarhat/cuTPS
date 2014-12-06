@@ -26,6 +26,14 @@ void CreditCardInfo::setExpiry(QString newExpiry) {
     expiryDate = newExpiry;
 }
 
+QString CreditCardInfo::getSecurityCode() {
+    return securityCode;
+}
+
+void CreditCardInfo::setSecurityCode(QString newCode) {
+    securityCode = newCode;
+}
+
 QString CreditCardInfo::getPaymentDetails() const {
     QString paymentStr = QString("%1|%2|%3|%4|%5|%6|%7|%8")
             .arg(number, expiryDate, securityCode,
