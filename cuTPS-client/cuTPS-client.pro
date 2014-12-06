@@ -38,7 +38,9 @@ SOURCES += main.cpp \
     AddRequiredBookWindow.cpp \
     PlaceOrderControl.cpp \
     BillingWindow.cpp \
-    AddTextbookWindow.cpp
+    AddTextbookWindow.cpp \
+    AddChapterWindow.cpp \
+    AddSectionWindow.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -66,7 +68,9 @@ HEADERS  += \
     AddRequiredBookWindow.h \
     PlaceOrderControl.h \
     BillingWindow.h \
-    AddTextbookWindow.h
+    AddTextbookWindow.h \
+    AddChapterWindow.h \
+    AddSectionWindow.h
 
 FORMS    += \
     Login.ui \
@@ -81,7 +85,9 @@ FORMS    += \
     AddCourseWindow.ui \
     AddRequiredBookWindow.ui \
     BillingWindow.ui \
-    AddTextbookWindow.ui
+    AddTextbookWindow.ui \
+    AddChapterWindow.ui \
+    AddSectionWindow.ui
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++

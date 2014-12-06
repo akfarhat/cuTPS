@@ -20,8 +20,12 @@ ManageContentListWindow::ManageContentListWindow(QWidget *parent,
     this->contentDepth = 0;
 
     this->listedItems = NULL;
-
     this->addBookWin = NULL;
+    this->addChapterWin = NULL;
+    this->addSectionWin = NULL;
+
+    this->bookId = -1;
+    this->chapterId = -1;
 
     this->displayBookList();
 }
@@ -32,6 +36,12 @@ ManageContentListWindow::~ManageContentListWindow()
 
     if (this->addBookWin != NULL)
         delete this->addBookWin;
+
+    if (this->addChapterWin != NULL)
+        delete this->addChapterWin;
+
+    if (this->addSectionWin != NULL)
+        delete this->addSectionWin;
 }
 
 void ManageContentListWindow::on_backButton_clicked()
@@ -76,6 +86,8 @@ void ManageContentListWindow::displayChapterList(int bookId)
 {
     qDebug() << "Displaying chapter list for bookId = " << bookId;
 
+    this->bookId = bookId;
+
     // Request all chapters (id, title) from server for bookId
     ////////// pretend for now that this list represents actual data: /////////
     QVector<SellableItem*> *chapters = new QVector<SellableItem*>();
@@ -108,6 +120,8 @@ void ManageContentListWindow::displayChapterList(int bookId)
 void ManageContentListWindow::displaySectionList(int chapterId)
 {
     qDebug() << "Displaying section list for chapterId = " << chapterId;
+
+    this->chapterId = chapterId;
 
     // Request all sections (id, title) from server for chapterId
     ////////// pretend for now that this list represents actual data: /////////
@@ -206,7 +220,8 @@ void ManageContentListWindow::addTextbook()
     qDebug() << "ManageContentListWindow::addTextbook";
     this->addBookWin = new AddTextbookWindow(this);
 
-    // connect its signal to a slot in the ctrl object
+    connect(this->addBookWin, SIGNAL(addTextbook(QString,int,bool,QString)),
+            this->contentManagementCtrl, SLOT(addTextbook(QString,int,bool,QString)));
 
     this->addBookWin->setModal(true);
     this->addBookWin->show();
@@ -215,9 +230,25 @@ void ManageContentListWindow::addTextbook()
 void ManageContentListWindow::addChapter()
 {
     qDebug() << "ManageContentListWindow::addChapter";
+
+    this->addChapterWin = new AddChapterWindow(this, this->bookId);
+
+    connect(this->addChapterWin, SIGNAL(addChapter(QString,int,bool,int)),
+            this->contentManagementCtrl, SLOT(addChapter(QString,int,bool,int)));
+
+    this->addChapterWin->setModal(true);
+    this->addChapterWin->show();
 }
 
 void ManageContentListWindow::addSection()
 {
    qDebug() << "ManageContentListWindow::addSection()";
+
+   this->addSectionWin = new AddSectionWindow(this, this->chapterId);
+
+   connect(this->addSectionWin, SIGNAL(addSection(QString,int,bool,int)),
+           this->contentManagementCtrl, SLOT(addSection(QString,int,bool,int)));
+
+   this->addSectionWin->setModal(true);
+   this->addSectionWin->show();
 }

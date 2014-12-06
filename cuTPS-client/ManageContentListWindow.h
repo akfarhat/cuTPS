@@ -10,6 +10,8 @@
 
 #include "ContentRequestAPI.h"
 #include "AddTextbookWindow.h"
+#include "AddChapterWindow.h"
+#include "AddSectionWindow.h"
 
 // Forward decleration to avoid circular dep
 class ManageContentControl;
@@ -54,6 +56,17 @@ private:
     QVector<SellableItem*> *listedItems;
 
     AddTextbookWindow *addBookWin;
+
+    AddChapterWindow *addChapterWin;
+
+    AddSectionWindow *addSectionWin;
+
+    // Note these members are here to move on with UI implementation
+    // while assuming that it is possible to have null parents for
+    // the sellable Items being displayed. These can be removed
+    // in the case that we can look it up in the parent attribute
+    int bookId;
+    int chapterId;
 
     void displayBookList();
     void displayChapterList(int);

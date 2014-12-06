@@ -1,3 +1,7 @@
+// Traceability:
+//   An window extension on the ManageContentListWindow class.
+//   provides a GUI dialog for inputting values for a new textbook.
+
 #ifndef ADDTEXTBOOKWINDOW_H
 #define ADDTEXTBOOKWINDOW_H
 
