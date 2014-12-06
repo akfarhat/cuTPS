@@ -95,8 +95,6 @@ void CourseDetailsWindow::on_addCourseButton_clicked()
 {
     this->addCourseWin = new AddCourseWindow(this);
 
-    // TODO: connect the addCourseWin saveCourse signal to a slow
-    // either in this class or the control above it.
     connect(addCourseWin, SIGNAL(saveNewCourse(QString,QString)),
             (QObject *)manageCourseCtrl, SLOT(saveNewCourse(QString, QString)));
 

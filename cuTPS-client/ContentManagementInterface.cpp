@@ -10,12 +10,22 @@ ContentManagementInterface::ContentManagementInterface(QWidget *parent,
     ui(new Ui::ContentManagementInterface)
 {
     qDebug() << "ContentManagementInterface::CTOR";
+
+    this->contentManagementCtrl = NULL;
+    this->courseManagementCtrl = NULL;
+
     ui->setupUi(this);
 }
 
 ContentManagementInterface::~ContentManagementInterface()
 {
     delete ui;
+
+    if (this->contentManagementCtrl != NULL)
+        delete this->contentManagementCtrl;
+
+    if (this->courseManagementCtrl != NULL)
+        delete this->courseManagementCtrl;
 }
 
 void ContentManagementInterface::on_manageContentButton_clicked()
@@ -43,16 +53,20 @@ void ContentManagementInterface::navigateBack()
     // Handles signals from lower back button on
     // management windows.
 
-    if (this->contentManagementCtrl != NULL)
+    if (this->contentManagementCtrl != NULL) {
         delete this->contentManagementCtrl;
+        this->contentManagementCtrl = NULL;
+    }
 
     this->show();
 }
 
 void ContentManagementInterface::courseNavigateBack()
 {
-    if (this->courseManagementCtrl != NULL)
+    if (this->courseManagementCtrl != NULL) {
         delete this->courseManagementCtrl;
+        this->courseManagementCtrl = NULL;
+    }
 
     this->show();
 }
