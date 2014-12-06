@@ -10,6 +10,14 @@ CreditCardInfo::CreditCardInfo(QString name, QString email, QString addr, QStrin
     securityCode = sCode;
 }
 
+QString CreditCardInfo::getCardholderName() {
+    return cardholder;
+}
+
+void CreditCardInfo::setCardholder(QString newcholder) {
+    cardholder = newcholder;
+}
+
 QString CreditCardInfo::getCardNumber() {
     return number;
 }
