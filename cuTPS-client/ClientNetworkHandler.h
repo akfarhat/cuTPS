@@ -26,8 +26,8 @@
 //
 //                  <woyorus>
 
-
 #include <QObject>
+#include <QMetaObject>
 #include <QHostAddress>
 #include <QTcpSocket>
 #include <QUuid>
@@ -41,6 +41,10 @@
 #include "Entity/Course.h"
 
 using namespace TPSNetProtocolDefs;
+
+// metatype declarations for correct signalling
+Q_DECLARE_METATYPE(QVector<Textbook*>*)
+Q_DECLARE_METATYPE(QVector<qint32>*)
 
 // Note, this could inherit from a NetworkHandler
 // that manages the networking
