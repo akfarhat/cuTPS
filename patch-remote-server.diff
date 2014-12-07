@@ -1,0 +1,13 @@
+diff --git a/cuTPS-client/main.cpp b/cuTPS-client/main.cpp
+index de01e8c..1314651 100644
+--- a/cuTPS-client/main.cpp
++++ b/cuTPS-client/main.cpp
+@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
+     // TODO: move this away frome here and connect on login button click
+     QHostAddress localhost(QHostAddress::LocalHost);
+     QHostAddress remoteSrv("192.241.250.122"); // this server should be always up for testing purposes
+-    network.connectToServer(localhost, 12754);
++    network.connectToServer(remoteSrv, 12754);
+ 
+     LoginControl loginCtrl(&network);
+ 
