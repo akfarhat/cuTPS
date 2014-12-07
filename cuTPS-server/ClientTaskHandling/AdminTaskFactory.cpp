@@ -1,7 +1,9 @@
 #include "AdminTaskFactory.h"
 #include "GenerateReportTask.h"
+#include "AddUserTask.h"
+#include "BanUserTask.h"
 
-using namespace TPSNetProtocolDefs;
+using namespace TPSNetProtocolDef;
 
 AdminTaskFactory::AdminTaskFactory()
 {
@@ -9,13 +11,21 @@ AdminTaskFactory::AdminTaskFactory()
 
 WorkerTask* AdminTaskFactory::createTask(
         Server *srvInst,
-        TPSNetProtocolDefs::InvocationDescriptor invoc)
+        TPSNetProtocolDef::InvocationDescriptor invoc)
 {
     switch (invoc)
     {
 
     case IGenerateReport: {
         return new GenerateReportTask(srvInst);
+    }
+
+    case IAddUser: {
+        return new AddUserTask(srvInst);
+    }
+
+    case IBanUser: {
+        return new BanUserTask(srvInst);
     }
 
     default: {

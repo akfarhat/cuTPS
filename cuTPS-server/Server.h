@@ -16,13 +16,15 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-#include "Utils.h"
+#include "Defines.h"
 #include "DatabaseManager.h"
 #include "Entity/Course.h"
 #include "Entity/Textbook.h"
 #include "Entity/Order.h"
 #include "Entity/Chapter.h"
 #include "Entity/Section.h"
+
+using namespace TPSDef;
 
 class Server : public QObject
 {

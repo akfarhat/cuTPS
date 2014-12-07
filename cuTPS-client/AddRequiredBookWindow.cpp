@@ -21,10 +21,10 @@ void AddRequiredBookWindow::populateBooks()
 
     // TODO: request books from the CourseRequestAPI
     /////Pretending for now..//////
-    Textbook *b1 = new Textbook(1, "Book name", 55352, true, "1234567");
-    Textbook *b2 = new Textbook(2, "Another book", 2523, true, "1234568");
-    Textbook *b3 = new Textbook(3, "Book here", 8384, true, "1234569");
-    Textbook *b4 = new Textbook(4, "Why so many books already", 88374, true, "1234570");
+    Textbook *b1 = new Textbook(1, "Book name", "Edition for noobs", "derp", 55352, true, "1234567");
+    Textbook *b2 = new Textbook(2, "Another book", "Edition for zombies", "herp", 2523, true, "1234568");
+    Textbook *b3 = new Textbook(3, "Book here", "Edition for people who love mcdonalds", "nerp", 8384, true, "1234569");
+    Textbook *b4 = new Textbook(4, "Why so many books already", "...agree", "merp mcderpson", 88374, true, "1234570");
     this->books->append(b1); this->books->append(b2); this->books->append(b3); this->books->append(b4);
     ////////////////////////////////
 

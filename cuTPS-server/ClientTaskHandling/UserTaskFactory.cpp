@@ -3,7 +3,7 @@
 #include "GetRequiredBooksTask.h"
 #include "SubmitOrderTask.h"
 
-using namespace TPSNetProtocolDefs;
+using namespace TPSNetProtocolDef;
 
 UserTaskFactory::UserTaskFactory()
 {
@@ -11,7 +11,7 @@ UserTaskFactory::UserTaskFactory()
 
 WorkerTask* UserTaskFactory::createTask(
         Server *srvInst,
-        TPSNetProtocolDefs::InvocationDescriptor invoc)
+        TPSNetProtocolDef::InvocationDescriptor invoc)
 {
     switch (invoc)
     {

@@ -1,9 +1,12 @@
 #include "ContentMgrTaskFactory.h"
-#include "AddBookTask.h"
+#include "AddItemTask.h"
 #include "AddCourseTask.h"
 #include "GetBookDetailsTask.h"
+#include "GetAllBooksTask.h"
+#include "GetAllCoursesTask.h"
+#include "RmItemTask.h"
 
-using namespace TPSNetProtocolDefs;
+using namespace TPSNetProtocolDef;
 
 ContentMgrTaskFactory::ContentMgrTaskFactory()
 {
@@ -11,13 +14,15 @@ ContentMgrTaskFactory::ContentMgrTaskFactory()
 
 WorkerTask* ContentMgrTaskFactory::createTask(
         Server *srvInst,
-        TPSNetProtocolDefs::InvocationDescriptor invoc)
+        TPSNetProtocolDef::InvocationDescriptor invoc)
 {
     switch (invoc)
     {
 
+    case IAddChapter:
+    case IAddSection:
     case IAddBook: {
-        return new AddBookTask(srvInst);
+        return new AddItemTask(srvInst);
     }
 
     case IAddCourse: {
@@ -26,6 +31,20 @@ WorkerTask* ContentMgrTaskFactory::createTask(
 
     case IGetBookDetails: {
         return new GetBookDetailsTask(srvInst);
+    }
+
+    case IGetAllBooks: {
+        return new GetAllBooksTask(srvInst);
+    }
+
+    case IGetAllCourses: {
+        return new GetAllCoursesTask(srvInst);
+    }
+
+    case IRmBook:
+    case IRmChapter:
+    case IRmSection: {
+        return new RmItemTask(srvInst);
     }
 
     default: {

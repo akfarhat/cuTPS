@@ -2,12 +2,11 @@
 
 #include <functional>
 
-#include "ServerAsync.h"
-#include "Utils.h"
-#include "Defines.h"
-
 #include <QByteArray>
 #include <QMap>
+
+#include "ServerAsync.h"
+#include "Defines.h"
 
 #include "ClientTaskHandling/LoginTaskFactory.h"
 #include "ClientTaskHandling/UserTaskFactory.h"
@@ -15,7 +14,7 @@
 #include "ClientTaskHandling/AdminTaskFactory.h"
 #include "ClientTaskHandling/SUTaskFactory.h"
 
-using namespace TPSNetProtocolDefs;
+using namespace TPSNetProtocolDef;
 
 NetClient::NetClient(QObject *parent) :
     QObject(parent)
@@ -74,7 +73,7 @@ void NetClient::disconnected()
 void NetClient::readyRead()
 {
     QDataStream in(socket);
-    in.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    in.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     if (blockSize == 0)
     {

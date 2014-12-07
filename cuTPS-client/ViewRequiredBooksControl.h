@@ -8,7 +8,7 @@
 #ifndef VIEWREQUIREDBOOKSCONTROL_H
 #define VIEWREQUIREDBOOKSCONTROL_H
 
-#include "Utils.h"
+#include "Defines.h"
 #include "ClientNetworkHandler.h"
 
 class ViewRequiredBooksControl {

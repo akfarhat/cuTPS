@@ -7,7 +7,7 @@
 #ifndef LOGINCONTROL_H
 #define LOGINCONTROL_H
 
-#include "Utils.h"
+#include "Defines.h"
 #include "Login.h"
 #include "ClientNetworkHandler.h"
 #include "ContentManagementInterface.h"

@@ -8,7 +8,7 @@
 #ifndef VIEWBOOKDETAILSCONTROL_H
 #define VIEWBOOKDETAILSCONTROL_H
 
-#include "Utils.h"
+#include "Defines.h"
 #include "ClientNetworkHandler.h"
 #include "Entity/Textbook.h"
 

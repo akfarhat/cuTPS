@@ -176,12 +176,12 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
     qDebug() << "About to insert " //<< QString::number(course.getRequiredTexts()->size())
              << " Course_Textbooks";
 
-    for (Textbook* textbook : *(course.getRequiredTexts())) {
+    for (int textbookId : course.getRequiredTextIds()) {
         // TODO: this is we should form the query for all books and execute it once.
         QString queryString = "insert into Course_Textbook (course_id, textbook_id) values (";
         queryString += course.getId();
         queryString += ", ";
-        queryString += textbook->getId();
+        queryString += textbookId;
         queryString += ");";
 
         result = dbManager->runQuery(queryString, &query);
@@ -260,7 +260,7 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter chapter)
 
     QSqlQuery query;
     QString queryString = "insert into Chapter (textbook_id, name, available) values (";
-    queryString += chapter.getParentTextbook()->getId();
+    queryString += chapter.getParentTextbookId();
     queryString += ", ";
     queryString += chapter.getName();
     queryString += ", ";
@@ -286,6 +286,8 @@ ServerResponse Server::addSection(QUuid sessionID, Section section)
 {
     ServerResponse response;
     response.sessionID = sessionID;
+
+    // TODO: ensure that getParentChapterId() belongs to getParentTextbookId().
 
     QSqlQuery query;
     QString queryString = "insert into Section (chapter_id, name, available) values (";
@@ -384,12 +386,14 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
                      << query.value(4).toString() << ")";
 
             *textbook = new Textbook(
-                query.value(0).toInt(),
-                query.value(1).toString(),
-                query.value(2).toInt(),
-                query.value(3).toBool(),
-                query.value(4).toString()
-            );
+                        query.value(0).toInt(),
+                        query.value(1).toString(),
+                        "<not implemented: Server.cpp:389>",
+                        "<not implemented: Server.cpp:390>",
+                        query.value(2).toInt(),
+                        query.value(3).toBool(),
+                        query.value(4).toString()
+                        );
         }
 
         // TODO : send textbook object to client

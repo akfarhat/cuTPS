@@ -8,7 +8,7 @@
 #ifndef SUBMITORDERCONTROL_H
 #define SUBMITORDERCONTROL_H
 
-#include "Utils.h"
+#include "Defines.h"
 #include "ClientNetworkHandler.h"
 #include "Entity/Order.h"
 

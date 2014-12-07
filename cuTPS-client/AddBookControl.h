@@ -8,7 +8,7 @@
 #ifndef ADDBOOKCONTROL_H
 #define ADDBOOKCONTROL_H
 
-#include "Utils.h"
+#include "Defines.h"
 #include "ClientNetworkHandler.h"
 #include "Entity/Textbook.h"
 

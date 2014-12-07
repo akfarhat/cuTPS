@@ -1,7 +1,7 @@
 #include "LoginTaskFactory.h"
 #include "LoginTask.h"
 
-using namespace TPSNetProtocolDefs;
+using namespace TPSNetProtocolDef;
 
 LoginTaskFactory::LoginTaskFactory()
 {}
@@ -11,7 +11,7 @@ LoginTaskFactory::~LoginTaskFactory()
 
 WorkerTask* LoginTaskFactory::createTask(
         Server *srvInst,
-        TPSNetProtocolDefs::InvocationDescriptor invoc)
+        TPSNetProtocolDef::InvocationDescriptor invoc)
 {
     switch (invoc)
     {

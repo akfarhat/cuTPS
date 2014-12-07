@@ -17,7 +17,6 @@ TEMPLATE = app
 SOURCES += main.cpp \
     DatabaseManager.cpp \
     Server.cpp \
-    ClientTaskHandling/AddBookTask.cpp \
     ClientTaskHandling/AddCourseTask.cpp \
     ClientTaskHandling/GetBookDetailsTask.cpp \
     ClientTaskHandling/GetRequiredBooksTask.cpp \
@@ -34,12 +33,17 @@ SOURCES += main.cpp \
     ClientTaskHandling/AdminTaskFactory.cpp \
     ClientTaskHandling/GenerateReportTask.cpp \
     ClientTaskHandling/SUTaskFactory.cpp \
-    ServerAPI.cpp
+    ServerAPI.cpp \
+    ClientTaskHandling/GetAllBooksTask.cpp \
+    ClientTaskHandling/AddItemTask.cpp \
+    ClientTaskHandling/AddUserTask.cpp \
+    ClientTaskHandling/RmItemTask.cpp \
+    ClientTaskHandling/BanUserTask.cpp \
+    ClientTaskHandling/GetAllCoursesTask.cpp
 
 HEADERS += \
     DatabaseManager.h \
     Server.h \
-    ClientTaskHandling/AddBookTask.h \
     ClientTaskHandling/AddCourseTask.h \
     ClientTaskHandling/GetBookDetailsTask.h \
     ClientTaskHandling/GetRequiredBooksTask.h \
@@ -56,7 +60,13 @@ HEADERS += \
     ClientTaskHandling/AdminTaskFactory.h \
     ClientTaskHandling/GenerateReportTask.h \
     ClientTaskHandling/SUTaskFactory.h \
-    ServerAPI.h
+    ServerAPI.h \
+    ClientTaskHandling/GetAllBooksTask.h \
+    ClientTaskHandling/AddItemTask.h \
+    ClientTaskHandling/AddUserTask.h \
+    ClientTaskHandling/RmItemTask.h \
+    ClientTaskHandling/BanUserTask.h \
+    ClientTaskHandling/GetAllCoursesTask.h
 
 
 OTHER_FILES += \

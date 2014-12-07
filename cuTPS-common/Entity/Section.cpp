@@ -3,13 +3,29 @@
 
 Section::Section() {}
 
-Section::Section(int id, Chapter* chapter, int num, QString name, int price, bool isAvailable) : SellableItem(id, name, price, isAvailable), parentChapter(chapter), number(num) {
+Section::Section(qint32 id,
+                 Chapter* chapter,
+                 quint16 num,
+                 QString name,
+                 quint32 price,
+                 bool isAvailable)
+    : SellableItem(id, name, price, isAvailable),
+      parentChapter(chapter), number(num)
+{
 }
 
-Section::Section(Chapter* chapter, int num, QString name, int price) : SellableItem(name, price), parentChapter(chapter), number(num) {
+Section::Section(Chapter* chapter,
+                 quint16 num,
+                 QString name,
+                 quint32 price,
+                 bool available)
+    : SellableItem(name, price, available),
+      parentChapter(chapter), number(num)
+{
 }
 
-Section::~Section() {
+Section::~Section()
+{
 }
 
 Chapter* Section::getParentChapter() {
@@ -21,11 +37,11 @@ void Section::setParentChapter(Chapter* newChapter) {
     parentChapterId = newChapter->getId();
 }
 
-int Section::getSectionNumber() const {
+quint16 Section::getSectionNumber() const {
     return number;
 }
 
-void Section::setSectionNumber(int newNumber) {
+void Section::setSectionNumber(quint16 newNumber) {
     number = newNumber;
 }
 
@@ -68,27 +84,44 @@ QString Section::getTitle() {
 QString Section::getType() {
     return "Section";
 }
+qint32 Section::getParentChapterId() const
+{
+    return parentChapterId;
+}
+
+void Section::setParentChapterId(const qint32 value)
+{
+    parentChapterId = value;
+}
+
+qint32 Section::getParentTextbookId() const
+{
+    return parentTextbookId;
+}
+
+void Section::setParentTextbookId(const qint32 value)
+{
+    parentTextbookId = value;
+}
 
 QDataStream& operator<<(QDataStream& os, const Section& s)
 {
-    os.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     os << dynamic_cast<const SellableItem&>(s);
-    os << static_cast<qint32>(s.number);
-    os << static_cast<qint32>(s.parentChapterId);
+    os << s.number; // quint32
+    os << s.parentChapterId; // qint32
 
     return os;
 }
 
 QDataStream& operator>>(QDataStream& is, Section& s)
 {
-    is.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     is >> dynamic_cast<SellableItem&>(s);
-    qint32 parentId, sNumber;
-    is >> sNumber >> parentId;
-    s.parentChapterId = parentId;
-    s.number = sNumber;
+    is >> s.number;
+    is >> s.parentChapterId;
 
     return is;
 }

@@ -1,6 +1,6 @@
 #include "Login.h"
 #include "ui_Login.h"
-#include "Utils.h"
+#include "Defines.h"
 #include "LoginControl.h"
 
 #include <QDebug>

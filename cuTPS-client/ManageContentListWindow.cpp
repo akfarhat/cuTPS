@@ -57,10 +57,10 @@ void ManageContentListWindow::displayBookList()
     // Request all books (id, title) from server
     ////////// pretend for now that this list represents actual data: /////////
     QVector<SellableItem*> *books = new QVector<SellableItem*>();
-    Textbook *t1 = new Textbook(1, "The First Book", 554563, 1, "123456678");
-    Textbook *t2 = new Textbook(2, "The Second Book", 34536, 1, "123456679");
-    Textbook *t3 = new Textbook(3, "The Third Book", 2345, 1, "123456680");
-    Textbook *t4 = new Textbook(4, "The Fourth Book", 2234556, 1, "123456681");
+    Textbook *t1 = new Textbook(1, "The First Book", "1st", "Some Dorc", 554563, 1, "123456678");
+    Textbook *t2 = new Textbook(2, "The Second Book", "2nd", "Some Corc", 34536, 1, "123456679");
+    Textbook *t3 = new Textbook(3, "The Third Book", "3rd", "Some Borc", 2345, 1, "123456680");
+    Textbook *t4 = new Textbook(4, "The Fourth Book", "999th", "Some Pork :D", 2234556, 1, "123456681");
     books->append(t1); books->append(t2); books->append(t3); books->append(t4);
     /////////////////////////////////////////////////////////////////////////
 

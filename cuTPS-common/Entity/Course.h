@@ -20,20 +20,18 @@ using namespace std;
 class LIBCUTPS_EXPORT Course
 {
 public:
-    Course();
-    Course(const QString ccode);
-    Course(const QString ccode, const QString cname, const QVector<Textbook*>&);
+    Course(const QString ccode="UKWN0000", const QString cname="<NO_COURSE_NAME>");
     ~Course();
 
-    int getId() const;
-    void setId(const int);
+    qint32 getId() const;
+    void setId(const qint32);
 
     QString getCourseCode() const;
     void setCourseCode(const QString);
 
-    void addRequiredText(Textbook*);
-    QVector<Textbook*>* getRequiredTexts();
-    QVector<qint32>* getRequiredTextsIds();
+    void addRequiredTextId(qint32 rtextId);
+    void addRequiredTextIds(const QVector<qint32>& vec);
+    const QVector<qint32>& getRequiredTextIds() const;
 
     QString getCourseName() const;
     void setCourseName(const QString &value);
@@ -44,7 +42,7 @@ public:
     QString stringRepr() const;
 
 private:
-    int id;
+    qint32 id;
     QString code;
     QString name;
 
@@ -53,7 +51,6 @@ private:
     // I.e. freshly received course object from the server only knows how many texts
     // are required by this course + their IDs. To get actual Textbook by id, use
     // getBookDetails() API call.
-    QVector<Textbook*> requiredBooks; // TODO: make it legacy or remove?
     QVector<qint32> reqBooksIds;
 
 };

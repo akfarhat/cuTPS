@@ -1,6 +1,11 @@
 #include "GetRequiredBooksTask.h"
 
 #include <QDebug>
+#include <QUuid>
+#include <QByteArray>
+#include <QDataStream>
+
+#include "Entity/NetResponse.h"
 
 GetRequiredBooksTask::GetRequiredBooksTask(Server* srv)
     : WorkerTask(srv)
@@ -36,6 +41,8 @@ void GetRequiredBooksTask::run()
 
     if (getBooks.code == Success)
     {
+        // TODO: query also courses, and write them as:
+        // |numcourses|(|course||numbooks||..books..|)(|course||numbooks|...
         outData << static_cast<qint32>(ids.size());
 
         for (qint32 id : ids)

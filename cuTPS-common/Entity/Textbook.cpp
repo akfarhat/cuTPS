@@ -3,11 +3,11 @@
 #include "SellableItem.h"
 #include "Defines.h"
 
-Textbook::Textbook(int textId, QString name, int price, bool isAvailable, QString iISBN) : SellableItem(textId, name, price, isAvailable) {
-    ISBN = iISBN;
+Textbook::Textbook(int textId, QString name, QString edition, QString authors, int price, bool isAvailable, QString iISBN) : SellableItem(textId, name, price, isAvailable) {
+    isbn = iISBN;
 }
 
-Textbook::Textbook(const Textbook& src) : SellableItem(src.getId(), src.getName(), src.getPriceCents(), src.getAvailability()), ISBN(src.getISBN())
+Textbook::Textbook(const Textbook& src) : SellableItem(src.getId(), src.getName(), src.getPriceCents(), src.getAvailability()), isbn(src.getISBN())
 {
     // Copy over all the chapters
     for (Chapter* c : src.getConstChapterList())
@@ -20,7 +20,7 @@ Textbook::Textbook(QString name, int price) : SellableItem(name, price) {
 }
 
 Textbook::Textbook() : SellableItem() {
-    ISBN = ""; // This constructor invocation means this book is invalid
+    isbn = ""; // This constructor invocation means this book is invalid
 }
 
 Textbook::~Textbook() {
@@ -29,20 +29,22 @@ Textbook::~Textbook() {
 }
 
 QString Textbook::getISBN() const {
-    return ISBN;
+    return isbn;
 }
 
-void Textbook::setISBN(const QString newISBN) {
-    ISBN = newISBN;
+void Textbook::setISBN(const QString& newISBN) {
+    isbn = newISBN;
 }
 
 QString Textbook::getDetails() const {
-    return QString("[Textbook: ID=%1, Title='%2', ISBN=%3, $$=%4, OnSell? %5]")
+    return QString("[Textbook: ID=%1, '%2' by %6, %7. ISBN=%3, $$=%4, OnSell? %5]")
             .arg(QString::number(getId()),
                  getName(),
                  getISBN(),
                  QString::number(this->getPriceCents() / 100.00f),
-                 (getAvailability() ? "yes" : "no"));
+                 (getAvailability() ? "yes" : "no"),
+                 getAuthors(),
+                 getEdition());
 }
 
 void Textbook::addChapter(const Chapter& c)
@@ -67,6 +69,26 @@ int Textbook::numChapters() const
     return chapters.size();
 }
 
+QString Textbook::getEdition() const
+{
+    return edition;
+}
+
+void Textbook::setEdition(const QString &value)
+{
+    edition = value;
+}
+
+QString Textbook::getAuthors() const
+{
+    return authors;
+}
+
+void Textbook::setAuthors(const QString &value)
+{
+    authors = value;
+}
+
 QString Textbook::getTitle() {
     return this->getName() + " - " + this->getISBN();
 }
@@ -77,11 +99,13 @@ QString Textbook::getType() {
 
 QDataStream& operator<<(QDataStream& os, const Textbook& b)
 {
-    os.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     // Insert Textbook itself
     os << dynamic_cast<const SellableItem&>(b);
-    os << b.ISBN;
+    os << b.edition;
+    os << b.authors;
+    os << b.isbn;
 
     // Followed by number of chapters
     os << static_cast<qint32>(b.numChapters());
@@ -96,11 +120,13 @@ QDataStream& operator<<(QDataStream& os, const Textbook& b)
 
 QDataStream& operator>>(QDataStream& is, Textbook& b)
 {
-    is.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     // Read textbook
     is >> dynamic_cast<SellableItem&>(b);
-    is >> b.ISBN;
+    is >> b.edition;
+    is >> b.authors;
+    is >> b.isbn;
 
     // Read number of chapters
     qint32 numChapters;

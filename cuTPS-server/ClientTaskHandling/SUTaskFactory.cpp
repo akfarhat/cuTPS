@@ -1,13 +1,18 @@
 #include "SUTaskFactory.h"
 #include "LoginTask.h"
-#include "AddBookTask.h"
+#include "AddItemTask.h"
 #include "AddCourseTask.h"
 #include "GetBookDetailsTask.h"
 #include "GetRequiredBooksTask.h"
 #include "SubmitOrderTask.h"
 #include "GenerateReportTask.h"
+#include "GetAllBooksTask.h"
+#include "GetAllCoursesTask.h"
+#include "AddUserTask.h"
+#include "BanUserTask.h"
+#include "RmItemTask.h"
 
-using namespace TPSNetProtocolDefs;
+using namespace TPSNetProtocolDef;
 
 SUTaskFactory::SUTaskFactory()
 {
@@ -19,7 +24,7 @@ SUTaskFactory::~SUTaskFactory()
 
 WorkerTask* SUTaskFactory::createTask(
         Server *srvInst,
-        TPSNetProtocolDefs::InvocationDescriptor invoc)
+        TPSNetProtocolDef::InvocationDescriptor invoc)
 {
     switch (invoc)
     {
@@ -28,8 +33,18 @@ WorkerTask* SUTaskFactory::createTask(
         return new LoginTask(srvInst);
     }
 
+    case IAddChapter:
+    case IAddSection:
     case IAddBook: {
-        return new AddBookTask(srvInst);
+        return new AddItemTask(srvInst);
+    }
+
+    case IAddUser: {
+        return new AddUserTask(srvInst);
+    }
+
+    case IBanUser: {
+        return new BanUserTask(srvInst);
     }
 
     case IAddCourse: {
@@ -50,6 +65,16 @@ WorkerTask* SUTaskFactory::createTask(
 
     case IGenerateReport: {
         return new GenerateReportTask(srvInst);
+    }
+
+    case IGetAllBooks: {
+        return new GetAllBooksTask(srvInst);
+    }
+
+    case IRmBook:
+    case IRmChapter:
+    case IRmSection: {
+        return new RmItemTask(srvInst);
     }
 
     default: {

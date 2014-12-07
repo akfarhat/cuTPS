@@ -7,6 +7,7 @@ ViewRequiredBooksControl::~ViewRequiredBooksControl() {
 
 }
 
+// TODO: Remove 'username' parameter, unused.
 void ViewRequiredBooksControl::getRequiredBooks(QUuid &reqId, QString& username) {
-    reqId = network.getRequiredBooks(username);
+    reqId = network.getRequiredBooks();
 }

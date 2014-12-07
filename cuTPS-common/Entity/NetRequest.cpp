@@ -13,13 +13,13 @@ QString NetRequest::stringRepr() const
 
 QDataStream& operator<<(QDataStream& os, const NetRequest& r)
 {
-    os.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     qint8 invocationInteger = static_cast<qint8>(r.invocation);
 
     // Do not change the sequence!
     os << (qint16) 0;
-    os << TPSNetProtocolDefs::PROTOCOL_MAGIC;
+    os << TPSNetProtocolDef::PROTOCOL_MAGIC;
     os << invocationInteger;
     os << r.requestId;
 
@@ -46,7 +46,7 @@ QDataStream& operator<<(QDataStream& os, const NetRequest& r)
 
 QDataStream& operator>>(QDataStream& is, NetRequest& r)
 {
-    is.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     qint8 invocationInteger;
     QUuid requestId;
@@ -54,14 +54,14 @@ QDataStream& operator>>(QDataStream& is, NetRequest& r)
 
     is >> magicCheck;
 
-    if (magicCheck != TPSNetProtocolDefs::PROTOCOL_MAGIC)
+    if (magicCheck != TPSNetProtocolDef::PROTOCOL_MAGIC)
         throw NetMessage::BadRequestException();
 
     is >> invocationInteger
             >> requestId
             >> dataSz;
 
-    r.setInvocation(static_cast<TPSNetProtocolDefs::InvocationDescriptor>(invocationInteger));
+    r.setInvocation(static_cast<TPSNetProtocolDef::InvocationDescriptor>(invocationInteger));
     r.setRequestId(requestId);
 
     if (dataSz > 0) {

@@ -17,18 +17,26 @@ class LIBCUTPS_EXPORT SellableItem
 {
 public:
     SellableItem();
-    SellableItem(int, QString, int, bool);
-    SellableItem(QString, int);
+
+    SellableItem(qint32 id,
+                 QString name,
+                 quint32 price,
+                 bool available=false);
+
+    SellableItem(QString name,
+                 quint32 price,
+                 bool available=false);
+
     ~SellableItem();
 
-    void setId(const int);
+    void setId(const qint32);
     void setName(const QString);
-    void setPriceCents(const int);
+    void setPriceCents(const quint32);
     void setAvailability(const bool);
 
-    int getId() const;
+    qint32 getId() const;
     QString getName() const;
-    int getPriceCents() const;
+    quint32 getPriceCents() const;
     bool getAvailability() const;
 
     // Return the formatted details for the item
@@ -43,9 +51,9 @@ public:
     friend QDataStream& operator>> (QDataStream& is, SellableItem& i); // input
 
 protected:
-    int id;
+    qint32 id;
     QString name;
-    int priceCents;
+    quint32 priceCents;
     bool availableForSale;
 };
 

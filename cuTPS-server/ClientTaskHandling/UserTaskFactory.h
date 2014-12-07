@@ -12,7 +12,7 @@ public:
 
     virtual WorkerTask* createTask(
             Server *srvInst,
-            TPSNetProtocolDefs::InvocationDescriptor invoc);
+            TPSNetProtocolDef::InvocationDescriptor invoc);
 };
 
 #endif // USERTASKFACTORY_H

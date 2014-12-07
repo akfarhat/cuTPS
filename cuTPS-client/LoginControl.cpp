@@ -50,7 +50,7 @@ void LoginControl::loginSuccessful(QUuid requestId, Role userRole) {
             Student *newStudent = new Student(15, "Joe Smith", "joesmith", 10101010);
 
             // Create dummy items and add them to the shopping cart
-            SellableItem *t1 = new Textbook(1, "The First Book", 554563, 1, "123456678");
+            SellableItem *t1 = new Textbook(1, "The First Book", "1st edition", "Someone", 554563, true, "123456678");
             SellableItem *c1 = new Chapter(5, NULL, 1, "Chapter One", 432, true);
             SellableItem *s1 = new Section(9, NULL, 1, "Section One", 325, true);
 

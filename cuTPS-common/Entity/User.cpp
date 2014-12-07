@@ -1,8 +1,12 @@
 #include "User.h"
 
-User::User(int id, QString n, QString u) : userId(id), name(n), username(u) {
+User::User(QString name, QString uname)
+    : name(name), username(uname)
+{}
 
-}
+User::User(int id, QString n, QString u)
+    : userId(id), name(n), username(u)
+{}
 
 User::~User() {}
 
@@ -29,3 +33,19 @@ QString User::getName() {
 void User::setName(QString newName) {
     name = newName;
 }
+
+QString User::getDetails()
+{
+
+}
+
+Role User::getRole() const
+{
+    return role;
+}
+
+void User::setRole(const Role value)
+{
+    role = value;
+}
+

@@ -41,12 +41,14 @@ void CourseDetailsWindow::displayCourseList()
     this->courses = new QVector<Course*>();
 
     /// TODO: This stuff will come from a request to the server for courses ///
-    QVector<Textbook*> *books = new QVector<Textbook*>();
-    books->append(new Textbook(1, "Crazy Diagrams", 30593, true, "1234567"));
-    books->append(new Textbook(2, "Whoa diagrams, bro", 435943, true, "1234568"));
-    books->append(new Textbook(3, "More diagrams", 2342356, true, "1234569"));
-    Course *c = new Course("Comp 3004", "Advanced Diagrams", *books);
-    Course *c2 = new Course("Comp 3005", "Database stuff", *books);
+    QVector<int> books;
+    books.append(1);
+    books.append(2);
+    books.append(3);
+    Course *c = new Course("Comp 3004", "Advanced Diagrams");
+    Course *c2 = new Course("Comp 3005", "Database stuff");
+    c->addRequiredTextIds(books);
+    c2->addRequiredTextIds(books);
     //////////////////////////////////////////////////////////////////////
 
     this->courses->append(c);
@@ -75,8 +77,8 @@ void CourseDetailsWindow::displayCourseDetails(Course *c)
     this->ui->courseNameEdit->setText(c->getCourseName());
 
     this->ui->bookList->clear();
-    for (Textbook *book: *(c->getRequiredTexts())) {
-        this->ui->bookList->addItem(book->getTitle());
+    for (int id: (c->getRequiredTextIds())) {
+        this->ui->bookList->addItem(QString::number(id));
     }
 }
 
@@ -132,12 +134,12 @@ void CourseDetailsWindow::on_deleteBookButton_clicked()
 
     Course *c = this->courses->at(courseIndex);
 
-    QVector<qint32> *requiredBookIds = c->getRequiredTextsIds();
+    const QVector<qint32>& requiredBookIds = c->getRequiredTextIds();
     int courseId = c->getId();
 
     int bookIndex = this->ui->bookList->currentIndex().row();
 
-    emit removeRequiredBook((int)requiredBookIds->at(bookIndex), courseId);
+    emit removeRequiredBook((int)requiredBookIds.at(bookIndex), courseId);
 }
 
 void CourseDetailsWindow::on_addBookButton_clicked()
