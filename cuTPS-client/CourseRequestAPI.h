@@ -17,6 +17,8 @@ public:
     explicit CourseRequestAPI(QObject *parent = 0,
                               ClientNetworkHandler *net = NULL);
     QUuid addCourse(Course&);
+    QUuid linkText(int, int);
+    QUuid unlinkText(int, int);
 
 signals:
 

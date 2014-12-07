@@ -1,11 +1,11 @@
 #include "User.h"
 
 User::User(QString name, QString uname)
-    : name(name), username(uname)
+    : name(name), username(uname), role(None)
 {}
 
 User::User(int id, QString n, QString u)
-    : userId(id), name(n), username(u)
+    : userId(id), name(n), username(u), role(None)
 {}
 
 User::~User() {}

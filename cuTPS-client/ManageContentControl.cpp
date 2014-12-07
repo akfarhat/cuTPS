@@ -1,5 +1,6 @@
 #include "ManageContentControl.h"
 #include "ContentManagementInterface.h"
+#include "AddBookControl.h"
 
 #include <QDebug>
 
@@ -17,6 +18,8 @@ ManageContentControl::ManageContentControl(ContentManagementInterface *backWin,
     connect(contentManagementWin, SIGNAL(navigateBack()),
             cmIF, SLOT(navigateBack()));
 
+    connect(contentManagementWin, SIGNAL(deleteItem(int)),
+            this, SLOT(deleteItem(int)));
     // TODO: connect slots for requests that the networking will signal
 }
 
@@ -27,37 +30,81 @@ ManageContentControl::~ManageContentControl()
 }
 
 void ManageContentControl::addTextbook(QString name,
+                                       int bookId,
                                        int priceCents,
                                        bool isAvailable,
                                        QString isbn)
 {
-    qDebug() << "Adding new textbook " << name << " " << priceCents
-             << ", available? " << isAvailable << " - " << isbn;
+    qDebug() << "Add/modify textbook " << name << ", id=" << bookId
+             << " " << priceCents << ", available? "
+             << isAvailable << " - " << isbn;
 
-    // TODO: create AddTextbookControl with ContentRequestsAPI
-    // to perform the request operation
+    AddBookControl addBookCtrl(this->requestAPI);
+
+    QUuid reqId;
+
+    if (bookId == -1) {
+        Textbook book(0, name, "", "", priceCents, isAvailable, isbn);
+
+        // TODO: we currently ignore response for this request
+        addBookCtrl.addBook(reqId, book);
+    } else {
+        // TODO: create a modifyBookCtrl...
+    }
 }
 
 void ManageContentControl::addChapter(QString name,
+                                      int chapId,
                                       int priceCents,
                                       bool isAvailable,
                                       int bookId)
 {
-    qDebug() << "Adding new chapter " << name << " " << priceCents
-             << "to bookId = " << bookId << ", isAvailable? " << isAvailable;
+    qDebug() << "Add/modify chapter " << name << ", id=" << chapId
+             << " " << priceCents << "to bookId = " << bookId
+             << ", isAvailable? " << isAvailable;
 
-    // TODO: create AddChapterControl with ContentRequestAPI
-    // to handle the network request
+    AddBookControl addBookCtrl(this->requestAPI);
+
+    QUuid reqId;
+
+    if (chapId == -1) {
+        Chapter chapter(NULL, 0, name, priceCents, isAvailable);
+
+        // TODO: we currently ignore response for this request
+        addBookCtrl.addChapter(reqId, bookId, chapter);
+    } else {
+        // TODO: create a modifyBookCtrl..
+    }
 }
 
 void ManageContentControl::addSection(QString name,
+                                      int secId,
                                       int priceCents,
                                       bool isAvailable,
+                                      int bookId,
                                       int chapterId)
 {
-    qDebug() << "Adding new section " << name << " " << priceCents
-             << "to chapterId = " << chapterId << ", isAvailable? " << isAvailable;
+    qDebug() << "Add/modify section " << name << ", id=" << secId
+             << " " << priceCents << "to chapterId = " << chapterId
+             << "and bookId = " << bookId << ", isAvailable? " << isAvailable;
 
-    // TODO: create AddSectionControl with ContentRequestAPI
-    // to handle the network request
+    AddBookControl addBookCtrl(this->requestAPI);
+
+    QUuid reqId;
+
+    if (secId == -1) {
+        Section section(NULL, 0, name, priceCents, isAvailable);
+
+        // TODO: we currently ignore response for this request
+        addBookCtrl.addSection(reqId, bookId, chapterId, section);
+    } else {
+        // TODO: create a modifyBookControl...
+    }
+}
+
+void ManageContentControl::deleteItem(int itemId)
+{
+    qDebug() << "Deleting item id " << itemId;
+
+    // TODO: create a DeleteItemControl with the requestAPI
 }

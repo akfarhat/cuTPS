@@ -11,6 +11,9 @@ class ContentRequestAPI : public QObject
 
     public:
         explicit ContentRequestAPI(QObject *parent = 0, ClientNetworkHandler *net = NULL);
+        QUuid addBook(Textbook&);
+        QUuid addChapter(int, Chapter&);
+        QUuid addSection(int, int, Section&);
 
     signals:
 

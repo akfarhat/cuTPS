@@ -41,7 +41,7 @@ private:
     qint32 userId;
     QString name;
     QString username;
-    Role role = None;
+    Role role;
 };
 
 #endif // USER_H

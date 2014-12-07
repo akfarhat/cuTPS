@@ -32,6 +32,7 @@ public:
 
 signals:
     void navigateBack();
+    void deleteItem(int);
 
 private slots:
     void on_backButton_clicked();
@@ -44,7 +45,13 @@ private slots:
 
     void on_newContentButton_clicked();
 
+    void on_deleteItemButton_clicked();
+
+    void on_modifyItemButton_clicked();
+
 private:
+    SellableItem *getSelectedItem();
+
     int contentDepth;
 
     Ui::ManageContentListWindow *ui;
@@ -74,6 +81,9 @@ private:
     void addTextbook();
     void addChapter();
     void addSection();
+    void modTextbook();
+    void modChapter();
+    void modSection();
 };
 
 #endif // MANAGECONTENTLISTWINDOW_H

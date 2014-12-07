@@ -1,5 +1,6 @@
 #include "ManageCourseControl.h"
 #include "ContentManagementInterface.h"
+#include "AddCourseControl.h"
 
 #include <QDebug>
 
@@ -42,7 +43,13 @@ void ManageCourseControl::saveNewCourse(QString code, QString name)
 {
     qDebug() << "Saving new course " << code << ": " << name;
 
-    // TODO: create an AddCourseControl with the courseReqAPI and delegate.
+    AddCourseControl ctrl(this->requestAPI);
+
+    Course c(code, name);
+
+    // TODO: we are not currently handling the response for this
+    QUuid id;
+    ctrl.addCourse(id, c);
 
     this->courseDetailsWin->displayCourseList();
 }
@@ -68,14 +75,18 @@ void ManageCourseControl::removeRequiredBook(int bookId, int courseId)
 {
     qDebug() << "Removing book with id=" << bookId
              << " from required texts for course id=" << courseId;
+
+    // TODO: ignoring response from this request
+    this->requestAPI->unlinkText(courseId, bookId);
 }
 
 void ManageCourseControl::addRequiredBooks(QVector<int>& books, int courseId)
 {
-    // TODO: spawn an AddRequiredBooks control to handle the requestAPI call
-
     for (int id: books) {
         qDebug() << "Adding bookId = " << id
                  << " as required text for course ID = " << courseId;
+
+        // TODO: ignoring response from this request
+        this->requestAPI->linkText(courseId, id);
     }
 }

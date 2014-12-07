@@ -7,6 +7,8 @@
 
 #include <QDialog>
 
+#include "Entity/Chapter.h"
+
 namespace Ui {
 class AddChapterWindow;
 }
@@ -17,11 +19,14 @@ class AddChapterWindow : public QDialog
 
 public:
     explicit AddChapterWindow(QWidget *parent = 0,
-                              int bookID = -1);
+                              int bookID = -1,
+                              int chapId = -1);
     ~AddChapterWindow();
 
+    void populateValues(Chapter *); // for modify
+
 signals:
-    void addChapter(QString, int, bool, int);
+    void addChapter(QString, int, int, bool, int);
 
 private slots:
     void on_cancelButton_clicked();
@@ -31,6 +36,7 @@ private slots:
 private:
     Ui::AddChapterWindow *ui;
     int bookId;
+    int chapId; // in case of modify
 };
 
 #endif // ADDCHAPTERWINDOW_H

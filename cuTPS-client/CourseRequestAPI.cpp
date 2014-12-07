@@ -16,3 +16,13 @@ QUuid CourseRequestAPI::addCourse(Course &c)
     QUuid id;
     return id;
 }
+
+QUuid CourseRequestAPI::linkText(int courseId, int textId)
+{
+    this->networking->linkTextbook(courseId, textId);
+}
+
+QUuid CourseRequestAPI::unlinkText(int courseId, int textId)
+{
+    this->networking->unlinkTextbook(courseId, textId);
+}

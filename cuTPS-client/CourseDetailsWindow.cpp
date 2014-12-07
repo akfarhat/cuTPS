@@ -77,8 +77,9 @@ void CourseDetailsWindow::displayCourseDetails(Course *c)
     this->ui->courseNameEdit->setText(c->getCourseName());
 
     this->ui->bookList->clear();
+    // TODO: this should display the required book titles, not IDs
     for (int id: (c->getRequiredTextIds())) {
-        this->ui->bookList->addItem(QString::number(id));
+        this->ui->bookList->addItem("textbook ID: " + QString::number(id));
     }
 }
 
