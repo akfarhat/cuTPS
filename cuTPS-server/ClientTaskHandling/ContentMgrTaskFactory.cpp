@@ -44,7 +44,7 @@ WorkerTask* ContentMgrTaskFactory::createTask(
     case IRmBook:
     case IRmChapter:
     case IRmSection: {
-        return new RmItemTask(srvInst);
+        return new RemoveItemTask(srvInst);
     }
 
     default: {

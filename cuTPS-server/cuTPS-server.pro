@@ -37,10 +37,11 @@ SOURCES += main.cpp \
     ClientTaskHandling/GetAllBooksTask.cpp \
     ClientTaskHandling/AddItemTask.cpp \
     ClientTaskHandling/AddUserTask.cpp \
-    ClientTaskHandling/RmItemTask.cpp \
     ClientTaskHandling/BanUserTask.cpp \
     ClientTaskHandling/GetAllCoursesTask.cpp \
-    SecurityUtils.cpp
+    SecurityUtils.cpp \
+    ClientTaskHandling/RemoveItemTask.cpp \
+    ClientTaskHandling/RemoveCourseTask.cpp
 
 HEADERS += \
     DatabaseManager.h \
@@ -65,11 +66,12 @@ HEADERS += \
     ClientTaskHandling/GetAllBooksTask.h \
     ClientTaskHandling/AddItemTask.h \
     ClientTaskHandling/AddUserTask.h \
-    ClientTaskHandling/RmItemTask.h \
     ClientTaskHandling/BanUserTask.h \
     ClientTaskHandling/GetAllCoursesTask.h \
     SecurityUtils.h \
-    Secrets.h
+    Secrets.h \
+    ClientTaskHandling/RemoveItemTask.h \
+    ClientTaskHandling/RemoveCourseTask.h
 
 
 OTHER_FILES += \

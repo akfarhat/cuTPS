@@ -1,32 +1,28 @@
-#include "AddUserTask.h"
+#include "RemoveCourseTask.h"
 
-#include <QDebug>
-#include <QUuid>
-#include <QByteArray>
 #include <QDataStream>
+#include <QDebug>
 
-#include "Entity/NetResponse.h"
-#include "Entity/Student.h"
+#include "Defines.h"
 
-AddUserTask::AddUserTask(Server* srv)
+RemoveCourseTask::RemoveCourseTask(Server* srv)
     : WorkerTask(srv)
 {
 }
 
-void AddUserTask::run()
+void RemoveCourseTask::run()
 {
-    qDebug() << "AddUserTask task was run";
+    qDebug() << "Remove item task was run";
     qDebug() << "Doing job for session: " << sessionId
              << "Request: " << request->getRequestId();
 
     QDataStream in(request->getData(), QIODevice::ReadOnly);
-    Student usr;
-    QString pwd;
-    qint32 usrId;
+    qint32 courseId;
+    in >> courseId;
 
-    in >> usr >> pwd;
-
-    ServerResponse r = server->registerStudentUser(sessionId, usr, pwd, &usrId);
+    // TODO: Implement
+    // ServerResponse r = server->removeCourse(sessionId, courseId);
+    ServerResponse r; r.code = Fail;
 
     NetResponse* response = new NetResponse();
     response->setInvocation(request->getInvocation());
@@ -34,11 +30,11 @@ void AddUserTask::run()
     response->setResponseCode(r.code == Fail ? 0x0 : 0x1);
     response->setSessionId(sessionId);
 
-    if (response->getResponseCode())
+    if (response->getResponseCode > 0)
     {
         QByteArray responseDataBytes;
         QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
-        outData << usrId;
+        outData << courseId;
         response->setData(responseDataBytes);
     }
 

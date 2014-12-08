@@ -461,6 +461,33 @@ QUuid ClientNetworkHandler::removeSection(qint32 id)
     return requestId;
 }
 
+QUuid ClientNetworkHandler::removeCourse(qint32 id)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IRmCourse);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << id;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
 QUuid ClientNetworkHandler::addStudentUser(Student& usr, QString passwd)
 {
     ASSERT_VALID
@@ -608,6 +635,7 @@ void ClientNetworkHandler::readyRead()
     case IRmBook:
     case IRmChapter:
     case IRmSection:
+    case IRmCourse:
     case IBookLink:
     case IBookUnlink:
     {
