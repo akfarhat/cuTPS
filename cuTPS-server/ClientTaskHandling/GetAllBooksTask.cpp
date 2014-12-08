@@ -46,6 +46,8 @@ void GetAllBooksTask::run()
         }
 
         response->setData(responseDataBytes);
+    } else {
+        outData << static_cast<qint32>(0);
     }
 
     emit result(response->getResponseCode(), response);

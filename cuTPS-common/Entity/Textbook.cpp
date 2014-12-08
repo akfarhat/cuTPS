@@ -3,8 +3,10 @@
 #include "SellableItem.h"
 #include "Defines.h"
 
-Textbook::Textbook(int textId, QString name, QString edition, QString authors, int price, bool isAvailable, QString iISBN) : SellableItem(textId, name, price, isAvailable) {
-    isbn = iISBN;
+Textbook::Textbook(int textId, QString name, QString edition, QString authors, int price, bool isAvailable, QString iISBN)
+    : SellableItem(textId, name, price, isAvailable),
+    authors(authors), isbn(iISBN), edition(edition)
+{
 }
 
 Textbook::Textbook(const Textbook& src) : SellableItem(src.getId(), src.getName(), src.getPriceCents(), src.getAvailability()), isbn(src.getISBN())
