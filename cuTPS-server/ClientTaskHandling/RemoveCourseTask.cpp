@@ -30,7 +30,7 @@ void RemoveCourseTask::run()
     response->setResponseCode(r.code == Fail ? 0x0 : 0x1);
     response->setSessionId(sessionId);
 
-    if (response->getResponseCode > 0)
+    if (response->getResponseCode() > 0)
     {
         QByteArray responseDataBytes;
         QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);

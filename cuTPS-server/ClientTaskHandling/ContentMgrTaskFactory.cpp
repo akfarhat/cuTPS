@@ -4,7 +4,7 @@
 #include "GetBookDetailsTask.h"
 #include "GetAllBooksTask.h"
 #include "GetAllCoursesTask.h"
-#include "RmItemTask.h"
+#include "RemoveItemTask.h"
 
 using namespace TPSNetProtocolDef;
 
