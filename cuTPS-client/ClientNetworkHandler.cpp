@@ -116,6 +116,26 @@ QUuid ClientNetworkHandler::getRequiredBooks()
     return requestId;
 }
 
+QUuid ClientNetworkHandler::getAllBooks()
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IGetAllBooks);
+    request.setRequestId(requestId);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
 QUuid ClientNetworkHandler::getAllCourses()
 {
     ASSERT_VALID
@@ -449,7 +469,7 @@ QUuid ClientNetworkHandler::removeSection(qint32 id)
     return requestId;
 }
 
-QUuid ClientNetworkHandler::addUser(User& u)
+QUuid ClientNetworkHandler::addStudentUser(Student& usr, QString passwd)
 {
     ASSERT_VALID
 
@@ -459,13 +479,12 @@ QUuid ClientNetworkHandler::addUser(User& u)
     request.setInvocation(IAddUser);
     request.setRequestId(requestId);
 
-    // TODO: User serialization
-//    QByteArray data;
-//    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
 
-//    outDataStream << u;
+    outDataStream << usr;
 
-//    request.setData(data);
+    request.setData(data);
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);

@@ -144,7 +144,7 @@ ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCre
     return response;
 }
 
-ServerResponse Server::addCourse(QUuid sessionID, Course course)
+ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32* newId)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -202,8 +202,10 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
     return response;
 }
 
-ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
+ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32* newId)
 {
+    // TODO: For every chapter in textbook (i.e. textbook.getChapterList()) -- add them all as well.
+    //       Same goes for every section of every chapter (i.e. chapter.getSectionList())
     ServerResponse response;
     response.sessionID = sessionID;
 
@@ -253,8 +255,9 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
     return response;
 }
 
-ServerResponse Server::addChapter(QUuid sessionID, Chapter chapter)
+ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32* newId)
 {
+    // TODO: Also add every section of the chapter -- i.e. chapter.getSectionList()
     ServerResponse response;
     response.sessionID = sessionID;
 
@@ -282,7 +285,7 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter chapter)
     return response;
 }
 
-ServerResponse Server::addSection(QUuid sessionID, Section section)
+ServerResponse Server::addSection(QUuid sessionID, Section& section, qint32* newId)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -310,6 +313,42 @@ ServerResponse Server::addSection(QUuid sessionID, Section section)
         return response;
     }
 
+    return response;
+}
+
+ServerResponse Server::replaceCourse(QUuid sessionID, qint32 id, Course& c)
+{
+    // TODO: Implement
+    ServerResponse response;
+    response.sessionID = sessionID;
+    response.code = Fail;
+    return response;
+}
+
+ServerResponse Server::replaceTextbook(QUuid sessionID, qint32 id, Textbook& c)
+{
+    // TODO: Implement
+    ServerResponse response;
+    response.sessionID = sessionID;
+    response.code = Fail;
+    return response;
+}
+
+ServerResponse Server::replaceChapter(QUuid sessionID, qint32 id, Chapter& c)
+{
+    // TODO: Implement
+    ServerResponse response;
+    response.sessionID = sessionID;
+    response.code = Fail;
+    return response;
+}
+
+ServerResponse Server::replaceSection(QUuid sessionID, qint32 id, Section& c)
+{
+    // TODO: Implement
+    ServerResponse response;
+    response.sessionID = sessionID;
+    response.code = Fail;
     return response;
 }
 

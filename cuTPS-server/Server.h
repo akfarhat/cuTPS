@@ -53,10 +53,16 @@ public:
     // Content Manager request API. Each of these requests
     // adds some content into the system availability
 
-    ServerResponse addCourse(QUuid, Course);
-    ServerResponse addTextbook(QUuid, Textbook);
-    ServerResponse addChapter(QUuid, Chapter);
-    ServerResponse addSection(QUuid, Section);
+    // TODO: make server return ids for created items (i.e. set newId)
+    ServerResponse addCourse(QUuid, Course&, qint32* newId);
+    ServerResponse addTextbook(QUuid, Textbook&, qint32* newId);
+    ServerResponse addChapter(QUuid, Chapter&, qint32* newId);
+    ServerResponse addSection(QUuid, Section&, qint32* newId);
+
+    ServerResponse replaceCourse(QUuid, qint32 id, Course&);
+    ServerResponse replaceTextbook(QUuid, qint32 id, Textbook&);
+    ServerResponse replaceChapter(QUuid, qint32 id, Chapter&);
+    ServerResponse replaceSection(QUuid, qint32 id, Section&);
 
     // Student request API.
 

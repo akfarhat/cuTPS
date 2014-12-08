@@ -10,12 +10,12 @@ SellableItem::SellableItem(qint32 i,
 }
 
 SellableItem::SellableItem(QString n, quint32 p, bool available)
-    : name(n), priceCents(p), availableForSale(available)
+    : id(-1), name(n), priceCents(p), availableForSale(available)
 {
 }
 
 SellableItem::SellableItem()
-    : name(""), priceCents(0), availableForSale(false)
+    : id (-1), name(""), priceCents(0), availableForSale(false)
 {
 }
 

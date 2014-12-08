@@ -6,7 +6,7 @@
 #include <QDataStream>
 
 #include "Entity/NetResponse.h"
-#include "Entity/User.h"
+#include "Entity/Student.h"
 
 AddUserTask::AddUserTask(Server* srv)
     : WorkerTask(srv)
@@ -20,13 +20,13 @@ void AddUserTask::run()
              << "Request: " << request->getRequestId();
 
     QDataStream in(request->getData(), QIODevice::ReadOnly);
-    User usr;
+    Student usr;
+    qint32 usrId;
 
-    // TODO: User serialization
-    // in >> usr;
+    in >> usr;
 
     // TODO implement this
-    //ServerResponse r = server->addUser(sessionId, usr);
+    //ServerResponse r = server->registerUser(sessionId, usr, &usrId);
     ServerResponse r; r.code = Fail;
 
     NetResponse* response = new NetResponse();
@@ -34,6 +34,14 @@ void AddUserTask::run()
     response->setRequestId(request->getRequestId());
     response->setResponseCode(r.code == Fail ? 0x0 : 0x1);
     response->setSessionId(sessionId);
+
+    if (response->getResponseCode())
+    {
+        QByteArray responseDataBytes;
+        QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
+        outData << usrId;
+        response->setData(responseDataBytes);
+    }
 
     emit result(response->getResponseCode(), response);
 }

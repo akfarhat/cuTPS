@@ -24,7 +24,7 @@
 #include "Entity/Section.h"
 #include "Entity/Order.h"
 #include "Entity/Course.h"
-#include "Entity/User.h"
+#include "Entity/Student.h"
 
 using namespace TPSNetProtocolDef;
 using namespace TPSDef;
@@ -128,11 +128,10 @@ public:
 
     // CONTENT MANAGERS + ADMINISTRATOR OPERATIONS
 
-    // What: add a new user to the system.
+    // What: add a new student user to the system.
     // Available for: ContentManagers, Administrators.
-    // Note: ContentManagers cannot add administrator users.
     // Reletaed reply: updateCompete()
-    QUuid addUser(User&);
+    QUuid addStudentUser(Student&, QString passwd);
 
     // ADMINISTRATOR OPERATIONS
 

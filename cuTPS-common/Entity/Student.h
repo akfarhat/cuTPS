@@ -21,40 +21,42 @@
 using namespace std;
 
 class LIBCUTPS_EXPORT Student : public User {
+public:
+    Student();
+    Student(int, QString, QString, int);
+    ~Student();
 
-    private:
-        int studentNumber;
-        QString emailAddress;
-        QVector<Course*> courses;
-        ShoppingCart *cart;
-        CreditCardInfo *billing;
-        DeliveryInfo *delivery;
+    int getStudentNumber();
+    void setStudentNumber(int);
 
+    QString getEmailAddress();
+    void setEmailAddress(QString);
 
+    QVector<qint32>& getCourses();
+    void enrollInCourse(qint32 cId);
 
-    public:
-        Student(int, QString, QString, int);
-        ~Student();
+    ShoppingCart* getCart();
+    void setCart(ShoppingCart*);
 
-        int getStudentNumber();
-        void setStudentNumber(int);
+    CreditCardInfo* getCreditCardInfo();
+    void setCreditCardInfo(CreditCardInfo*);
 
-        QString getEmailAddress();
-        void setEmailAddress(QString);
+    DeliveryInfo* getDeliveryInfo();
+    void setDeliveryInfo(DeliveryInfo*);
 
-        QVector<Course*> getCourses();
-        void enrollInCourse(Course*);
+    QString getDetails();
 
-        ShoppingCart* getCart();
-        void setCart(ShoppingCart*);
+    // Serialization routines
+    friend QDataStream& operator<<(QDataStream& os, const Student& s); // output
+    friend QDataStream& operator>>(QDataStream& is, Student& s); // input
 
-        CreditCardInfo* getCreditCardInfo();
-        void setCreditCardInfo(CreditCardInfo*);
-
-        DeliveryInfo* getDeliveryInfo();
-        void setDeliveryInfo(DeliveryInfo*);
-
-        QString getDetails();
+private:
+    int studentNumber;
+    QString emailAddress;
+    QVector<qint32> courseIds;
+    ShoppingCart *cart;
+    CreditCardInfo *billing;
+    DeliveryInfo *delivery;
 };
 
 #endif // STUDENT_H

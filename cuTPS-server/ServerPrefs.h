@@ -14,8 +14,10 @@ public:
 
 };
 
-namespace TPSConstants
+namespace TPSPrefDef
 {
+
+static const QString PREF_CONF_FILE     = "cutpsd.conf";
 
 static const QString PREF_DB_PATH_SEC   = "Database/Database_Path";
 
