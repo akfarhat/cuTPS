@@ -3,9 +3,8 @@
 
 Course::Course(const QString course,
                const QString courseName)
+    : id(-1), code(course), name(courseName)
 {
-    code = course;
-    name = courseName;
 }
 
 Course::~Course() {}

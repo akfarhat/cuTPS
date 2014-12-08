@@ -14,26 +14,33 @@ void AddCourseTask::run()
              << "Request: " << request->getRequestId();
 
     Course course;
+    qint32 courseId;
+    ServerResponse r;
     QDataStream in(request->getData(), QIODevice::ReadOnly);
 
     in >> course;
 
-    qDebug() << "TPSAddCourseTask deserialized course:";
-    qDebug() << " courseCode = " << course.getCourseCode();
-    qDebug() << " course name = " << course.getCourseName();
-    qDebug() << " id = " << QString::number(course.getId());
+    courseId = course.getId();
 
-    qDebug() << "TPSAddCourseTask calling server addCourse API";
-
-    ServerResponse r = server->addCourse(sessionId, course);
-
-    qDebug() << "TPSAddCourseTask finished server API call";
+    if (courseId < 0) {
+        r = server->addCourse(sessionId, course, &courseId);
+    } else {
+        r = server->replaceCourse(sessionId, courseId, course);
+    }
 
     NetResponse* response = new NetResponse();
     response->setInvocation(request->getInvocation());
     response->setRequestId(request->getRequestId());
     response->setResponseCode(r.code == Fail ? 0x0 : 0x1);
     response->setSessionId(sessionId);
+
+    if (response->getResponseCode() > 0)
+    {
+        QByteArray responseDataBytes;
+        QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
+        outData << courseId;
+        response->setData(responseDataBytes);
+    }
 
     emit result(response->getResponseCode(), response);
 }

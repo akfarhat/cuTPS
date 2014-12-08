@@ -441,7 +441,7 @@ QUuid ClientNetworkHandler::removeSection(qint32 id)
     return requestId;
 }
 
-QUuid ClientNetworkHandler::addUser(User& u)
+QUuid ClientNetworkHandler::addStudentUser(Student& usr)
 {
     ASSERT_VALID
 
@@ -451,13 +451,12 @@ QUuid ClientNetworkHandler::addUser(User& u)
     request.setInvocation(IAddUser);
     request.setRequestId(requestId);
 
-    // TODO: User serialization
-//    QByteArray data;
-//    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
 
-//    outDataStream << u;
+    outDataStream << usr;
 
-//    request.setData(data);
+    request.setData(data);
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);

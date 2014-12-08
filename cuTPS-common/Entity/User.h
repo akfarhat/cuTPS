@@ -37,11 +37,14 @@ public:
     Role getRole() const;
     void setRole(const Role value);
 
+    // Serialization routines
+    friend QDataStream& operator<<(QDataStream& os, const User& u); // output
+    friend QDataStream& operator>>(QDataStream& is, User& u); // input
+
 private:
     qint32 userId;
     QString name;
     QString username;
-    Role role;
 };
 
 #endif // USER_H

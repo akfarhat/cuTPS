@@ -1,11 +1,11 @@
 #include "User.h"
 
 User::User(QString name, QString uname)
-    : name(name), username(uname), role(None)
+    : name(name), username(uname)
 {}
 
 User::User(int id, QString n, QString u)
-    : userId(id), name(n), username(u), role(None)
+    : userId(id), name(n), username(u)
 {}
 
 User::~User() {}
@@ -39,13 +39,24 @@ QString User::getDetails()
 
 }
 
-Role User::getRole() const
+QDataStream& operator<<(QDataStream& os, const User& u)
 {
-    return role;
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
+
+    os << u.userId
+       << u.username
+       << u.name;
+
+    return os;
 }
 
-void User::setRole(const Role value)
+QDataStream& operator>>(QDataStream& is, User& u)
 {
-    role = value;
-}
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
+    is >> u.userId
+       >> u.username
+       >> u.name;
+
+    return is;
+}
