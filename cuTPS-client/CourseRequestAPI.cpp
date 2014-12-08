@@ -17,6 +17,14 @@ QUuid CourseRequestAPI::addCourse(Course &c)
     return id;
 }
 
+QUuid CourseRequestAPI::modifyCourse(Course &c)
+{
+    QUuid id;
+    return id;
+
+    // TODO: invoke networking method
+}
+
 QUuid CourseRequestAPI::linkText(int courseId, int textId)
 {
     this->networking->linkTextbook(courseId, textId);
@@ -25,4 +33,12 @@ QUuid CourseRequestAPI::linkText(int courseId, int textId)
 QUuid CourseRequestAPI::unlinkText(int courseId, int textId)
 {
     this->networking->unlinkTextbook(courseId, textId);
+}
+
+QUuid CourseRequestAPI::deleteCourse(int courseId)
+{
+    QUuid id;
+    return id;
+
+    // TODO: invoke networking method
 }

@@ -40,7 +40,11 @@ SOURCES += main.cpp \
     BillingWindow.cpp \
     AddTextbookWindow.cpp \
     AddChapterWindow.cpp \
-    AddSectionWindow.cpp
+    AddSectionWindow.cpp \
+    ModifyCourseControl.cpp \
+    DeleteCourseControl.cpp \
+    DeleteItemControl.cpp \
+    ModifyItemControl.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -70,7 +74,11 @@ HEADERS  += \
     BillingWindow.h \
     AddTextbookWindow.h \
     AddChapterWindow.h \
-    AddSectionWindow.h
+    AddSectionWindow.h \
+    ModifyCourseControl.h \
+    DeleteCourseControl.h \
+    DeleteItemControl.h \
+    ModifyItemControl.h
 
 FORMS    += \
     Login.ui \

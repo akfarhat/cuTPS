@@ -289,6 +289,8 @@ void ManageContentListWindow::modTextbook()
 
     this->addBookWin = new AddTextbookWindow(this, item->getId());
 
+    this->addBookWin->setWindowTitle("Modify Textbook");
+
     this->addBookWin->populateValues(item);
 
     connect(this->addBookWin, SIGNAL(addTextbook(QString,int,int,bool,QString)),
@@ -306,6 +308,8 @@ void ManageContentListWindow::modChapter()
     if (item == NULL) return;
 
     this->addChapterWin = new AddChapterWindow(this, this->bookId, item->getId());
+
+    this->addChapterWin->setWindowTitle("Modify Chapter");
 
     this->addChapterWin->populateValues(item);
 
@@ -325,6 +329,8 @@ void ManageContentListWindow::modSection()
 
     this->addSectionWin = new AddSectionWindow(this, this->bookId,
                                                this->chapterId, item->getId());
+
+    this->addSectionWin->setWindowTitle("Modify Section");
 
     this->addSectionWin->populateValues(item);
 

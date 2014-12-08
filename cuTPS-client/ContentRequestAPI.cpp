@@ -20,3 +20,11 @@ QUuid ContentRequestAPI::addSection(int bookId, int chapId, Section& section)
 {
     return this->networking->addSection(bookId, chapId, section);
 }
+
+QUuid ContentRequestAPI::deleteItem(int itemId)
+{
+    // TODO: return the result of the actual networking request
+
+    QUuid id;
+    return id;
+}

@@ -1,6 +1,8 @@
 #include "ManageCourseControl.h"
 #include "ContentManagementInterface.h"
 #include "AddCourseControl.h"
+#include "ModifyCourseControl.h"
+
 
 #include <QDebug>
 
@@ -61,7 +63,14 @@ void ManageCourseControl::modifyCourse(int courseId,
     qDebug() << "Modifying existing course id=" << courseId
              << " code = " << courseCode
              << " name = " << courseName;
+
     // TODO: create a modifyCourseControl to handle the request
+    ModifyCourseControl ctrl(this->requestAPI);
+    QUuid uid;
+
+    Course c(courseCode, courseName);
+
+    ctrl.modifyCourse(uid, c);
 }
 
 void ManageCourseControl::deleteCourse(int courseId)

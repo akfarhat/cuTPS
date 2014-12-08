@@ -1,6 +1,8 @@
 #include "ManageContentControl.h"
 #include "ContentManagementInterface.h"
 #include "AddBookControl.h"
+#include "ModifyItemControl.h"
+#include "DeleteItemControl.h"
 
 #include <QDebug>
 
@@ -39,17 +41,20 @@ void ManageContentControl::addTextbook(QString name,
              << " " << priceCents << ", available? "
              << isAvailable << " - " << isbn;
 
-    AddBookControl addBookCtrl(this->requestAPI);
-
     QUuid reqId;
 
+    Textbook book(bookId, name, "", "", priceCents, isAvailable, isbn);
+
     if (bookId == -1) {
-        Textbook book(0, name, "", "", priceCents, isAvailable, isbn);
+        AddBookControl addBookCtrl(this->requestAPI);
 
         // TODO: we currently ignore response for this request
         addBookCtrl.addBook(reqId, book);
     } else {
-        // TODO: create a modifyBookCtrl...
+        ModifyItemControl modCtrl(0, this->requestAPI);
+
+        // TODO: not currently handling response
+        modCtrl.modifyBook(reqId, book);
     }
 }
 
@@ -63,17 +68,20 @@ void ManageContentControl::addChapter(QString name,
              << " " << priceCents << "to bookId = " << bookId
              << ", isAvailable? " << isAvailable;
 
-    AddBookControl addBookCtrl(this->requestAPI);
-
     QUuid reqId;
 
+    Chapter chapter(NULL, chapId, name, priceCents, isAvailable);
+
     if (chapId == -1) {
-        Chapter chapter(NULL, 0, name, priceCents, isAvailable);
+        AddBookControl addBookCtrl(this->requestAPI);
 
         // TODO: we currently ignore response for this request
         addBookCtrl.addChapter(reqId, bookId, chapter);
     } else {
-        // TODO: create a modifyBookCtrl..
+        ModifyItemControl modCtrl(0, this->requestAPI);
+
+        // TODO: curently ignoring response
+        modCtrl.modifyChapter(reqId, bookId, chapter);
     }
 }
 
@@ -88,17 +96,20 @@ void ManageContentControl::addSection(QString name,
              << " " << priceCents << "to chapterId = " << chapterId
              << "and bookId = " << bookId << ", isAvailable? " << isAvailable;
 
-    AddBookControl addBookCtrl(this->requestAPI);
-
     QUuid reqId;
 
+    Section section(NULL, secId, name, priceCents, isAvailable);
+
     if (secId == -1) {
-        Section section(NULL, 0, name, priceCents, isAvailable);
+        AddBookControl addBookCtrl(this->requestAPI);
 
         // TODO: we currently ignore response for this request
         addBookCtrl.addSection(reqId, bookId, chapterId, section);
     } else {
-        // TODO: create a modifyBookControl...
+        ModifyItemControl modCtrl(0, this->requestAPI);
+
+        // TODO: not currently handling response
+        modCtrl.modifySection(reqId, bookId, chapterId, section);
     }
 }
 
@@ -106,5 +117,9 @@ void ManageContentControl::deleteItem(int itemId)
 {
     qDebug() << "Deleting item id " << itemId;
 
-    // TODO: create a DeleteItemControl with the requestAPI
+    DeleteItemControl ctrl(this->requestAPI);
+
+    // TODO: not yet handling response
+    QUuid uid;
+    ctrl.deleteItem(uid, itemId);
 }
