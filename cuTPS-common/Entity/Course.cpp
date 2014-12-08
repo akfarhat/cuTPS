@@ -59,6 +59,27 @@ QString Course::stringRepr() const {
             .arg(getCourseCode(), getCourseName(), QString::number(getId()));
 }
 
+QString Course::getTermSection() const
+{
+    return termSection;
+}
+
+void Course::setTermSection(const QString value)
+{
+    // Take first uppercase letter
+    termSection = value.toUpper().at(0);
+}
+
+qint32 Course::getTermYear() const
+{
+    return termYear;
+}
+
+void Course::setTermYear(const qint32 value)
+{
+    termYear = value;
+}
+
 QDataStream& operator<<(QDataStream& os, const Course& c)
 {
     os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);

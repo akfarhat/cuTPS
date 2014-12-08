@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+#include "SecurityUtils.h"
+
 Server::Server(QObject *parent) :
     QObject(parent)
 {
@@ -117,28 +119,50 @@ Role Server::getUserRole(QString &username)
 ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCredentials creds)
 {
     ServerResponse response;
+    SecurityUtils security;
     response.sessionID = sessionID;
-
     QSqlQuery query;
-    bool result = dbManager->runQuery("select * from User where username = \"" +
-                                      creds.username + "\" and password = \"" +
-                                      creds.password + "\";", &query);
+
+    // Get password hash from db
+    QString queryString = "select password, role from User where username = \""
+            + creds.username + "\";";
+
+    bool result = dbManager->runQuery(queryString,
+                                      &query);
 
     if (result) {
         if (query.first()) {
-            response.code = Success;
-            response.message = "";
+            QString hash = query.value(0).toString();
+            bool success = security.validatePassword(creds.username,
+                                                     creds.password,
+                                                     hash);
+            if (success) {
+                response.code = Success;
+                int uRole = query.value(1).toInt();
 
-            userRole = getUserRole(creds.username);
-        }
-        else {
+                switch (uRole) {
+                case 0:
+                    userRole = Role::AdministratorUser;
+                    break;
+                case 1:
+                    userRole = Role::ContentManagerUser;
+                    break;
+                case 2:
+                    userRole = Role::StudentUser;
+                    break;
+                }
+
+            } else {
+                response.code = Fail;
+            }
+        } else {
             response.code = Fail;
-            response.message = "Invalid credentials, user not found.";
         }
-    }
-    else {
-        response.code = Fail;
+    } else {
         response.message = query.lastError().text();
+
+        qDebug() << "Failed to auth user: " << response.message;
+        response.code = Fail;
     }
 
     return response;
@@ -219,9 +243,13 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32* 
     qDebug() << "Server::addTextbook running query: '" << queryString << "'";
     bool result = dbManager->runQuery(queryString, &query);
 
+    // if that doesn't work, use query "select seq from sqlite_sequence where name="table_name""
+    qint32 lastInsertId = query.lastInsertId().toInt();
+
     if (result) {
         response.code = Success;
         response.message = "";
+        *newId = lastInsertId;
     }
     else {
         response.code = Fail;
@@ -252,6 +280,12 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32* 
         return response;
     }
 
+    qint32 stub;
+    for (Chapter* c : textbook.getChapterList())
+    {
+        addChapter(sessionID, *c, &stub);
+    }
+
     return response;
 }
 
@@ -260,26 +294,42 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32* new
     // TODO: Also add every section of the chapter -- i.e. chapter.getSectionList()
     ServerResponse response;
     response.sessionID = sessionID;
-
     QSqlQuery query;
-    QString queryString = "insert into Chapter (textbook_id, name, available) values (";
-    queryString += chapter.getParentTextbookId();
-    queryString += ", ";
-    queryString += chapter.getName();
-    queryString += ", ";
-    queryString += chapter.getAvailability();
+
+    // TODO: ensure that getParentChapterId() belongs to getParentTextbookId().
+
+    QString queryString = "insert into SellableItem (name, price_cents, available) values (";
+    queryString += "\"" + chapter.getName() + "\", ";
+    queryString += QString::number(chapter.getPriceCents()) + ", ";
+    queryString += QString::number((int) chapter.getAvailability());
     queryString += ");";
 
     bool result = dbManager->runQuery(queryString, &query);
 
     if (result) {
         response.code = Success;
-        response.message = "";
-    }
-    else {
+    } else {
         response.code = Fail;
-        response.message = query.lastError().text();
+        qDebug() << "Error while adding chapter: " << query.lastError().text();
         return response;
+    }
+
+    // if that doesn't work, use query "select seq from sqlite_sequence where name="table_name""
+    qint32 lastInsertId = query.lastInsertId().toInt();
+    *newId = lastInsertId;
+
+    queryString = "insert into Chapter (item_id, textbook_id, chapter_num) values (";
+    queryString += QString::number(lastInsertId) + ", ";
+    queryString += QString::number(chapter.getParentTextbookId()) + ", ";
+    queryString += QString::number(chapter.getChapterNumber()) + ");";
+
+    if (!result) {
+        qDebug() << "Error while adding chapter info: " << query.lastError().text();
+    }
+
+    for (Section* s : chapter.getSectionList())
+    {
+        addSection(sessionID, *s, &lastInsertId);
     }
 
     return response;
@@ -289,28 +339,38 @@ ServerResponse Server::addSection(QUuid sessionID, Section& section, qint32* new
 {
     ServerResponse response;
     response.sessionID = sessionID;
+    QSqlQuery query;
 
     // TODO: ensure that getParentChapterId() belongs to getParentTextbookId().
 
-    QSqlQuery query;
-    QString queryString = "insert into Section (chapter_id, name, available) values (";
-    queryString += section.getParentChapter()->getId();
-    queryString += ", ";
-    queryString += section.getName();
-    queryString += ", ";
-    queryString += section.getAvailability();
+
+    QString queryString = "insert into SellableItem (name, price_cents, available) values (";
+    queryString += "\"" + section.getName() + "\", ";
+    queryString += QString::number(section.getPriceCents()) + ", ";
+    queryString += QString::number((int) section.getAvailability());
     queryString += ");";
 
     bool result = dbManager->runQuery(queryString, &query);
 
     if (result) {
         response.code = Success;
-        response.message = "";
-    }
-    else {
+    } else {
         response.code = Fail;
-        response.message = query.lastError().text();
+        qDebug() << "Error while adding section: " << query.lastError().text();
         return response;
+    }
+
+    // if that doesn't work, use query "select seq from sqlite_sequence where name="table_name""
+    qint32 lastInsertId = query.lastInsertId().toInt();
+    *newId = lastInsertId;
+
+    queryString = "insert into Section (item_id, chapter_id, section_num) values (";
+    queryString += QString::number(lastInsertId) + ", ";
+    queryString += QString::number(section.getParentChapterId()) + ", ";
+    queryString += QString::number(section.getSectionNumber()) + ");";
+
+    if (!result) {
+        qDebug() << "Error while adding Section info: " << query.lastError().text();
     }
 
     return response;
@@ -349,6 +409,79 @@ ServerResponse Server::replaceSection(QUuid sessionID, qint32 id, Section& c)
     ServerResponse response;
     response.sessionID = sessionID;
     response.code = Fail;
+    return response;
+}
+
+ServerResponse Server::registerStudentUser(QUuid sessionID, Student& usr, QString pwd, qint32* id)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+    QSqlQuery query;
+    SecurityUtils security;
+
+    // Make password hash
+    QString hash = security.makePasswordHash(usr.getUsername(), pwd);
+
+    QString queryString = "insert into User (username, name, password, role) values (\"" +
+            usr.getUsername() + "\", \"" + usr.getName() + "\", \"" +
+            hash + "\", " + QString::number(2) + ");";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+    } else {
+        response.code = Fail;
+        qDebug() << "Error while adding user: " << query.lastError().text();
+        return response;
+    }
+
+    // if that doesn't work, use query "select seq from sqlite_sequence where name="table_name""
+    qint32 lastInsertId = query.lastInsertId().toInt();
+
+    queryString = "insert into Student (user_id, student_num, email) values (" +
+            QString::number(lastInsertId) + ", \""
+            + usr.getStudentNumber() + "\", \"" + usr.getEmailAddress() + "\");";
+
+    result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        *id = lastInsertId;
+    } else {
+        response.code = Fail;
+        qDebug() << "Error while adding student user: " << query.lastError().text();
+        return response;
+    }
+
+    if (usr.getDeliveryInfo()) {
+        queryString = "insert into DeliveryInfo (user_id, email) values (" +
+                QString::number(lastInsertId) + ", \"" +
+                usr.getDeliveryInfo()->getEmailAddress() + "\");";
+
+        result = dbManager->runQuery(queryString, &query);
+
+        if (!result) {
+            qDebug() << "Error while adding delivery info: " << query.lastError().text();
+        }
+    }
+
+    if (usr.getCreditCardInfo()) {
+        queryString = "insert into CreditCardInfo " \
+                "(user_id, holder_name, number, expiry_date, security_code) values (" +
+                QString::number(lastInsertId) + ", \"" +
+                usr.getCreditCardInfo()->getCardholderName() + "\", \"" +
+                usr.getCreditCardInfo()->getCardNumber() + "\", \"" +
+                usr.getCreditCardInfo()->getExpiry() + "\", \"" +
+                usr.getCreditCardInfo()->getSecurityCode() + "\");";
+
+        result = dbManager->runQuery(queryString, &query);
+
+        if (!result) {
+            qDebug() << "Error while adding billing info: " << query.lastError().text();
+        }
+    }
+
     return response;
 }
 

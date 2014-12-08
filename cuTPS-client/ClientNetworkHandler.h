@@ -179,7 +179,6 @@ private:
     bool loggedIn;
     // Block size for reads from the connection
     qint16 blockSize;
-
 };
 
 #endif // CLIENTNETWORKHANDLER_H

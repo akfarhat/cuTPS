@@ -44,7 +44,7 @@ public:
     QString getType();
 
     void addChapter(const Chapter& c);
-    QVector<Chapter*> getChapterList();
+    QVector<Chapter*>& getChapterList();
     const QVector<Chapter*> getConstChapterList() const;
     int numChapters() const;
 

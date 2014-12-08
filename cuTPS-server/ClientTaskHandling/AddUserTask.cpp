@@ -21,9 +21,10 @@ void AddUserTask::run()
 
     QDataStream in(request->getData(), QIODevice::ReadOnly);
     Student usr;
+    QString pwd;
     qint32 usrId;
 
-    in >> usr;
+    in >> usr >> pwd;
 
     // TODO implement this
     //ServerResponse r = server->registerUser(sessionId, usr, &usrId);

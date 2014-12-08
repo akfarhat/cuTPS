@@ -105,7 +105,7 @@ QString Chapter::getType() {
     return "Chapter";
 }
 
-QVector<Section*> Chapter::getSectionList()
+QVector<Section*>& Chapter::getSectionList()
 {
     return sections;
 }

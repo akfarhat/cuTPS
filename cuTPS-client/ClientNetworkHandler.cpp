@@ -475,6 +475,7 @@ QUuid ClientNetworkHandler::addStudentUser(Student& usr, QString passwd)
     QDataStream outDataStream(&data, QIODevice::WriteOnly);
 
     outDataStream << usr;
+    outDataStream << passwd;
 
     request.setData(data);
 
@@ -760,5 +761,4 @@ void ClientNetworkHandler::error(QAbstractSocket::SocketError e)
     qDebug() << "socket error: " << e;
     emit networkError(e);
 }
-
 

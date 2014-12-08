@@ -41,10 +41,18 @@ public:
 
     QString stringRepr() const;
 
+    QString getTermSection() const;
+    void setTermSection(const QString value);
+
+    qint32 getTermYear() const;
+    void setTermYear(const qint32 value);
+
 private:
-    qint32 id;
+    qint32  id;
     QString code;
     QString name;
+    QString termSection;
+    qint32  termYear;
 
     // Note. Whenever a Course object is sent over network, only IDs of required texts
     // will be actually sent (as reqBooksIds). This is for performance reasons.

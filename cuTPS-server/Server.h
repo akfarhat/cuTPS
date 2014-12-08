@@ -23,6 +23,7 @@
 #include "Entity/Order.h"
 #include "Entity/Chapter.h"
 #include "Entity/Section.h"
+#include "Entity/Student.h"
 
 using namespace TPSDef;
 
@@ -63,6 +64,8 @@ public:
     ServerResponse replaceTextbook(QUuid, qint32 id, Textbook&);
     ServerResponse replaceChapter(QUuid, qint32 id, Chapter&);
     ServerResponse replaceSection(QUuid, qint32 id, Section&);
+
+    ServerResponse registerStudentUser(QUuid, Student& usr, QString pwd, qint32* id);
 
     // Student request API.
 

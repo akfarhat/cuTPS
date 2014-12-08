@@ -13,7 +13,7 @@ ServerPrefs::ServerPrefs()
 const QString ServerPrefs::GetDbPath()
 {
     QSettings settings(PREF_CONF_FILE, QSettings::IniFormat);
-    const QString dbPath = settings.value(PREF_DB_PATH_SEC, QDir::currentPath() + QString("/db/cutpsd.db")).toString();
+    const QString dbPath = settings.value(PREF_DB_PATH_SEC, QDir::currentPath() + QString("/db/cutps.db")).toString();
     settings.setValue(PREF_DB_PATH_SEC, dbPath);
     return dbPath;
 }

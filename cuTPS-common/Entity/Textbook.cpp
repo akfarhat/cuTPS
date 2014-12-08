@@ -56,7 +56,7 @@ void Textbook::addChapter(const Chapter& c)
     chapters.append(c_copy);
 }
 
-QVector<Chapter*> Textbook::getChapterList()
+QVector<Chapter*>& Textbook::getChapterList()
 {
     return chapters;
 }

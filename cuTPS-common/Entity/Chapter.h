@@ -51,7 +51,7 @@ public:
     void setParentTextbookId(const qint32 value);
 
     void addSection(const Section& s);
-    QVector<Section*> getSectionList();
+    QVector<Section*>& getSectionList();
     int numSections() const;
     
     QString getTitle();
