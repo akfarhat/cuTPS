@@ -441,7 +441,7 @@ QUuid ClientNetworkHandler::removeSection(qint32 id)
     return requestId;
 }
 
-QUuid ClientNetworkHandler::addStudentUser(Student& usr)
+QUuid ClientNetworkHandler::addStudentUser(Student& usr, QString passwd)
 {
     ASSERT_VALID
 

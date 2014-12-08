@@ -131,7 +131,7 @@ public:
     // What: add a new student user to the system.
     // Available for: ContentManagers, Administrators.
     // Reletaed reply: updateCompete()
-    QUuid addStudentUser(Student&);
+    QUuid addStudentUser(Student&, QString passwd);
 
     // ADMINISTRATOR OPERATIONS
 
