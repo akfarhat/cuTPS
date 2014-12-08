@@ -116,6 +116,26 @@ QUuid ClientNetworkHandler::getRequiredBooks()
     return requestId;
 }
 
+QUuid ClientNetworkHandler::getAllBooks()
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IGetAllBooks);
+    request.setRequestId(requestId);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
 QUuid ClientNetworkHandler::getAllCourses()
 {
     ASSERT_VALID
