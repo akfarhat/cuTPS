@@ -7,37 +7,55 @@
 #ifndef COURSE_H
 #define COURSE_H
 
+#include "libcutps_global.h"
+
 #include <QVector>
 #include <QString>
+#include <QDataStream>
+
 #include "Textbook.h"
 
 using namespace std;
 
-class Course {
+class LIBCUTPS_EXPORT Course
+{
+public:
+    Course();
+    Course(const QString ccode);
+    Course(const QString ccode, const QString cname, const QVector<Textbook*>&);
+    ~Course();
 
-    private:
-        int id;
-        QString code;
-        QString name;
-        QVector<Textbook*> *requiredBooks;
+    int getId() const;
+    void setId(const int);
 
-    public:
-        Course();
-        Course(QString);
-        Course(QString, QString, QVector<Textbook*>);
-        ~Course();
+    QString getCourseCode() const;
+    void setCourseCode(const QString);
 
-        int getId() const;
-        void setId(const int);
+    void addRequiredText(Textbook*);
+    QVector<Textbook*>* getRequiredTexts();
+    QVector<qint32>* getRequiredTextsIds();
 
-        QString getCourseCode() const;
-        void setCourseCode(const QString);
+    QString getCourseName() const;
+    void setCourseName(const QString &value);
 
-        void addRequiredText(Textbook *);
-        QVector<Textbook*>* getRequiredTexts() const;
+    friend QDataStream& operator<<(QDataStream& os, const Course& c); // output
+    friend QDataStream& operator>>(QDataStream& is, Course& c); // input
 
-        QString getCourseName() const;
-        void setCourseName(const QString &value);
+    QString stringRepr() const;
+
+private:
+    int id;
+    QString code;
+    QString name;
+
+    // Note. Whenever a Course object is sent over network, only IDs of required texts
+    // will be actually sent (as reqBooksIds). This is for performance reasons.
+    // I.e. freshly received course object from the server only knows how many texts
+    // are required by this course + their IDs. To get actual Textbook by id, use
+    // getBookDetails() API call.
+    QVector<Textbook*> requiredBooks; // TODO: make it legacy or remove?
+    QVector<qint32> reqBooksIds;
+
 };
 
 #endif // COURSE_H

@@ -1,10 +1,19 @@
 #include "Student.h"
 
 Student::Student(int id, QString name, QString username, int studentNum) : User(id, name, username), studentNumber(studentNum) {
-
+    cart = new ShoppingCart();
 }
 
-Student::~Student() {}
+Student::~Student() {
+    delete cart;
+
+    if (billing) {
+        delete billing;
+    }
+    if (delivery) {
+        delete delivery;
+    }
+}
 
 int Student::getStudentNumber() {
     return studentNumber;
@@ -26,8 +35,32 @@ QVector<Course*> Student::getCourses() {
     return courses;
 }
 
+CreditCardInfo* Student::getCreditCardInfo() {
+    return billing;
+}
+
+void Student::setCreditCardInfo(CreditCardInfo *info) {
+    billing = info;
+}
+
+DeliveryInfo* Student::getDeliveryInfo() {
+    return delivery;
+}
+
+void Student::setDeliveryInfo(DeliveryInfo *info) {
+    delivery = info;
+}
+
 void Student::enrollInCourse(Course *newCourse) {
     courses.append(newCourse);
+}
+
+ShoppingCart* Student::getCart() {
+    return cart;
+}
+
+void Student::setCart(ShoppingCart *newCart) {
+    cart = newCart;
 }
 
 QString Student::getDetails() {

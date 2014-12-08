@@ -8,6 +8,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include "libcutps_global.h"
+
 #include <QString>
 #include <QDataStream>
 #include <QUuid>
@@ -22,8 +24,9 @@ enum ResponseCode {
 
 enum Role {
     None,
-    Student,
-    ContentManager
+    StudentUser,
+    ContentManagerUser,
+    AdministratorUser
 };
 
 // Information returned by the server for requests

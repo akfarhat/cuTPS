@@ -8,20 +8,33 @@
 #define LOGINCONTROL_H
 
 #include "Utils.h"
+#include "Login.h"
 #include "ClientNetworkHandler.h"
+#include "ContentManagementInterface.h"
+#include "CartManagementInterface.h"
 
-class LoginControl {
+#include <QObject>
 
+class LoginControl : public QObject
+{
     private:
-        ClientNetworkHandler &network;
+        Q_OBJECT
+        Login *loginWin;
+        ContentManagementInterface *cmIF;
+        CartManagementInterface *studentIF;
+        ClientNetworkHandler *network;
 
     public:
-        LoginControl(ClientNetworkHandler &);
+        LoginControl(ClientNetworkHandler *);
         ~LoginControl();
 
         // Request a login for this user
         void login(QUuid&, UserCredentials&);
+        void startSession();
 
+    private slots:
+        void loginSuccessful(QUuid, Role);
+        void loginFailed(QUuid);
 };
 
 #endif // LOGINCONTROL_H

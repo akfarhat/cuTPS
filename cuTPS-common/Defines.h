@@ -2,48 +2,35 @@
 // Description:
 //     A header containing namespace definitions
 
-
 #ifndef DEFINES_H
 #define DEFINES_H
 
+#include "libcutps_global.h"
+
 #include <QDataStream>
-#include <QByteArray>
-#include <QUuid>
 
-namespace TPSConstants {
-
-enum InvocationDescriptor {
-    Login,
-    GetRequiredBooks,
-    GetBookDetails,
-    SubmitOrder,
-    AddCourse,
-    AddBook,
-    Goodbye
-};
+namespace TPSNetProtocolDefs {
 
 static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
-static const int PORT = 10001;
+static const qint32 PROTOCOL_MAGIC = 0xDEADBEEF;
 
-static const QString PREF_DB_PATH_SEC = "Database/Database_Path";
-
-}
-
-namespace TPSNetProtocol {
-
-struct NetRequest {
-    TPSConstants::InvocationDescriptor invocation;
-    QUuid requestId;
-    QByteArray* data;
+enum InvocationDescriptor {
+    ILogin,
+    IGetRequiredBooks,
+    IGetBookDetails,
+    ISubmitOrder,
+    IAddCourse,
+    IAddBook,
+    IGenerateReport,
+    IGoodbye
 };
 
-struct NetResponse {
-    qint16 blockSize;
-    TPSConstants::InvocationDescriptor invocation;
-    QUuid requestId;
-    QByteArray* data;
-    QUuid sessionId;
-    qint8 responseCode;
+enum UsrPermissionGroup {
+    UsrStu,
+    UsrCm,
+    UsrAdm,
+    UsrAnonymous,
+    UsrSuperuser
 };
 
 }

@@ -82,7 +82,39 @@ ServerResponse Server::closeSession(QUuid sessionID)
     return response;
 }
 
-ServerResponse Server::authenticateUser(QUuid sessionID, UserCredentials creds)
+// TODO: This is dumb. We should add a "type" attribute to
+// the User table and get rid of this function, since the
+// authenticateUser can select the attribute.
+Role Server::getUserRole(QString &username)
+{
+    QSqlQuery query;
+    bool result;
+
+    result = dbManager->runQuery("SELECT * FROM Student s JOIN User u ON (u.id=s.user_id) "
+                                 "WHERE u.username = \"" + username + "\";",
+                                 &query);
+    if (result)
+        if (query.first())
+            return Role::StudentUser;
+
+    result = dbManager->runQuery("SELECT * FROM ContentManager cm JOIN User u ON (u.id=cm.user_id) "
+                                 "WHERE u.username = \"" + username + "\";",
+                                 &query);
+    if (result)
+        if (query.first())
+            return Role::ContentManagerUser;
+
+    result = dbManager->runQuery("SELECT * FROM Administrator a JOIN User u ON (u.id=a.user_id) "
+                                 "WHERE u.username = \"" + username + "\";",
+                                 &query);
+    if (result)
+        if (query.first())
+            return Role::AdministratorUser;
+
+    return Role::None;
+}
+
+ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCredentials creds)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -96,6 +128,8 @@ ServerResponse Server::authenticateUser(QUuid sessionID, UserCredentials creds)
         if (query.first()) {
             response.code = Success;
             response.message = "";
+
+            userRole = getUserRole(creds.username);
         }
         else {
             response.code = Fail;
@@ -452,21 +486,22 @@ ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector
     return response;
 }
 
-bool Server::validateBillingInfo(BillingInfo *billingInfo)
+bool Server::validateBillingInfo(const BillingInfo *billingInfo)
 {
-    if (billingInfo == NULL)
+    if (billingInfo == nullptr)
         return false;
 
     // Could potentially call a validator API from the billing system
     return true;
 }
 
-bool Server::validateDeliveryInfo(DeliveryInfo *deliveryInfo)
+bool Server::validateDeliveryInfo(const DeliveryInfo *deliveryInfo)
 {
-    if (deliveryInfo == NULL)
+    if (deliveryInfo == nullptr)
         return false;
 
     // Validate the delivery email address
+
     QRegExp re( QString("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}") );
     re.setCaseSensitivity(Qt::CaseInsensitive);
 
@@ -485,7 +520,7 @@ bool Server::validateOrder(Order& order, QString *errorMessage)
         return false;
     }
 
-    if (! order.getOrder()->size() > 0) {
+    if (! order.getItems()->size() > 0) {
         *errorMessage = QString("Order must have at least one item");
         return false;
     }

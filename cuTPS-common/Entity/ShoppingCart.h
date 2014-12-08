@@ -8,10 +8,12 @@
 #ifndef SHOPPINGCART_H
 #define SHOPPINGCART_H
 
+#include "libcutps_global.h"
+
 #include <QVector>
 #include "SellableItem.h"
 
-class ShoppingCart {
+class LIBCUTPS_EXPORT ShoppingCart {
     private:
         // Members
         int totalPrice;
@@ -24,6 +26,7 @@ class ShoppingCart {
         int getTotalPrice();
         void addItem(SellableItem *);
         QVector<SellableItem*> getItems();
+        void clearCart();
 
 };
 

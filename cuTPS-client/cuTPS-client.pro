@@ -15,27 +15,79 @@ CONFIG   += -std=gnu++11
 
 SOURCES += main.cpp \
     ClientNetworkHandler.cpp \
-    Tests.cpp \
     AddBookControl.cpp \
     AddCourseControl.cpp \
     SubmitOrderControl.cpp \
     ViewBookDetailsControl.cpp \
     ViewRequiredBooksControl.cpp \
-    LoginControl.cpp
+    LoginControl.cpp \
+    Login.cpp \
+    ContentManagementInterface.cpp \
+    ManageContentListWindow.cpp \
+    ManageContentControl.cpp \
+    ContentRequestAPI.cpp \
+    CartRequestsAPI.cpp \
+    ManageCourseControl.cpp \
+    CourseRequestAPI.cpp \
+    CourseDetailsWindow.cpp \
+    CartDetailsWindow.cpp \
+    ViewCartControl.cpp \
+    CancelOrderControl.cpp \
+    CartManagementInterface.cpp \
+    AddCourseWindow.cpp \
+    AddRequiredBookWindow.cpp \
+    PlaceOrderControl.cpp \
+    BillingWindow.cpp \
+    AddTextbookWindow.cpp \
+    AddChapterWindow.cpp \
+    AddSectionWindow.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
     LoginWindow.h \
-    Tests.h \
     AddBookControl.h \
     AddCourseControl.h \
     SubmitOrderControl.h \
     ViewBookDetailsControl.h \
     ViewRequiredBooksControl.h \
     LoginControl.h \
+    Login.h \
+    ContentManagementInterface.h \
+    ManageContentListWindow.h \
+    ManageContentControl.h \
+    ContentRequestAPI.h \
+    CartRequestsAPI.h \
+    ManageCourseControl.h \
+    CourseRequestAPI.h \
+    CourseDetailsWindow.h \
+    CartDetailsWindow.h \
+    ViewCartControl.h \
+    CancelOrderControl.h \
+    CartManagementInterface.h \
+    AddCourseWindow.h \
+    AddRequiredBookWindow.h \
+    PlaceOrderControl.h \
+    BillingWindow.h \
+    AddTextbookWindow.h \
+    AddChapterWindow.h \
+    AddSectionWindow.h
 
 FORMS    += \
-    Tests.ui
+    Login.ui \
+    ContentManagementInterface.ui \
+    ManageContentListWindow.ui \
+    StudentMainMenuWindow.ui \
+    ViewCartOption.ui \
+    ViewRequiredBooksOption.ui \
+    CourseDetailsWindow.ui \
+    CartDetailsWindow.ui \
+    CartManagementInterface.ui \
+    AddCourseWindow.ui \
+    AddRequiredBookWindow.ui \
+    BillingWindow.ui \
+    AddTextbookWindow.ui \
+    AddChapterWindow.ui \
+    AddSectionWindow.ui
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++
@@ -52,9 +104,3 @@ else:unix: LIBS += -L$$OUT_PWD/../cuTPS-common/ -lcutps
 
 INCLUDEPATH += $$PWD/../cuTPS-common
 DEPENDPATH += $$PWD/../cuTPS-common
-
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/release/libcutps.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/debug/libcutps.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/release/cutps.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/debug/cutps.lib
-else:unix: PRE_TARGETDEPS += $$OUT_PWD/../cuTPS-common/libcutps.a

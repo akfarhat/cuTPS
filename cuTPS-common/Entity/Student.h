@@ -8,19 +8,28 @@
 #ifndef STUDENT_H
 #define STUDENT_H
 
+#include "libcutps_global.h"
+
 #include "User.h"
 #include "Course.h"
+#include "ShoppingCart.h"
+#include "CreditCardInfo.h"
+#include "DeliveryInfo.h"
 #include <QString>
 #include <QVector>
 
 using namespace std;
 
-class Student: public User {
+class LIBCUTPS_EXPORT Student : public User {
 
     private:
         int studentNumber;
         QString emailAddress;
         QVector<Course*> courses;
+        ShoppingCart *cart;
+        CreditCardInfo *billing;
+        DeliveryInfo *delivery;
+
 
 
     public:
@@ -35,6 +44,15 @@ class Student: public User {
 
         QVector<Course*> getCourses();
         void enrollInCourse(Course*);
+
+        ShoppingCart* getCart();
+        void setCart(ShoppingCart*);
+
+        CreditCardInfo* getCreditCardInfo();
+        void setCreditCardInfo(CreditCardInfo*);
+
+        DeliveryInfo* getDeliveryInfo();
+        void setDeliveryInfo(DeliveryInfo*);
 
         QString getDetails();
 };
