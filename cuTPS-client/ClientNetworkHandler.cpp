@@ -513,11 +513,6 @@ bool ClientNetworkHandler::isValid() const
     return isConnected() && loggedIn;
 }
 
-QSet<Textbook*>* ClientNetworkHandler::uniqueBooks(QMap<Course*, QSet<Textbook*>*>*)
-{
-
-}
-
 /* public slots */
 
 void ClientNetworkHandler::connected()
@@ -589,6 +584,12 @@ void ClientNetworkHandler::readyRead()
     case IAddSection:
     case IAddCourse:
     case IAddUser:
+    case IBanUser:
+    case IRmBook:
+    case IRmChapter:
+    case IRmSection:
+    case IBookLink:
+    case IBookUnlink:
     {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
 
@@ -603,49 +604,91 @@ void ClientNetworkHandler::readyRead()
         break;
     }
 
+    case IGetAllBooks:
     case IGetBookDetails: {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
 
         qint32 numBooks;
         in >> numBooks;
 
-        QVector<Textbook*>* vec = new QVector<Textbook*>();
+        if (numBooks > 1 || response.getInvocation() == IGetAllBooks) {
+            QList<Textbook*>* bList = new QList<Textbook*>();
 
-        for (int i = 0; i < numBooks; ++i)
-        {
+            while (numBooks > 0) {
+                Textbook* book = new Textbook();
+                in >> *book;
+                bList->append(book);
+                numBooks--;
+            }
+
+            emit textbookListReceived(response.getRequestId(),
+                                         response.getResponseCode(),
+                                         bList);
+        } else if (numBooks == 1) {
             Textbook* book = new Textbook();
             in >> *book;
-            vec->append(book);
+
+            emit textbookReceived(response.getRequestId(),
+                                  response.getResponseCode(),
+                                  book);
         }
 
-        emit textbookDetailsReceived(response.getRequestId(),
-                                     response.getResponseCode(),
-                                     vec);
         break;
     }
 
     case IGetRequiredBooks: {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
 
-        qint32 numBooks;
-        in >> numBooks;
+        QMap<Course*, QList<Textbook*>*>* cmap = new QMap<Course*, QList<Textbook*>*>();
 
-        QVector<qint32>* vec = new QVector<qint32>();
+        qint32 numCourses;
+        in >> numCourses;
 
-        for (int i = 0; i < numBooks; ++i)
-        {
-            qint32 id;
-            in >> id;
-            vec->append(id);
+        while (numCourses > 0) {
+            QList<Textbook*>* tbList = new QList<Textbook*>();
+            Course* c = new Course();
+            in >> *c;
+
+            qint32 numBooks;
+            in >> numBooks;
+
+            while (numBooks > 0) {
+                Textbook* book = new Textbook();
+                in >> *book;
+                tbList->append(book);
+                numBooks--;
+            }
+
+            cmap->insert(c, tbList);
+
+            numCourses--;
         }
 
-        // TODO: implement map reconstruct
+        emit requiredBooksReceived(response.getRequestId(),
+                                   response.getResponseCode(),
+                                   cmap);
 
-        //emit textbookLookupCompleted(response.getRequestId(),
-        //                             response.getResponseCode(),
-        //                             vec);
         break;
     }
+
+    case IGetAllCourses: {
+        QList<Course*>* clist = new QList<Course*>();
+        qint32 count;
+        in >> count;
+
+        while (count > 0) {
+            Course* c = new Course();
+            in >> *c;
+            clist->append(c);
+            count--;
+        }
+
+        emit courseListReceived(response.getRequestId(),
+                                response.getResponseCode(),
+                                clist);
+        break;
+    }
+
 
     case ILogin: {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
@@ -672,6 +715,10 @@ void ClientNetworkHandler::readyRead()
 
     case ISubmitOrder: {
         emit orderStatusReceived(response.getRequestId(), response.getResponseCode());
+        break;
+    }
+
+    case IGenerateReport: {
         break;
     }
 

@@ -29,19 +29,29 @@ void RmItemTask::run()
     {
         // TODO: implement this
         //r = server->removeBook(sessionId, itemId);
+        r.code = Fail;
+        break;
     }
 
     case IRmChapter:
     {
         // TODO: implement this
         //r = server->removeChapter(sessionId, itemId);
+        r.code = Fail;
+        break;
     }
 
     case IRmSection:
     {
         // TODO: implement this
         // r = server->removeSection(sessionId, itemId);
+        r.code = Fail;
+        break;
     }
+
+    default:
+        r.code = Fail;
+        break;
 
     }
 
