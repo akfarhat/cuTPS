@@ -87,7 +87,9 @@ QDataStream& operator<<(QDataStream& os, const Course& c)
     // Write course data
     os << c.id
        << c.name
-       << c.code;
+       << c.code
+       << c.termSection
+       << c.termYear;
 
     // Then required textbooks count..
     os << static_cast<quint16>(c.reqBooksIds.size());
@@ -107,7 +109,9 @@ QDataStream& operator>>(QDataStream& is, Course& c)
 
     is >> c.id
        >> c.name
-       >> c.code;
+       >> c.code
+       >> c.termSection
+       >> c.termYear;
 
     quint16 textCount;
     c.reqBooksIds.clear();

@@ -175,10 +175,11 @@ ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32* newId)
 
     QSqlQuery query;
 
-    QString queryString = "insert into Course (code, name) values (\"" +
-                           course.getCourseCode() + "\", \"" +
-                           course.getCourseName() + "\")" +
-                           ";";
+    QString queryString = "insert into Course (code, name, term_section, term_year) values (\"" +
+            course.getCourseCode() + "\", \"" +
+            course.getCourseName() + "\", \"" +
+            course.getTermSection().at(0) + "\", " +
+            course.getTermYear() + ");";
 
     qDebug() << "About to insert Course, query'"
              << queryString << "'";
