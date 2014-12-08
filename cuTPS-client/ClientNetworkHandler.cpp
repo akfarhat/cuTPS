@@ -136,6 +136,14 @@ QUuid ClientNetworkHandler::getAllCourses()
     return requestId;
 }
 
+QUuid ClientNetworkHandler::getAllBooks()
+{
+    // TODO: Implement this.
+
+    QUuid reqId;
+    return reqId;
+}
+
 QUuid ClientNetworkHandler::getBookDetails(const qint32 id)
 {
     return getBookDetails(QVector<qint32>({id}));

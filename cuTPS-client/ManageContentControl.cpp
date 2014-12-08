@@ -22,6 +22,10 @@ ManageContentControl::ManageContentControl(ContentManagementInterface *backWin,
 
     connect(contentManagementWin, SIGNAL(deleteItem(int)),
             this, SLOT(deleteItem(int)));
+
+    connect(networking, SIGNAL(textbookListReceived(QUuid,int,QList<Textbook*>*)),
+            contentManagementWin, SLOT(textbookListReceived(QUuid,int,QList<Textbook*>*)));
+
     // TODO: connect slots for requests that the networking will signal
 }
 

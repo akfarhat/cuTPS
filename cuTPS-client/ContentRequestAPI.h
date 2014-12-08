@@ -15,6 +15,7 @@ class ContentRequestAPI : public QObject
         QUuid addChapter(int, Chapter&);
         QUuid addSection(int, int, Section&);
         QUuid deleteItem(int);
+        QUuid getAllBooks();
 
     signals:
 

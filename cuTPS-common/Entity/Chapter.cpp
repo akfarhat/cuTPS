@@ -41,7 +41,7 @@ Chapter::Chapter(Textbook* textbook,
 
 Chapter::~Chapter() {
     for (Section* s : sections)
-        delete s;
+        if (s != NULL) delete s;
 }
 
 Textbook* Chapter::getParentTextbook() {

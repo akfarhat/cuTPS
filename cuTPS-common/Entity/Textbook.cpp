@@ -27,7 +27,7 @@ Textbook::Textbook() : SellableItem() {
 
 Textbook::~Textbook() {
     for (Chapter* c : chapters)
-        delete c;
+        if (c != NULL) delete c;
 }
 
 QString Textbook::getISBN() const {

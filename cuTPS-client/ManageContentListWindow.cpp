@@ -19,7 +19,10 @@ ManageContentListWindow::ManageContentListWindow(QWidget *parent,
 
     this->contentDepth = 0;
 
-    this->listedItems = NULL;
+    this->textbookList = NULL;
+    this->chapterList = NULL;
+    this->sectionList = NULL;
+
     this->addBookWin = NULL;
     this->addChapterWin = NULL;
     this->addSectionWin = NULL;
@@ -27,7 +30,48 @@ ManageContentListWindow::ManageContentListWindow(QWidget *parent,
     this->bookId = -1;
     this->chapterId = -1;
 
-    this->displayBookList();
+    //this->refreshContents(); // TODO: remove below, uncomment this once tested
+
+    // Request all sections (id, title) from server for chapterId
+    ////////// pretend for now that this list represents actual data: /////////
+    Section *s1 = new Section(9, NULL, 1, "Section One", 325, true);
+    Section *s2 = new Section(10, NULL, 2, "Section Two", 354, true);
+    Section *s3 = new Section(11, NULL, 3, "Section Three", 311, true);
+    Section *s4 = new Section(12, NULL, 4, "Section Four", 166, true);
+    /////////////////////////////////////////////////////////////////////////
+
+    ////////// pretend for now that this list represents actual data: /////////
+    Chapter *c1 = new Chapter(5, NULL, 1, "Chapter One", 432, true);
+    Chapter *c2 = new Chapter(6, NULL, 2, "Chapter Two", 2345, true);
+    Chapter *c3 = new Chapter(7, NULL, 3, "Chapter Three", 234, true);
+    Chapter *c4 = new Chapter(8, NULL, 4, "Chapter Four", 123, true);
+    /////////////////////////////////////////////////////////////////////////
+
+    ////////// pretend for now that this list represents actual data: /////////
+    QList<Textbook*> *books = new QList<Textbook*>();
+    Textbook *t1 = new Textbook(1, "The First Book", "1st", "Some Dorc", 554563, 1, "123456678");
+    Textbook *t2 = new Textbook(2, "The Second Book", "2nd", "Some Corc", 34536, 1, "123456679");
+    Textbook *t3 = new Textbook(3, "The Third Book", "3rd", "Some Borc", 2345, 1, "123456680");
+    Textbook *t4 = new Textbook(4, "The Fourth Book", "999th", "Some Pork :D", 2234556, 1, "123456681");
+    books->append(t1); books->append(t2); books->append(t3); books->append(t4);
+    /////////////////////////////////////////////////////////////////////////
+    /*
+    s1->setParentChapter(c1); s2->setParentChapter(c3); s3->setParentChapter(c3); s4->setParentChapter(c4);
+
+    c1->setParentTextbook(t1); c2->setParentTextbook(t2); c3->setParentTextbook(t1); c4->setParentTextbook(t3);
+    */
+    c1->addSection(*s1); //c1->addSection(*s2); c1->addSection(*s3); c1->addSection(*s4);
+    c2->addSection(*s2); //c2->addSection(*s2); c2->addSection(*s3); c2->addSection(*s4);
+    c3->addSection(*s3); //c3->addSection(*s2); c3->addSection(*s3); c3->addSection(*s4);
+    c4->addSection(*s4); //c4->addSection(*s2); c4->addSection(*s3); c4->addSection(*s4);
+
+    t1->addChapter(*c1); //t1->addChapter(*c2); t1->addChapter(*c3); t1->addChapter(*c4);
+    t2->addChapter(*c2); //t2->addChapter(*c2); t2->addChapter(*c3); t2->addChapter(*c4);
+    t3->addChapter(*c3); //t3->addChapter(*c2); t3->addChapter(*c3); t3->addChapter(*c4);
+    t4->addChapter(*c4); //t4->addChapter(*c2); t4->addChapter(*c3); t4->addChapter(*c4);
+
+    QUuid uid;
+    this->textbookListReceived(uid, 0, books);
 }
 
 ManageContentListWindow::~ManageContentListWindow()
@@ -42,12 +86,79 @@ ManageContentListWindow::~ManageContentListWindow()
 
     if (this->addSectionWin != NULL)
         delete this->addSectionWin;
+
+    // Clear the containers
+    this->clearSections();
+    this->clearChapters();
+
+    // Deep delete on textbook container and all contents.
+    // This will propogate down to the chapters and sections
+    if (this->textbookList != NULL) {
+        int size = this->textbookList->size();
+        for (int i = 0; i < size; i++)
+            delete this->textbookList->at(i);
+
+        delete this->textbookList;
+        this ->textbookList = NULL;
+    }
 }
 
 void ManageContentListWindow::on_backButton_clicked()
 {
     this->close();
     emit navigateBack();
+}
+
+void ManageContentListWindow::refreshContents()
+{
+    this->requestAPI->getAllBooks();
+}
+
+void ManageContentListWindow::textbookListReceived(
+        QUuid reqId, int code,
+        QList<Textbook*>* bookList)
+{
+    qDebug() << "ManageContentListWindow::TextbookListReceived "
+             << "num books: " << bookList->size();
+
+    this->clearTextbooks();
+
+    // Fill the text list from the QList
+    this->textbookList = new QVector<Textbook*>(); // current display
+    for (Textbook *book: *bookList)
+        this->textbookList->append(book);
+
+    this->displayBookList();
+}
+
+void ManageContentListWindow::clearTextbooks()
+{
+    if (this->textbookList != NULL) {
+        qDebug() << "clearing textbookList";
+
+        delete this->textbookList;
+        this->textbookList = NULL;
+    }
+}
+
+void ManageContentListWindow::clearChapters()
+{
+    if (this->chapterList != NULL) {
+        qDebug() << "Clearing chapterList";
+
+        delete this->chapterList;
+        this->chapterList = NULL;
+    }
+}
+
+void ManageContentListWindow::clearSections()
+{
+    if (this->sectionList != NULL) {
+        qDebug() << "Clearing sectionList";
+
+        delete this->sectionList;
+        this->sectionList = NULL;
+    }
 }
 
 void ManageContentListWindow::displayBookList()
@@ -57,104 +168,61 @@ void ManageContentListWindow::displayBookList()
     this->ui->modifyItemButton->setEnabled(false);
     this->ui->deleteItemButton->setEnabled(false);
 
-    // Request all books (id, title) from server
-    ////////// pretend for now that this list represents actual data: /////////
-    QVector<SellableItem*> *books = new QVector<SellableItem*>();
-    Textbook *t1 = new Textbook(1, "The First Book", "1st", "Some Dorc", 554563, 1, "123456678");
-    Textbook *t2 = new Textbook(2, "The Second Book", "2nd", "Some Corc", 34536, 1, "123456679");
-    Textbook *t3 = new Textbook(3, "The Third Book", "3rd", "Some Borc", 2345, 1, "123456680");
-    Textbook *t4 = new Textbook(4, "The Fourth Book", "999th", "Some Pork :D", 2234556, 1, "123456681");
-    books->append(t1); books->append(t2); books->append(t3); books->append(t4);
-    /////////////////////////////////////////////////////////////////////////
+    // Clear lower level content lists
+    this->clearChapters();
+    this->clearSections();
 
-    // Update the window's item list vector
-    if (this->listedItems != NULL) {
-        for (int i = 0; i < books->size(); i++)
-            delete this->listedItems->at(i);
-
-        delete this->listedItems;
-    }
-
-    this->listedItems = books;
-
-    // Display the books in the itemList.
+    // Display the books in the item list.
     this->ui->contentList->clear();
-    for (SellableItem *book: *books) {
+    for (Textbook *book: *(this->textbookList)) {
         this->ui->contentList->addItem(book->getTitle());
     }
 
 }
 
-void ManageContentListWindow::displayChapterList(int bookId)
+void ManageContentListWindow::displayChapterList(Textbook *book)
 {
     qDebug() << "Displaying chapter list for bookId = " << bookId;
 
     this->ui->modifyItemButton->setEnabled(false);
     this->ui->deleteItemButton->setEnabled(false);
 
-    this->bookId = bookId;
+    // Clean up memory for lower level content lists
+    this->clearSections();
 
-    // Request all chapters (id, title) from server for bookId
-    ////////// pretend for now that this list represents actual data: /////////
-    QVector<SellableItem*> *chapters = new QVector<SellableItem*>();
-    Chapter *c1 = new Chapter(5, NULL, 1, "Chapter One", 432, true);
-    Chapter *c2 = new Chapter(6, NULL, 2, "Chapter Two", 2345, true);
-    Chapter *c3 = new Chapter(7, NULL, 3, "Chapter Three", 234, true);
-    Chapter *c4 = new Chapter(8, NULL, 4, "Chapter Four", 123, true);
-    chapters->append(c1); chapters->append(c2); chapters->append(c3); chapters->append(c4);
-    /////////////////////////////////////////////////////////////////////////
+    this->bookId = -1;
 
-    // Update the window's item list vector
-    if (this->listedItems != NULL) {
-        for (int i = 0; i < chapters->size(); i++)
-            delete this->listedItems->at(i);
-
-        delete this->listedItems;
+    if (this->chapterList == NULL) {
+        this->chapterList = new QVector<Chapter*>(book->getChapterList());
+        this->bookId = book->getId();
     }
 
-    this->listedItems = chapters;
-
-    // Display the books in the itemList.
+    // Display the books in the item list.
     this->ui->contentList->clear();
-    for (SellableItem *chapter: *chapters) {
+    for (Chapter *chapter: *(this->chapterList)) {
         qDebug() << "adding chapter ptr: " << chapter;
         qDebug() << "its id is " << chapter->getId();
         this->ui->contentList->addItem(chapter->getTitle());
     }
 }
 
-void ManageContentListWindow::displaySectionList(int chapterId)
+void ManageContentListWindow::displaySectionList(Chapter *chapter)
 {
     qDebug() << "Displaying section list for chapterId = " << chapterId;
 
     this->ui->modifyItemButton->setEnabled(false);
     this->ui->deleteItemButton->setEnabled(false);
 
-    this->chapterId = chapterId;
+    this->chapterId = -1;
 
-    // Request all sections (id, title) from server for chapterId
-    ////////// pretend for now that this list represents actual data: /////////
-    QVector<SellableItem*> *sections = new QVector<SellableItem*>();
-    Section *s1 = new Section(9, NULL, 1, "Section One", 325, true);
-    Section *s2 = new Section(10, NULL, 2, "Section Two", 354, true);
-    Section *s3 = new Section(11, NULL, 3, "Section Three", 311, true);
-    Section *s4 = new Section(12, NULL, 4, "Section Four", 166, true);
-    sections->append(s1); sections->append(s2); sections->append(s3); sections->append(s4);
-    /////////////////////////////////////////////////////////////////////////
-
-    // Update the window's item list vector
-    if (this->listedItems != NULL) {
-        for (int i = 0; i < sections->size(); i++)
-            delete this->listedItems->at(i);
-
-        delete this->listedItems;
+    if (this->sectionList == NULL) { // re-use if not null
+        this->sectionList = new QVector<Section*>(chapter->getSectionList());
+        this->chapterId = chapter->getId();
     }
 
-    this->listedItems = sections;
-
-    // Display the books in the itemList.
+    // Display the books in the item list.
     this->ui->contentList->clear();
-    for (SellableItem *section: *sections) {
+    for (Section *section: *(this->sectionList)) {
         this->ui->contentList->addItem(section->getTitle());
     }
 }
@@ -166,7 +234,7 @@ void ManageContentListWindow::on_contentList_clicked(const QModelIndex &index)
 
     qDebug() << "Single click on item at index: " << QString::number(index.row());
 
-    SellableItem *selectedItem = this->listedItems->at(index.row());
+    SellableItem *selectedItem = this->getSelectedItem(index.row());
 
     qDebug() << "Selected item details: " << selectedItem->getDetails();
 
@@ -178,7 +246,7 @@ void ManageContentListWindow::on_contentList_doubleClicked(const QModelIndex &in
     if (this->contentDepth >= MAX_ITEM_DEPTH)
         return;
 
-    SellableItem *selectedItem = this->listedItems->at(index.row());
+    SellableItem *selectedItem = this->getSelectedItem(index.row());
 
     this->contentDepth++;
 
@@ -187,9 +255,9 @@ void ManageContentListWindow::on_contentList_doubleClicked(const QModelIndex &in
     this->ui->metadataView->setText("");
 
     if (this->contentDepth == 1)
-        this->displayChapterList(selectedItem->getId());
+        this->displayChapterList(dynamic_cast<Textbook*>(selectedItem));
     else if(this->contentDepth == 2)
-        this->displaySectionList(selectedItem->getId());
+        this->displaySectionList(dynamic_cast<Chapter*>(selectedItem));
 }
 
 void ManageContentListWindow::on_contentBackButton_clicked()
@@ -204,12 +272,10 @@ void ManageContentListWindow::on_contentBackButton_clicked()
 
     this->ui->metadataView->setText("");
 
-    // TODO: Depending on whether the parents are guaranteed to be defined,
-    // we can get the ID that way, or store it as a temp value when descending.
     if (this->contentDepth == 0)
         this->displayBookList();
     else if(this->contentDepth == 1)
-        this->displayChapterList(-1);
+        this->displayChapterList(NULL);
 }
 
 void ManageContentListWindow::on_newContentButton_clicked()
@@ -347,8 +413,33 @@ void ManageContentListWindow::on_deleteItemButton_clicked()
     emit deleteItem(itemId);
 }
 
+SellableItem* ManageContentListWindow::getSelectedItem(int index)
+{
+    // Note: this is pretty ugly.. As mentioned in header
+    SellableItem *item;
+
+    switch (this->contentDepth) {
+        case 0:
+            qDebug() << "Getting book at index " << index
+                     << ", size of list " << this->textbookList->size();
+            item = this->textbookList->at(index);
+            break;
+        case 1:
+            qDebug() << "Getting chapter at index " << index
+                     << ", size of list " << this->chapterList->size();
+            item = this->chapterList->at(index);
+            break;
+        case 2:
+            qDebug() << "Getting section at index " << index
+                     << ", size of list " << this->sectionList->size();
+            item = this->sectionList->at(index);
+            break;
+    }
+    return item;
+}
+
 SellableItem* ManageContentListWindow::getSelectedItem()
 {
     int index = this->ui->contentList->currentIndex().row();
-    return this->listedItems->at(index);
+    return this->getSelectedItem(index);
 }

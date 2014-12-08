@@ -54,6 +54,8 @@ private slots:
 
     void on_addBookButton_clicked();
 
+    void on_courseList_currentRowChanged(int currentRow);
+
 private:
     Ui::CourseDetailsWindow *ui;
     ManageCourseControl *manageCourseCtrl;

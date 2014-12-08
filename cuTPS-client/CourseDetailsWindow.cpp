@@ -159,3 +159,12 @@ void CourseDetailsWindow::on_addBookButton_clicked()
 
     this->addReqBooksWin->show();
 }
+
+void CourseDetailsWindow::on_courseList_currentRowChanged(int currentRow)
+{
+    // Handle disabling actions that required a selection when the
+    // widget loses focus/selection
+    if (currentRow < 0) {
+        this->ui->deleteCourseButton->setEnabled(false);
+    }
+}

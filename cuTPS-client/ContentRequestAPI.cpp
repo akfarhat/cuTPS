@@ -28,3 +28,8 @@ QUuid ContentRequestAPI::deleteItem(int itemId)
     QUuid id;
     return id;
 }
+
+QUuid ContentRequestAPI::getAllBooks()
+{
+    return this->networking->getAllBooks();
+}
