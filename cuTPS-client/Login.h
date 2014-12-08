@@ -1,3 +1,10 @@
+// Class: Login
+// Description:
+//   Provides a GUI dialog for the user to enter
+//   their credentials.
+// Traceability:
+//   LoginWindow in the LoginInterface subsystem
+
 #ifndef LOGIN_H
 #define LOGIN_H
 

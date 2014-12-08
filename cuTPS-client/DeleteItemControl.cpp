@@ -6,7 +6,15 @@ DeleteItemControl::DeleteItemControl(QObject *parent, ContentRequestAPI *api) :
 {
 }
 
-void DeleteItemControl::deleteItem(QUuid &uid, int itemId)
+void DeleteItemControl::deleteItem(QUuid &uid, int itemId, QString type)
 {
-    uid = requestAPI->deleteItem(itemId);
+    // This could be changed into one API request if the server
+    // implementation was updated.
+
+    if (type == "textbook")
+        uid = requestAPI->deleteTextbook(itemId);
+    else if (type == "chapter")
+        uid = requestAPI->deleteChapter(itemId);
+    else if (type == "section")
+        uid = requestAPI->deleteSection(itemId);
 }

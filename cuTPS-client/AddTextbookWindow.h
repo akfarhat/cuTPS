@@ -24,7 +24,7 @@ public:
     void populateValues(Textbook *);
 
 signals:
-    void addTextbook(QString, int, int, bool, QString);
+    void addTextbook(QString, QString, QString, int, int, bool, QString);
 
 private slots:
     void on_cancelButton_clicked();

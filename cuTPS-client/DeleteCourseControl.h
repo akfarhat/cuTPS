@@ -14,10 +14,10 @@ class DeleteCourseControl : QObject
 
 public:
     DeleteCourseControl(CourseRequestAPI *);
+    void deleteCourse(QUuid &, int);
 
 private:
     CourseRequestAPI *requestAPI;
-    void deleteCourse(QUuid &, int);
 };
 
 #endif // DELETECOURSECONTROL_H

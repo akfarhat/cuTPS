@@ -13,7 +13,7 @@ class DeleteItemControl : public QObject
     Q_OBJECT
 public:
     explicit DeleteItemControl(QObject *parent = 0, ContentRequestAPI *api = NULL);
-    void deleteItem(QUuid&, int);
+    void deleteItem(QUuid&, int, QString);
 
 signals:
 

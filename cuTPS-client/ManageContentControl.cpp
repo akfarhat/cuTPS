@@ -20,13 +20,12 @@ ManageContentControl::ManageContentControl(ContentManagementInterface *backWin,
     connect(contentManagementWin, SIGNAL(navigateBack()),
             cmIF, SLOT(navigateBack()));
 
-    connect(contentManagementWin, SIGNAL(deleteItem(int)),
-            this, SLOT(deleteItem(int)));
+    connect(contentManagementWin, SIGNAL(deleteItem(int, QString)),
+            this, SLOT(deleteItem(int, QString)));
 
+    // Connect networking responses to the window managers that require the data
     connect(networking, SIGNAL(textbookListReceived(QUuid,int,QList<Textbook*>*)),
             contentManagementWin, SLOT(textbookListReceived(QUuid,int,QList<Textbook*>*)));
-
-    // TODO: connect slots for requests that the networking will signal
 }
 
 ManageContentControl::~ManageContentControl()
@@ -36,6 +35,8 @@ ManageContentControl::~ManageContentControl()
 }
 
 void ManageContentControl::addTextbook(QString name,
+                                       QString edition,
+                                       QString authors,
                                        int bookId,
                                        int priceCents,
                                        bool isAvailable,
@@ -47,7 +48,7 @@ void ManageContentControl::addTextbook(QString name,
 
     QUuid reqId;
 
-    Textbook book(bookId, name, "", "", priceCents, isAvailable, isbn);
+    Textbook book(bookId, name, edition, authors, priceCents, isAvailable, isbn);
 
     if (bookId == -1) {
         AddBookControl addBookCtrl(this->requestAPI);
@@ -117,13 +118,13 @@ void ManageContentControl::addSection(QString name,
     }
 }
 
-void ManageContentControl::deleteItem(int itemId)
+void ManageContentControl::deleteItem(int itemId, QString type)
 {
     qDebug() << "Deleting item id " << itemId;
 
-    DeleteItemControl ctrl(this->requestAPI);
+    DeleteItemControl ctrl(0, this->requestAPI);
 
     // TODO: not yet handling response
     QUuid uid;
-    ctrl.deleteItem(uid, itemId);
+    ctrl.deleteItem(uid, itemId, type);
 }

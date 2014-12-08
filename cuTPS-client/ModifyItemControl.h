@@ -1,3 +1,7 @@
+// Class: ModifyItemControl:
+// Description:
+//   Forms appropriate requests to the requestAPI
+//   using the reconstructed entity objects from the UI
 // traceability:
 //   ModifyItemControl class in the ContentManagement subsystem
 

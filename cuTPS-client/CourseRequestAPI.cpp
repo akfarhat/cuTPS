@@ -10,29 +10,35 @@ CourseRequestAPI::CourseRequestAPI(QObject *parent,
 }
 
 
+QUuid CourseRequestAPI::getAllCourses()
+{
+    return this->networking->getAllCourses();
+}
+
+QUuid CourseRequestAPI::getBookDetails(const QVector<qint32> &bookIds) const
+{
+    return this->networking->getBookDetails(bookIds);
+}
+
 QUuid CourseRequestAPI::addCourse(Course &c)
 {
-    qDebug() << "TODO: handle add Course from ClientNetworkHandler";
-    QUuid id;
-    return id;
+    return this->networking->addCourse(c);
 }
 
 QUuid CourseRequestAPI::modifyCourse(Course &c)
 {
-    QUuid id;
-    return id;
-
-    // TODO: invoke networking method
+    // This add should result in an update since the id is set
+    return this->networking->addCourse(c);
 }
 
 QUuid CourseRequestAPI::linkText(int courseId, int textId)
 {
-    this->networking->linkTextbook(courseId, textId);
+    return this->networking->linkTextbook(courseId, textId);
 }
 
 QUuid CourseRequestAPI::unlinkText(int courseId, int textId)
 {
-    this->networking->unlinkTextbook(courseId, textId);
+    return this->networking->unlinkTextbook(courseId, textId);
 }
 
 QUuid CourseRequestAPI::deleteCourse(int courseId)
@@ -40,5 +46,5 @@ QUuid CourseRequestAPI::deleteCourse(int courseId)
     QUuid id;
     return id;
 
-    // TODO: invoke networking method
+    // TODO: implement and invoke the networking method
 }

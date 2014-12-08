@@ -24,10 +24,10 @@ class ManageContentControl : public QObject
         Q_OBJECT
 
     public slots:
-        void addTextbook(QString, int, int, bool, QString);
+        void addTextbook(QString, QString, QString, int, int, bool, QString);
         void addChapter(QString, int, int, bool, int);
         void addSection(QString, int, int, bool, int, int);
-        void deleteItem(int);
+        void deleteItem(int, QString);
 
     public:
         ManageContentControl(ContentManagementInterface *, ClientNetworkHandler *);

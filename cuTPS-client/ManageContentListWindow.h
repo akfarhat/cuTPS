@@ -36,7 +36,7 @@ public:
 
 signals:
     void navigateBack();
-    void deleteItem(int);
+    void deleteItem(int, QString);
 
 public slots:
     // Response from networking for getAllBooks()

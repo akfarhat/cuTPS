@@ -30,8 +30,9 @@ ManageContentListWindow::ManageContentListWindow(QWidget *parent,
     this->bookId = -1;
     this->chapterId = -1;
 
-    //this->refreshContents(); // TODO: remove below, uncomment this once tested
+    this->refreshContents();
 
+    /*
     // Request all sections (id, title) from server for chapterId
     ////////// pretend for now that this list represents actual data: /////////
     Section *s1 = new Section(9, NULL, 1, "Section One", 325, true);
@@ -55,11 +56,7 @@ ManageContentListWindow::ManageContentListWindow(QWidget *parent,
     Textbook *t4 = new Textbook(4, "The Fourth Book", "999th", "Some Pork :D", 2234556, 1, "123456681");
     books->append(t1); books->append(t2); books->append(t3); books->append(t4);
     /////////////////////////////////////////////////////////////////////////
-    /*
-    s1->setParentChapter(c1); s2->setParentChapter(c3); s3->setParentChapter(c3); s4->setParentChapter(c4);
 
-    c1->setParentTextbook(t1); c2->setParentTextbook(t2); c3->setParentTextbook(t1); c4->setParentTextbook(t3);
-    */
     c1->addSection(*s1); //c1->addSection(*s2); c1->addSection(*s3); c1->addSection(*s4);
     c2->addSection(*s2); //c2->addSection(*s2); c2->addSection(*s3); c2->addSection(*s4);
     c3->addSection(*s3); //c3->addSection(*s2); c3->addSection(*s3); c3->addSection(*s4);
@@ -72,6 +69,7 @@ ManageContentListWindow::ManageContentListWindow(QWidget *parent,
 
     QUuid uid;
     this->textbookListReceived(uid, 0, books);
+    */
 }
 
 ManageContentListWindow::~ManageContentListWindow()
@@ -298,8 +296,8 @@ void ManageContentListWindow::addTextbook()
     qDebug() << "ManageContentListWindow::addTextbook";
     this->addBookWin = new AddTextbookWindow(this, -1);
 
-    connect(this->addBookWin, SIGNAL(addTextbook(QString,int,int,bool,QString)),
-            this->contentManagementCtrl, SLOT(addTextbook(QString,int,int,bool,QString)));
+    connect(this->addBookWin, SIGNAL(addTextbook(QString,QString,QString,int,int,bool,QString)),
+            this->contentManagementCtrl, SLOT(addTextbook(QString,QString,QString,int,int,bool,QString)));
 
     this->addBookWin->setModal(true);
     this->addBookWin->show();
@@ -359,8 +357,8 @@ void ManageContentListWindow::modTextbook()
 
     this->addBookWin->populateValues(item);
 
-    connect(this->addBookWin, SIGNAL(addTextbook(QString,int,int,bool,QString)),
-            this->contentManagementCtrl, SLOT(addTextbook(QString,int,int,bool,QString)));
+    connect(this->addBookWin, SIGNAL(addTextbook(QString,QString,QString,int,int,bool,QString)),
+            this->contentManagementCtrl, SLOT(addTextbook(QString,QString,QString,int,int,bool,QString)));
 
     this->addBookWin->setModal(true);
     this->addBookWin->show();
@@ -409,13 +407,29 @@ void ManageContentListWindow::modSection()
 
 void ManageContentListWindow::on_deleteItemButton_clicked()
 {
+    // This request could be implemented in a
+    // way that's ignorant of item type.
+
     int itemId = this->getSelectedItem()->getId();
-    emit deleteItem(itemId);
+    QString type = "";
+
+    switch (this->contentDepth) {
+        case (0):
+            type = "textbook";
+            break;
+        case (1):
+            type = "chapter";
+            break;
+        case (2):
+            type = "section";
+            break;
+    }
+    emit deleteItem(itemId, type);
 }
 
 SellableItem* ManageContentListWindow::getSelectedItem(int index)
 {
-    // Note: this is pretty ugly.. As mentioned in header
+    // this is kind of ugly.. As mentioned in header
     SellableItem *item;
 
     switch (this->contentDepth) {
