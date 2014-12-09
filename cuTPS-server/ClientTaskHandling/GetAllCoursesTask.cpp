@@ -21,18 +21,13 @@ void GetAllCoursesTask::run()
 
     QVector<Course> courses;
 
-    // TODO: handle the result of getAllCourses and probably remove the course 42 below
+    // TODO: handle the result of getAllCourses
     ServerResponse getCourses = server->getAllCourses(sessionId, courses);
-
-    Course c;
-    c.setId(42);
-    courses.append(c);
 
     NetResponse* response = new NetResponse();
     response->setInvocation(request->getInvocation());
     response->setRequestId(request->getRequestId());
-    //response->setResponseCode(getBooks.code == Fail ? 0x0 : 0x1);
-    response->setResponseCode(0x1); // TODO: remove this
+    response->setResponseCode(getCourses.code == Fail ? 0x0 : 0x1);
     response->setSessionId(sessionId);
 
     QByteArray responseDataBytes;

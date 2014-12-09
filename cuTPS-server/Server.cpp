@@ -856,10 +856,10 @@ ServerResponse Server::getAllCourses(QUuid sessionID, QVector<Course>& courses)
 
         while(query.next()) {
             Course* course = new Course(query.value(0).toInt(),
-                                       query.value(1).toString(),
-                                       query.value(2).toString(),
-                                       query.value(3).toString(),
-                                       query.value(4).toInt());
+                                        query.value(1).toString(),
+                                        query.value(2).toString(),
+                                        query.value(3).toString(),
+                                        query.value(4).toInt());
             courses.append(*course);
         }
 
