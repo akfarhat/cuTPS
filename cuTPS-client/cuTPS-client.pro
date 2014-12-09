@@ -44,7 +44,8 @@ SOURCES += main.cpp \
     ModifyCourseControl.cpp \
     DeleteCourseControl.cpp \
     DeleteItemControl.cpp \
-    ModifyItemControl.cpp
+    ModifyItemControl.cpp \
+    AvailableItemWindow.cpp
 
 HEADERS  += \
     ClientNetworkHandler.h \
@@ -78,7 +79,8 @@ HEADERS  += \
     ModifyCourseControl.h \
     DeleteCourseControl.h \
     DeleteItemControl.h \
-    ModifyItemControl.h
+    ModifyItemControl.h \
+    AvailableItemWindow.h
 
 FORMS    += \
     Login.ui \
@@ -95,7 +97,8 @@ FORMS    += \
     BillingWindow.ui \
     AddTextbookWindow.ui \
     AddChapterWindow.ui \
-    AddSectionWindow.ui
+    AddSectionWindow.ui \
+    AvailableItemWindow.ui
 
 macx {
 QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++

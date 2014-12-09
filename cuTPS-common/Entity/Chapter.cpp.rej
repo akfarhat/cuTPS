@@ -1,0 +1,13 @@
+diff a/cuTPS-common/Entity/Chapter.cpp b/cuTPS-common/Entity/Chapter.cpp	(rejected hunks)
+@@ -77,9 +77,9 @@ QString Chapter::getType() {
+     return "Chapter";
+ }
+ 
+-QVector<Section*> Chapter::getSectionList()
++QVector<Section*>* Chapter::getSectionList()
+ {
+-    return sections;
++    return &sections;
+ }
+ 
+ int Chapter::numSections() const

@@ -1,0 +1,1205 @@
+From d374bc0c216c8f8ee20ec759c4c0976ef574ab86 Mon Sep 17 00:00:00 2001
+From: Ahmad <amasoudd@gmail.com>
+Date: Mon, 8 Dec 2014 18:17:28 -0500
+Subject: [PATCH] Add View Books feature
+
+---
+ cuTPS-client/AvailableItemWindow.cpp      |  284 +++++++++++++++++++++++++++++
+ cuTPS-client/AvailableItemWindow.h        |   72 ++++++++
+ cuTPS-client/AvailableItemWindow.ui       |  106 +++++++++++
+ cuTPS-client/BillingWindow.cpp            |    6 +-
+ cuTPS-client/CartDetailsWindow.cpp        |   20 +-
+ cuTPS-client/CartDetailsWindow.h          |   14 +-
+ cuTPS-client/CartDetailsWindow.ui         |    8 +-
+ cuTPS-client/CartManagementInterface.cpp  |   33 +++-
+ cuTPS-client/CartManagementInterface.h    |    8 +-
+ cuTPS-client/CartRequestsAPI.cpp          |    4 +
+ cuTPS-client/CartRequestsAPI.h            |    1 +
+ cuTPS-client/PlaceOrderControl.cpp        |   25 ++-
+ cuTPS-client/PlaceOrderControl.h          |    3 +
+ cuTPS-client/ViewCartControl.cpp          |   30 ++-
+ cuTPS-client/ViewCartControl.h            |   18 +-
+ cuTPS-client/ViewRequiredBooksControl.cpp |   67 ++++++-
+ cuTPS-client/ViewRequiredBooksControl.h   |   42 ++++-
+ cuTPS-client/cuTPS-client.pro             |    9 +-
+ cuTPS-common/Entity/Chapter.cpp           |    6 +-
+ cuTPS-common/Entity/Chapter.h             |    2 +-
+ cuTPS-common/Entity/Textbook.cpp          |    4 +-
+ cuTPS-common/Entity/Textbook.h            |    2 +-
+ 22 files changed, 695 insertions(+), 69 deletions(-)
+ create mode 100644 cuTPS-client/AvailableItemWindow.cpp
+ create mode 100644 cuTPS-client/AvailableItemWindow.h
+ create mode 100644 cuTPS-client/AvailableItemWindow.ui
+
+diff --git a/cuTPS-client/AvailableItemWindow.cpp b/cuTPS-client/AvailableItemWindow.cpp
+new file mode 100644
+index 0000000..6596245
+--- /dev/null
++++ b/cuTPS-client/AvailableItemWindow.cpp
+@@ -0,0 +1,284 @@
++#include "AvailableItemWindow.h"
++#include "ui_AvailableItemWindow.h"
++
++#include <QDebug>
++
++AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, QVector<Textbook*> *books) :
++    QDialog(parent),
++    requestAPI(api),
++    listedBooks(books),
++    ui(new Ui::AvailableItemWindow)
++{
++    ui->setupUi(this);
++    ui->addToCartButton->setEnabled(false);
++
++    this->contentDepth = 0;
++
++    this->bookId = -1;
++    this->chapterId = -1;
++
++    this->listedItems = NULL;
++
++    this->displayBookList();
++}
++
++AvailableItemWindow::~AvailableItemWindow()
++{
++    delete ui;
++}
++
++
++void AvailableItemWindow::setError(QString message) {
++    ui->message->setStyleSheet("QLabel { color : red; }");
++    ui->message->setText(message);
++    ui->message->show();
++}
++
++void AvailableItemWindow::setMessage(QString message) {
++    ui->message->setStyleSheet("QLabel { color : green; }");
++    ui->message->setText(message);
++    ui->message->show();
++}
++
++Textbook* AvailableItemWindow::getBookFromList(int bookId, QVector<Textbook *> *books)
++{
++    for (Textbook *book: *books) {
++        if (book->getId() == bookId) {
++            return book;
++        }
++    }
++
++    return NULL;
++}
++
++Chapter* AvailableItemWindow::getChapterFromList(int bookId, int chapterId, QVector<Textbook *> *books)
++{
++    Textbook *theBook = getBookFromList(bookId, books);
++
++    for (Chapter* chapter: *theBook->getChapterList()) {
++        if (chapter->getId() == chapterId) {
++            return chapter;
++        }
++    }
++
++    return NULL;
++}
++
++
++void AvailableItemWindow::displayBookList()
++{
++    qDebug() << "Displaying book list";
++    ui->addToCartButton->setEnabled(false);
++/*
++    // Request all books (id, title) from server
++    ////////// pretend for now that this list represents actual data: /////////
++    QVector<SellableItem*> *books = new QVector<SellableItem*>();
++    Textbook *t1 = new Textbook(1, "The First Book", 554563, 1, "123456678");
++    Textbook *t2 = new Textbook(2, "The Second Book", 34536, 1, "123456679");
++    Textbook *t3 = new Textbook(3, "The Third Book", 2345, 1, "123456680");
++    Textbook *t4 = new Textbook(4, "The Fourth Book", 2234556, 1, "123456681");
++    books->append(t1); books->append(t2); books->append(t3); books->append(t4);
++    /////////////////////////////////////////////////////////////////////////
++
++    // Update the window's item list vector
++    if (this->listedItems != NULL) {
++        for (int i = 0; i < listedBooks->size(); i++)
++            delete this->listedItems->at(i);
++
++        delete this->listedItems;
++    }
++
++    this->listedItems = listedBooks;
++*/
++    // Display the books
++    this->ui->contentList->clear();
++    for (Textbook *book: *listedBooks) {
++        this->ui->contentList->addItem(book->getTitle());
++    }
++
++}
++
++void AvailableItemWindow::displayChapterList(int bookId)
++{
++    qDebug() << "Displaying chapter list for bookId = " << bookId;
++    ui->addToCartButton->setEnabled(false);
++
++    this->bookId = bookId;
++
++/*
++    // Request all chapters (id, title) from server for bookId
++    ////////// pretend for now that this list represents actual data: /////////
++    QVector<SellableItem*> *chapters = new QVector<SellableItem*>();
++    Chapter *c1 = new Chapter(5, NULL, 1, "Chapter One", 432, true);
++    Chapter *c2 = new Chapter(6, NULL, 2, "Chapter Two", 2345, true);
++    Chapter *c3 = new Chapter(7, NULL, 3, "Chapter Three", 234, true);
++    Chapter *c4 = new Chapter(8, NULL, 4, "Chapter Four", 123, true);
++    chapters->append(c1); chapters->append(c2); chapters->append(c3); chapters->append(c4);
++    /////////////////////////////////////////////////////////////////////////
++
++
++    // Update the window's item list vector
++    if (this->listedItems != NULL) {
++        for (int i = 0; i < chapters->size(); i++)
++            delete this->listedItems->at(i);
++
++        delete this->listedItems;
++    }
++
++    this->listedItems = chapters;
++*/
++
++    // Get the book with the specified book ID from the list of books
++    Textbook *theBook = getBookFromList(bookId, listedBooks);
++
++
++    // Display the Chapters
++    this->ui->contentList->clear();
++    for (Chapter *chapter: *theBook->getChapterList()) {
++        qDebug() << "adding chapter ptr: " << chapter;
++        qDebug() << "its id is " << chapter->getId();
++        this->ui->contentList->addItem(chapter->getTitle());
++    }
++}
++
++void AvailableItemWindow::displaySectionList(int chapterId)
++{
++    qDebug() << "Displaying section list for chapterId = " << chapterId;
++    ui->addToCartButton->setEnabled(false);
++
++    this->chapterId = chapterId;
++
++/*
++    // Request all sections (id, title) from server for chapterId
++    ////////// pretend for now that this list represents actual data: /////////
++    QVector<SellableItem*> *sections = new QVector<SellableItem*>();
++    Section *s1 = new Section(9, NULL, 1, "Section One", 325, true);
++    Section *s2 = new Section(10, NULL, 2, "Section Two", 354, true);
++    Section *s3 = new Section(11, NULL, 3, "Section Three", 311, true);
++    Section *s4 = new Section(12, NULL, 4, "Section Four", 166, true);
++    sections->append(s1); sections->append(s2); sections->append(s3); sections->append(s4);
++    /////////////////////////////////////////////////////////////////////////
++
++    // Update the window's item list vector
++    if (this->listedItems != NULL) {
++        for (int i = 0; i < sections->size(); i++)
++            delete this->listedItems->at(i);
++
++        delete this->listedItems;
++    }
++
++    this->listedItems = sections;
++*/
++
++    // Get the chapter of the book associated with the sections
++    Chapter *theChapter = getChapterFromList(this->bookId, chapterId, listedBooks);
++
++    // Display the sections
++    this->ui->contentList->clear();
++    for (Section *section: *theChapter->getSectionList()) {
++        this->ui->contentList->addItem(section->getTitle());
++    }
++}
++
++
++
++void AvailableItemWindow::on_backButton_clicked()
++{
++    requestAPI = NULL;
++    listedBooks = NULL;
++    selectedItem = NULL;
++    this->close();
++    emit availableItemWindowClosed();
++}
++
++void AvailableItemWindow::on_contentList_clicked(const QModelIndex &index)
++{
++    qDebug() << "Single click on item at index: " << QString::number(index.row());
++
++    ui->addToCartButton->setEnabled(true);
++
++    if (contentDepth == 0) {
++        selectedItem = this->listedBooks->at(index.row());
++    } else if (contentDepth == 1) {
++        Textbook *theBook = getBookFromList(bookId, listedBooks);
++        selectedItem = theBook->getChapterList()->at(index.row());
++    } else if (contentDepth == 2) {
++        Chapter *theChapter = getChapterFromList(bookId, chapterId, listedBooks);
++        selectedItem = theChapter->getSectionList()->at(index.row());
++    }
++
++
++    qDebug() << "Selected item details: " << selectedItem->getDetails();
++
++    this->ui->metadataView->setText(selectedItem->getDetails());
++}
++
++
++void AvailableItemWindow::on_contentList_doubleClicked(const QModelIndex &index)
++{
++    if (this->contentDepth >= MAX_ITEM_DEPTH)
++        return;
++
++    if (contentDepth == 0) {
++        selectedItem = this->listedBooks->at(index.row());
++    } else if (contentDepth == 1) {
++        Textbook *theBook = getBookFromList(bookId, listedBooks);
++        selectedItem = theBook->getChapterList()->at(index.row());
++    } else if (contentDepth == 2) {
++        Chapter *theChapter = getChapterFromList(bookId, chapterId, listedBooks);
++        selectedItem = theChapter->getSectionList()->at(index.row());
++    }
++
++    this->contentDepth++;
++
++    this->ui->contentBackButton->setEnabled(true);
++
++    this->ui->metadataView->setText("");
++
++    if (this->contentDepth == 1)
++        this->displayChapterList(selectedItem->getId());
++    else if(this->contentDepth == 2)
++        this->displaySectionList(selectedItem->getId());
++}
++
++
++
++void AvailableItemWindow::on_contentBackButton_clicked()
++{
++    if (this->contentDepth <= 0)
++        return;
++
++    if (this->contentDepth == 1)
++        this->ui->contentBackButton->setEnabled(false);
++
++    this->contentDepth--;
++
++    this->ui->metadataView->setText("");
++
++    // TODO: Depending on whether the parents are guaranteed to be defined,
++    // we can get the ID that way, or store it as a temp value when descending.
++    if (this->contentDepth == 0)
++        this->displayBookList();
++    else if(this->contentDepth == 1)
++        this->displayChapterList(bookId);
++}
++
++
++void AvailableItemWindow::on_addToCartButton_clicked()
++{
++    qDebug() << "Add to cart button clicked for item " + selectedItem->getId();
++
++    SellableItem *newItem;
++
++    if (selectedItem->getType() == "Textbook") {
++        newItem = new Textbook(selectedItem->getId(), selectedItem->getName(), selectedItem->getPriceCents(), selectedItem->getAvailability(), "");
++    } else if (selectedItem->getType() == "Chapter") {
++        newItem = new Chapter(selectedItem->getId(), NULL, NULL, selectedItem->getName(), selectedItem->getPriceCents(), selectedItem->getAvailability());
++    } else if (selectedItem->getType() == "Section") {
++        newItem = new Section(selectedItem->getId(), NULL, NULL, selectedItem->getName(), selectedItem->getPriceCents(), selectedItem->getAvailability());
++    }
++
++    requestAPI->getStudent()->getCart()->addItem(newItem);
++
++    setMessage("The item has been added to your shopping cart");
++}
+diff --git a/cuTPS-client/AvailableItemWindow.h b/cuTPS-client/AvailableItemWindow.h
+new file mode 100644
+index 0000000..a6bec08
+--- /dev/null
++++ b/cuTPS-client/AvailableItemWindow.h
+@@ -0,0 +1,72 @@
++#ifndef AVAILABLEITEMWINDOW_H
++#define AVAILABLEITEMWINDOW_H
++
++#define MAX_ITEM_DEPTH 2
++
++#include <QDialog>
++#include "CartRequestsAPI.h"
++#include "Entity/SellableItem.h"
++#include "Entity/Textbook.h"
++#include "Entity/Chapter.h"
++#include "Entity/Section.h"
++
++
++namespace Ui {
++    class AvailableItemWindow;
++}
++
++class AvailableItemWindow : public QDialog
++{
++    Q_OBJECT
++
++    public:
++        explicit AvailableItemWindow(QWidget *parent = 0, CartRequestsAPI *api = NULL, QVector<Textbook*> *books = NULL);
++        ~AvailableItemWindow();
++
++    signals:
++        void availableItemWindowClosed();
++
++    private slots:
++        void on_backButton_clicked();
++
++        void on_contentList_clicked(const QModelIndex &index);
++
++        void on_contentList_doubleClicked(const QModelIndex &index);
++
++        void on_contentBackButton_clicked();
++
++        void on_addToCartButton_clicked();
++
++
++    private:
++        Ui::AvailableItemWindow *ui;
++
++        CartRequestsAPI *requestAPI;
++
++        QVector<SellableItem*> *listedItems;
++
++        QVector<Textbook*> *listedBooks;
++
++        SellableItem * selectedItem;
++
++        int contentDepth;
++
++        // Note these members are here to move on with UI implementation
++        // while assuming that it is possible to have null parents for
++        // the sellable Items being displayed. These can be removed
++        // in the case that we can look it up in the parent attribute
++        int bookId;
++        int chapterId;
++
++        void displayBookList();
++        void displayChapterList(int);
++        void displaySectionList(int);
++
++        Textbook* getBookFromList(int bookId, QVector<Textbook*> *books);
++        Chapter* getChapterFromList(int bookId, int chapterId, QVector<Textbook*> *books);
++
++        void setError(QString);
++        void setMessage(QString);
++};
++
++#endif // AVAILABLEITEMWINDOW_H
+diff --git a/cuTPS-client/AvailableItemWindow.ui b/cuTPS-client/AvailableItemWindow.ui
+new file mode 100644
+index 0000000..dc00d23
+--- /dev/null
++++ b/cuTPS-client/AvailableItemWindow.ui
+@@ -0,0 +1,106 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<ui version="4.0">
++ <class>AvailableItemWindow</class>
++ <widget class="QDialog" name="AvailableItemWindow">
++  <property name="geometry">
++   <rect>
++    <x>0</x>
++    <y>0</y>
++    <width>679</width>
++    <height>503</height>
++   </rect>
++  </property>
++  <property name="windowTitle">
++   <string>Dialog</string>
++  </property>
++  <widget class="QListWidget" name="contentList">
++   <property name="geometry">
++    <rect>
++     <x>310</x>
++     <y>50</y>
++     <width>341</width>
++     <height>401</height>
++    </rect>
++   </property>
++   <property name="cursor" stdset="0">
++    <cursorShape>ArrowCursor</cursorShape>
++   </property>
++   <property name="midLineWidth">
++    <number>0</number>
++   </property>
++   <property name="selectionRectVisible">
++    <bool>true</bool>
++   </property>
++  </widget>
++  <widget class="QPushButton" name="contentBackButton">
++   <property name="enabled">
++    <bool>false</bool>
++   </property>
++   <property name="geometry">
++    <rect>
++     <x>310</x>
++     <y>20</y>
++     <width>51</width>
++     <height>27</height>
++    </rect>
++   </property>
++   <property name="text">
++    <string>Back</string>
++   </property>
++  </widget>
++  <widget class="QPushButton" name="backButton">
++   <property name="geometry">
++    <rect>
++     <x>20</x>
++     <y>20</y>
++     <width>81</width>
++     <height>27</height>
++    </rect>
++   </property>
++   <property name="text">
++    <string>Main Menu</string>
++   </property>
++  </widget>
++  <widget class="QTextEdit" name="metadataView">
++   <property name="geometry">
++    <rect>
++     <x>20</x>
++     <y>50</y>
++     <width>281</width>
++     <height>401</height>
++    </rect>
++   </property>
++  </widget>
++  <widget class="QPushButton" name="addToCartButton">
++   <property name="geometry">
++    <rect>
++     <x>560</x>
++     <y>20</y>
++     <width>91</width>
++     <height>27</height>
++    </rect>
++   </property>
++   <property name="text">
++    <string>Add to Cart</string>
++   </property>
++  </widget>
++  <widget class="QLabel" name="message">
++   <property name="geometry">
++    <rect>
++     <x>20</x>
++     <y>470</y>
++     <width>631</width>
++     <height>20</height>
++    </rect>
++   </property>
++   <property name="styleSheet">
++    <string notr="true">QLabel { color : red; }</string>
++   </property>
++   <property name="text">
++    <string/>
++   </property>
++  </widget>
++ </widget>
++ <resources/>
++ <connections/>
++</ui>
+diff --git a/cuTPS-client/BillingWindow.cpp b/cuTPS-client/BillingWindow.cpp
+index 04cc572..51528fa 100644
+--- a/cuTPS-client/BillingWindow.cpp
++++ b/cuTPS-client/BillingWindow.cpp
+@@ -37,7 +37,8 @@ void BillingWindow::on_cancelButton_clicked()
+ {
+     qDebug() << "Cancel button was clicked in billing window";
+ 
+-    BillingWindow::close();
++    placeOrderCtrl = NULL;
++    this->close();
+ }
+ 
+ void BillingWindow::on_submitButton_clicked()
+@@ -46,5 +47,6 @@ void BillingWindow::on_submitButton_clicked()
+ 
+     placeOrderCtrl->submitOrder();
+ 
+-    this->hide();
++    placeOrderCtrl = NULL;
++    this->close();
+ }
+diff --git a/cuTPS-client/CartDetailsWindow.cpp b/cuTPS-client/CartDetailsWindow.cpp
+index 44fab17..022c6ba 100644
+--- a/cuTPS-client/CartDetailsWindow.cpp
++++ b/cuTPS-client/CartDetailsWindow.cpp
+@@ -19,7 +19,9 @@ CartDetailsWindow::CartDetailsWindow(QWidget *parent, CartRequestsAPI *api)  : Q
+ }
+ 
+ CartDetailsWindow::~CartDetailsWindow() {
+-    delete placeOrderCtrl;
++    requestAPI = NULL;
++    if (placeOrderCtrl != NULL)
++        delete placeOrderCtrl;
+     delete ui;
+ }
+ 
+@@ -61,10 +63,9 @@ void CartDetailsWindow::updateView() {
+ 
+ 
+ void CartDetailsWindow::on_backButton_clicked() {
+-    // Show the main menu window (CartManagmentInterface)
+-    this->parentWidget()->show();
+-    // Close this window
++    requestAPI = NULL;
+     this->close();
++    emit cartDetailsWindowClosed();
+ }
+ 
+ void CartDetailsWindow::on_cancelOrderButton_clicked() {
+@@ -76,8 +77,9 @@ void CartDetailsWindow::on_cancelOrderButton_clicked() {
+     delete cancelOrderCtrl;
+ 
+ 
+-    this->parentWidget()->show();
++    requestAPI = NULL;
+     this->close();
++    emit cartDetailsWindowClosed();
+ }
+ 
+ void CartDetailsWindow::on_placeOrderButton_clicked() {
+@@ -86,7 +88,15 @@ void CartDetailsWindow::on_placeOrderButton_clicked() {
+ 
+     placeOrderCtrl = new PlaceOrderControl(this, requestAPI);
+ 
++    QObject::connect(placeOrderCtrl, SIGNAL(placeOrderControlFinished()), this, SLOT(placeOrderControlFinished()));
++
+     placeOrderCtrl->launchBillingWindow();
+ 
++}
+ 
++void CartDetailsWindow::placeOrderControlFinished()
++{
++    delete placeOrderCtrl;
++    placeOrderCtrl = NULL;
++    qDebug() << "CartDetailsWindow::placeOrderControlFinished: deleted placeOrderCtrl";
+ }
+diff --git a/cuTPS-client/CartDetailsWindow.h b/cuTPS-client/CartDetailsWindow.h
+index a4bbf25..7ba49ea 100644
+--- a/cuTPS-client/CartDetailsWindow.h
++++ b/cuTPS-client/CartDetailsWindow.h
+@@ -31,23 +31,21 @@ class PlaceOrderControl;
+ class CartDetailsWindow : public QDialog {
+     Q_OBJECT
+ 
++    friend class PlaceOrderControl;
++
+     public:
+          explicit CartDetailsWindow(QWidget *parent = 0, CartRequestsAPI *api = NULL);
+         ~CartDetailsWindow();
+ 
+-    void updateView();
+-    void setError(QString);
+-    void setMessage(QString);
+-
+     signals:
+-        void cartNavigateBack();
++        void cartDetailsWindowClosed();
+ 
+     private slots:
+         void on_backButton_clicked();
+         void on_cancelOrderButton_clicked();
+         void on_placeOrderButton_clicked();
+ 
+-
++        void placeOrderControlFinished();
+ 
+     private:
+         Ui::CartDetailsWindow *ui;
+@@ -55,6 +53,10 @@ class CartDetailsWindow : public QDialog {
+ 
+         PlaceOrderControl *placeOrderCtrl;
+ 
++        void updateView();
++        void setError(QString);
++        void setMessage(QString);
++
+ };
+ 
+ #endif // CARTDETAILSWINDOW_H
+diff --git a/cuTPS-client/CartDetailsWindow.ui b/cuTPS-client/CartDetailsWindow.ui
+index 2c14f44..6958a64 100644
+--- a/cuTPS-client/CartDetailsWindow.ui
++++ b/cuTPS-client/CartDetailsWindow.ui
+@@ -1,13 +1,13 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <ui version="4.0">
+  <class>CartDetailsWindow</class>
+- <widget class="QDialog" name="CartDetailsWindow2">
++ <widget class="QDialog" name="CartDetailsWindow">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>547</width>
+-    <height>421</height>
++    <height>426</height>
+    </rect>
+   </property>
+   <property name="windowTitle">
+@@ -147,8 +147,8 @@
+   <widget class="QLabel" name="message">
+    <property name="geometry">
+     <rect>
+-     <x>140</x>
+-     <y>20</y>
++     <x>70</x>
++     <y>400</y>
+      <width>401</width>
+      <height>20</height>
+     </rect>
+diff --git a/cuTPS-client/CartManagementInterface.cpp b/cuTPS-client/CartManagementInterface.cpp
+index 1a8d822..ab1e8a7 100644
+--- a/cuTPS-client/CartManagementInterface.cpp
++++ b/cuTPS-client/CartManagementInterface.cpp
+@@ -34,10 +34,11 @@ void CartManagementInterface::on_viewCartButton_clicked()
+ {
+     qDebug() << "view cart button clicked...showing cart details window";
+ 
+-    // Hide this window
+-    this->hide();
+ 
+-    ViewCartControl *viewCartCtrl = new ViewCartControl(this, requestAPI);
++    viewCartCtrl = new ViewCartControl(requestAPI);
++
++    // Make sure this class knows when ViewCartControl is done so it can free the viewCartCtrl pointer
++    QObject::connect(viewCartCtrl, SIGNAL(viewCartControlFinished()), this, SLOT(viewCartControlFinished()));
+ 
+     viewCartCtrl->launchCartDetailsWindow();
+ 
+@@ -45,5 +46,29 @@ void CartManagementInterface::on_viewCartButton_clicked()
+ 
+ void CartManagementInterface::on_viewBooksButton_clicked()
+ {
+-    qDebug() << "View books button clicked...wooohooo!!";
++    qDebug() << "View books button clicked...showing the available item window";
++
++    viewBooksCtrl = new ViewRequiredBooksControl(requestAPI);
++
++    // Make sure this class knows when ViewRequiredBooksControl is done so it can free the viewBooksCtrl pointer
++    QObject::connect(viewBooksCtrl, SIGNAL(viewBooksControlFinished()), this, SLOT(viewBooksControlFinished()));
++
++    viewBooksCtrl->launchAvailableItemWindow();
+ }
++
++
++void CartManagementInterface::viewCartControlFinished()
++{
++    delete viewCartCtrl;
++    qDebug() << "CartManagementInterface::viewCartControlFinished: deleted viewCartCtrl";
++    viewCartCtrl = NULL;
++}
++
++
++void CartManagementInterface::viewBooksControlFinished()
++{
++    delete viewBooksCtrl;
++    qDebug() << "CartManagementInterface::ViewBooksControlFinished: deleted viewBooksCtrl";
++    viewBooksCtrl = NULL;
++}
++
+diff --git a/cuTPS-client/CartManagementInterface.h b/cuTPS-client/CartManagementInterface.h
+index 556f989..9c66b07 100644
+--- a/cuTPS-client/CartManagementInterface.h
++++ b/cuTPS-client/CartManagementInterface.h
+@@ -16,7 +16,7 @@
+ #include <QDialog>
+ #include "ClientNetworkHandler.h"
+ #include "Entity/Student.h"
+-#include "ViewBookDetailsControl.h"
++#include "ViewRequiredBooksControl.h"
+ #include "ViewCartControl.h"
+ #include "CartRequestsAPI.h"
+ 
+@@ -39,6 +39,9 @@ private slots:
+     void on_viewCartButton_clicked();
+     void on_viewBooksButton_clicked();
+ 
++    void viewBooksControlFinished();
++    void viewCartControlFinished();
++
+ 
+ private:
+     Ui::CartManagementInterface *ui;
+@@ -48,6 +51,9 @@ private:
+ 
+     Student *student;
+ 
++    ViewCartControl *viewCartCtrl;
++    ViewRequiredBooksControl *viewBooksCtrl;
++
+ };
+ 
+ #endif // CARTMANAGEMENTINTERFACE_H
+diff --git a/cuTPS-client/CartRequestsAPI.cpp b/cuTPS-client/CartRequestsAPI.cpp
+index 8757ba0..9912da0 100644
+--- a/cuTPS-client/CartRequestsAPI.cpp
++++ b/cuTPS-client/CartRequestsAPI.cpp
+@@ -32,6 +32,10 @@ QUuid CartRequestsAPI::getBookDetails(int bookId) {
+     return network->getBookDetails(bookId);
+ }
+ 
++QUuid CartRequestsAPI::getBookDetails(const QVector<qint32> &ids) {
++    return network->getBookDetails(ids);
++}
++
+ QUuid CartRequestsAPI::submitOrder(Order &newOrder)
+ {
+     return network->submitOrder(newOrder);
+diff --git a/cuTPS-client/CartRequestsAPI.h b/cuTPS-client/CartRequestsAPI.h
+index 234ee22..0e6714c 100644
+--- a/cuTPS-client/CartRequestsAPI.h
++++ b/cuTPS-client/CartRequestsAPI.h
+@@ -24,6 +24,7 @@ class CartRequestsAPI: public QObject {
+ 
+         QUuid getRequiredBooks(QString&);
+         QUuid getBookDetails(int bookId);
++        QUuid getBookDetails(const QVector<qint32>& ids);
+         QUuid submitOrder(Order&);
+ 
+         Student* getStudent();
+diff --git a/cuTPS-client/PlaceOrderControl.cpp b/cuTPS-client/PlaceOrderControl.cpp
+index 789ba17..f4eeea1 100644
+--- a/cuTPS-client/PlaceOrderControl.cpp
++++ b/cuTPS-client/PlaceOrderControl.cpp
+@@ -9,12 +9,15 @@ PlaceOrderControl::PlaceOrderControl(CartDetailsWindow *window, CartRequestsAPI
+     QObject::connect(requestAPI->getNetwork(), SIGNAL(orderStatusReceived(QUuid, int)), this, SLOT(orderStatusReceived(QUuid, int)));
+ }
+ 
+-PlaceOrderControl::~PlaceOrderControl() {
+-
++PlaceOrderControl::~PlaceOrderControl()
++{
++    requestAPI = NULL;
++    cartDetailsWindow = NULL;
+     delete billingWindow;
+ }
+ 
+-Student* PlaceOrderControl::getStudent() {
++Student* PlaceOrderControl::getStudent()
++{
+ 
+     if (requestAPI != NULL)
+         return requestAPI->getStudent();
+@@ -22,14 +25,16 @@ Student* PlaceOrderControl::getStudent() {
+     return NULL;
+ }
+ 
+-void PlaceOrderControl::launchBillingWindow() {
++void PlaceOrderControl::launchBillingWindow()
++{
+ 
+     billingWindow = new BillingWindow(0, this);
+ 
+     billingWindow->exec();
+ }
+ 
+-void PlaceOrderControl::submitOrder() {
++void PlaceOrderControl::submitOrder()
++{
+ 
+     QUuid requestId;
+ 
+@@ -41,19 +46,18 @@ void PlaceOrderControl::submitOrder() {
+                 itemIds.append(item->getId());
+             }
+ 
+-            //Order newOrder(&itemIds, this->getStudent()->getCreditCardInfo(), this->getStudent()->getDeliveryInfo());
+-
+-            //requestId = requestAPI->submitOrder(newOrder);
++            Order newOrder(itemIds, *this->getStudent()->getCreditCardInfo(), *this->getStudent()->getDeliveryInfo());
+ 
++            requestId = requestAPI->submitOrder(newOrder);
+ 
+             qDebug() << "PlaceOrderControl::submitOrder: Submitted order request with request ID " << requestId << " to the server...";
+         }
+     }
+ 
+-
+ }
+ 
+-void PlaceOrderControl::orderStatusReceived(QUuid requestId, int responseCode) {
++void PlaceOrderControl::orderStatusReceived(QUuid requestId, int responseCode)
++{
+ 
+     if (responseCode == ResponseCode::Success) {
+         this->getStudent()->getCart()->clearCart();
+@@ -63,6 +67,7 @@ void PlaceOrderControl::orderStatusReceived(QUuid requestId, int responseCode) {
+         cartDetailsWindow->setError("Error: Unable to submit your order. Please try again later.");
+     }
+ 
++    emit placeOrderControlFinished();
+ 
+ }
+ 
+diff --git a/cuTPS-client/PlaceOrderControl.h b/cuTPS-client/PlaceOrderControl.h
+index 2e0ef4d..633ec73 100644
+--- a/cuTPS-client/PlaceOrderControl.h
++++ b/cuTPS-client/PlaceOrderControl.h
+@@ -29,6 +29,9 @@ class PlaceOrderControl : public QObject
+ 
+         Student* getStudent(); // Get the student from the requestAPI
+ 
++    signals:
++        void placeOrderControlFinished();
++
+     private slots:
+         void orderStatusReceived(QUuid, int);
+ 
+diff --git a/cuTPS-client/ViewCartControl.cpp b/cuTPS-client/ViewCartControl.cpp
+index 005593a..34c3f2e 100644
+--- a/cuTPS-client/ViewCartControl.cpp
++++ b/cuTPS-client/ViewCartControl.cpp
+@@ -1,21 +1,37 @@
+ #include "ViewCartControl.h"
+ 
+-#include "Entity/CreditCardInfo.h"
+-
+-ViewCartControl::ViewCartControl(QWidget *parent, CartRequestsAPI *api) : parentWidget(parent), requestAPI(api) {
+ 
++ViewCartControl::ViewCartControl(CartRequestsAPI *api) : requestAPI(api)
++{
+ 
+ }
+ 
+-ViewCartControl::~ViewCartControl() {
+-    delete detailsWindow;
++ViewCartControl::~ViewCartControl()
++{
++    requestAPI = NULL;
++
++    if (detailsWindow != NULL)
++        delete detailsWindow;
+ }
+ 
+-void ViewCartControl::launchCartDetailsWindow() {
++void ViewCartControl::launchCartDetailsWindow()
++{
+ 
+-    detailsWindow = new CartDetailsWindow(parentWidget, requestAPI);
++    detailsWindow = new CartDetailsWindow(0, requestAPI);
++
++    QObject::connect(detailsWindow, SIGNAL(cartDetailsWindowClosed()), this, SLOT(cartDetailsWindowClosed()));
+ 
+     detailsWindow->exec();
+ 
+ }
+ 
++
++void ViewCartControl::cartDetailsWindowClosed()
++{
++
++    detailsWindow = NULL;
++    requestAPI = NULL;
++
++    emit viewCartControlFinished();
++}
++
+diff --git a/cuTPS-client/ViewCartControl.h b/cuTPS-client/ViewCartControl.h
+index 6276713..48ac41c 100644
+--- a/cuTPS-client/ViewCartControl.h
++++ b/cuTPS-client/ViewCartControl.h
+@@ -1,29 +1,33 @@
+ #ifndef VIEWCARTCONTROL_H
+ #define VIEWCARTCONTROL_H
+ 
+-#include "Entity/Student.h"
+ #include "ClientNetworkHandler.h"
+ #include "CartRequestsAPI.h"
+ #include "CartDetailsWindow.h"
+-#include "Entity/Student.h"
+ 
+ #include <QWidget>
++#include <QObject>
+ 
+ class CartDetailsWindow;
+ 
+-class ViewCartControl {
++class ViewCartControl: public QObject {
++    Q_OBJECT
++
+     public:
+-        ViewCartControl(QWidget *, CartRequestsAPI *);
++        ViewCartControl(CartRequestsAPI *);
+         ~ViewCartControl();
+ 
+         void launchCartDetailsWindow();
+ 
++    signals:
++        void viewCartControlFinished();
++
++    private slots:
++        void cartDetailsWindowClosed();
++
+ 
+     private:
+-        QWidget *parentWidget;
+-        Student *student;
+         CartRequestsAPI *requestAPI;
+-
+         CartDetailsWindow *detailsWindow;
+ };
+ 
+diff --git a/cuTPS-client/ViewRequiredBooksControl.cpp b/cuTPS-client/ViewRequiredBooksControl.cpp
+index 198e1dc..f0f9d33 100644
+--- a/cuTPS-client/ViewRequiredBooksControl.cpp
++++ b/cuTPS-client/ViewRequiredBooksControl.cpp
+@@ -1,12 +1,69 @@
+ #include "ViewRequiredBooksControl.h"
+ 
+-ViewRequiredBooksControl::ViewRequiredBooksControl(ClientNetworkHandler &serverAPI)
+-    : network(serverAPI) {}
++ViewRequiredBooksControl::ViewRequiredBooksControl(CartRequestsAPI *api)
++    : requestAPI(api)
++{
++    itemWindow = NULL;
+ 
+-ViewRequiredBooksControl::~ViewRequiredBooksControl() {
++    QObject::connect(requestAPI->getNetwork(), SIGNAL(textbookLookupCompleted(QUuid, int, QVector<qint32> *)), this, SLOT(textbookLookupCompleted(QUuid, int, QVector<qint32> *)));
++    QObject::connect(requestAPI->getNetwork(), SIGNAL(textbookDetailsReceived(QUuid, int, QVector<Textbook *> *)), this, SLOT(textbookDetailsReceived(QUuid, int, QVector<Textbook *> *)));
+ 
++
++}
++
++ViewRequiredBooksControl::~ViewRequiredBooksControl()
++{
++    requestAPI = NULL;
++}
++
++QUuid ViewRequiredBooksControl::getRequiredBooks(QString& username)
++{
++    return requestAPI->getRequiredBooks(username);
++}
++
++QUuid ViewRequiredBooksControl::getBookDetails(const QVector<qint32> &ids)
++{
++    return requestAPI->getBookDetails(ids);
++}
++
++void ViewRequiredBooksControl::textbookLookupCompleted(QUuid requestId, int code, QVector<qint32> *booksIds)
++{
++    qDebug() << "ViewRequiredBooksControl::textbookLookupCompleted: Got response code " + QString::number(code) + " from server";
++
++    if (code == ResponseCode::Success) {
++        if (!booksIds->empty()) {
++            getBookDetails(*booksIds);
++        }
++    }
++}
++
++void ViewRequiredBooksControl::textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook *> *books)
++{
++    qDebug() << "ViewRequiredBooksControl::textbookDetailsReceived: Got response code " + QString::number(code) + " from server";
++
++    // TODO Call request to get chapters and sections
++
++    itemWindow = new AvailableItemWindow(0, requestAPI, books);
++
++    QObject::connect(itemWindow, SIGNAL(availableItemWindowClosed()), this, SLOT(availableItemWindowClosed()));
++
++    itemWindow->exec();
+ }
+ 
+-void ViewRequiredBooksControl::getRequiredBooks(QUuid &reqId, QString& username) {
+-    reqId = network.getRequiredBooks(username);
++void ViewRequiredBooksControl::launchAvailableItemWindow()
++{
++    QString user = requestAPI->getStudent()->getUsername();
++    QUuid reqId = getRequiredBooks(user);
++
++}
++
++
++void ViewRequiredBooksControl::availableItemWindowClosed()
++{
++    delete itemWindow;
++    qDebug() << "ViewRequiredBooksControl::AvailableItemWindowClosed: Deleted item window pointer";
++
++    requestAPI = NULL;
++
++    emit viewBooksControlFinished();
+ }
+diff --git a/cuTPS-client/ViewRequiredBooksControl.h b/cuTPS-client/ViewRequiredBooksControl.h
+index a75b4a7..42233c4 100644
+--- a/cuTPS-client/ViewRequiredBooksControl.h
++++ b/cuTPS-client/ViewRequiredBooksControl.h
+@@ -2,27 +2,53 @@
+ // Type: Control
+ // Description:
+ //     This class is responsible for invoking the client
+-//     side API method in the network handler for requesting
++//     side API method in the Cart Request API for requesting
+ //     the list of available books for the current user
+ 
+ #ifndef VIEWREQUIREDBOOKSCONTROL_H
+ #define VIEWREQUIREDBOOKSCONTROL_H
+ 
++#include <QUuid>
++#include <QVector>
++#include <QObject>
+ #include "Utils.h"
++#include "Entity/Student.h"
+ #include "ClientNetworkHandler.h"
++#include "CartRequestsAPI.h"
++#include "AvailableItemWindow.h"
+ 
+-class ViewRequiredBooksControl {
++class ViewRequiredBooksControl: public QObject {
++    Q_OBJECT;
+ 
+-    private:
+-        ClientNetworkHandler &network;
+ 
+     public:
+-        ViewRequiredBooksControl(ClientNetworkHandler &);
++        ViewRequiredBooksControl(CartRequestsAPI *);
+         ~ViewRequiredBooksControl();
+ 
+-        // Get the list of required books for this user,
+-        // store the request identifier
+-        void getRequiredBooks(QUuid &, QString&);
++        // Get the list of required books for this user
++        QUuid getRequiredBooks(QString&);
++
++        // Request the details of a particular textbook id
++        QUuid getBookDetails(const qint32 id);
++
++        // Request details for a list of textbook ids
++        QUuid getBookDetails(const QVector<qint32>& ids);
++
++        void launchAvailableItemWindow();
++
++
++    signals:
++        void viewBooksControlFinished();
++
++    private slots:
++        void textbookLookupCompleted(QUuid requestId, int code, QVector<qint32>* booksIds);
++        void textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*>* books);
++
++        void availableItemWindowClosed();
++    private:
++        CartRequestsAPI *requestAPI;
++
++        AvailableItemWindow *itemWindow;
+ 
+ };
+ 
+diff --git a/cuTPS-client/cuTPS-client.pro b/cuTPS-client/cuTPS-client.pro
+index a5792e9..c3677e4 100644
+--- a/cuTPS-client/cuTPS-client.pro
++++ b/cuTPS-client/cuTPS-client.pro
+@@ -40,7 +40,8 @@ SOURCES += main.cpp \
+     BillingWindow.cpp \
+     AddTextbookWindow.cpp \
+     AddChapterWindow.cpp \
+-    AddSectionWindow.cpp
++    AddSectionWindow.cpp \
++    AvailableItemWindow.cpp
+ 
+ HEADERS  += \
+     ClientNetworkHandler.h \
+@@ -70,7 +71,8 @@ HEADERS  += \
+     BillingWindow.h \
+     AddTextbookWindow.h \
+     AddChapterWindow.h \
+-    AddSectionWindow.h
++    AddSectionWindow.h \
++    AvailableItemWindow.h
+ 
+ FORMS    += \
+     Login.ui \
+@@ -87,7 +89,8 @@ FORMS    += \
+     BillingWindow.ui \
+     AddTextbookWindow.ui \
+     AddChapterWindow.ui \
+-    AddSectionWindow.ui
++    AddSectionWindow.ui \
++    AvailableItemWindow.ui
+ 
+ macx {
+ QMAKE_CXXFLAGS += -std=c++0x -stdlib=libc++
+diff --git a/cuTPS-common/Entity/Chapter.cpp b/cuTPS-common/Entity/Chapter.cpp
+index f9c8465..7086776 100644
+--- a/cuTPS-common/Entity/Chapter.cpp
++++ b/cuTPS-common/Entity/Chapter.cpp
+@@ -9,7 +9,7 @@ Chapter::Chapter(Chapter& src)
+       parentTextbook(src.getParentTextbook()),
+       number(src.getChapterNumber())
+ {
+-    for (Section* s : src.getSectionList())
++    for (Section* s : *src.getSectionList())
+     {
+         this->addSection(*s);
+     }
+@@ -77,9 +77,9 @@ QString Chapter::getType() {
+     return "Chapter";
+ }
+ 
+-QVector<Section*> Chapter::getSectionList()
++QVector<Section*>* Chapter::getSectionList()
+ {
+-    return sections;
++    return &sections;
+ }
+ 
+ int Chapter::numSections() const
+diff --git a/cuTPS-common/Entity/Chapter.h b/cuTPS-common/Entity/Chapter.h
+index 2d1a9b0..6635bf9 100644
+--- a/cuTPS-common/Entity/Chapter.h
++++ b/cuTPS-common/Entity/Chapter.h
+@@ -35,7 +35,7 @@ public:
+     void setChapterNumber(int);
+ 
+     void addSection(const Section& s);
+-    QVector<Section*> getSectionList();
++    QVector<Section*>* getSectionList();
+     int numSections() const;
+     
+     QString getTitle();
+diff --git a/cuTPS-common/Entity/Textbook.cpp b/cuTPS-common/Entity/Textbook.cpp
+index d1553dd..4192486 100644
+--- a/cuTPS-common/Entity/Textbook.cpp
++++ b/cuTPS-common/Entity/Textbook.cpp
+@@ -52,9 +52,9 @@ void Textbook::addChapter(const Chapter& c)
+     chapters.append(c_copy);
+ }
+ 
+-QVector<Chapter*> Textbook::getChapterList()
++QVector<Chapter*>* Textbook::getChapterList()
+ {
+-    return chapters;
++    return &chapters;
+ }
+ 
+ const QVector<Chapter*> Textbook::getConstChapterList() const
+diff --git a/cuTPS-common/Entity/Textbook.h b/cuTPS-common/Entity/Textbook.h
+index cd9f3d7..55f1001 100644
+--- a/cuTPS-common/Entity/Textbook.h
++++ b/cuTPS-common/Entity/Textbook.h
+@@ -34,7 +34,7 @@ public:
+     QString getType();
+ 
+     void addChapter(const Chapter& c);
+-    QVector<Chapter*> getChapterList();
++    QVector<Chapter*>* getChapterList();
+     const QVector<Chapter*> getConstChapterList() const;
+     int numChapters() const;
+ 
+-- 
+1.7.9.5
+

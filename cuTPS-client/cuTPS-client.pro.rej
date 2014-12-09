@@ -1,0 +1,21 @@
+diff a/cuTPS-client/cuTPS-client.pro b/cuTPS-client/cuTPS-client.pro	(rejected hunks)
+@@ -40,7 +40,8 @@ SOURCES += main.cpp \
+     BillingWindow.cpp \
+     AddTextbookWindow.cpp \
+     AddChapterWindow.cpp \
+-    AddSectionWindow.cpp
++    AddSectionWindow.cpp \
++    AvailableItemWindow.cpp
+ 
+ HEADERS  += \
+     ClientNetworkHandler.h \
+@@ -70,7 +71,8 @@ HEADERS  += \
+     BillingWindow.h \
+     AddTextbookWindow.h \
+     AddChapterWindow.h \
+-    AddSectionWindow.h
++    AddSectionWindow.h \
++    AvailableItemWindow.h
+ 
+ FORMS    += \
+     Login.ui \

@@ -1,0 +1,13 @@
+diff a/cuTPS-common/Entity/Textbook.cpp b/cuTPS-common/Entity/Textbook.cpp	(rejected hunks)
+@@ -52,9 +52,9 @@ void Textbook::addChapter(const Chapter& c)
+     chapters.append(c_copy);
+ }
+ 
+-QVector<Chapter*> Textbook::getChapterList()
++QVector<Chapter*>* Textbook::getChapterList()
+ {
+-    return chapters;
++    return &chapters;
+ }
+ 
+ const QVector<Chapter*> Textbook::getConstChapterList() const

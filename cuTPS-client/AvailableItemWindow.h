@@ -43,8 +43,6 @@ class AvailableItemWindow : public QDialog
 
         CartRequestsAPI *requestAPI;
 
-        QVector<SellableItem*> *listedItems;
-
         QVector<Textbook*> *listedBooks;
 
         SellableItem * selectedItem;

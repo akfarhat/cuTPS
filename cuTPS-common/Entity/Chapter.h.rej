@@ -1,0 +1,10 @@
+diff a/cuTPS-common/Entity/Chapter.h b/cuTPS-common/Entity/Chapter.h	(rejected hunks)
+@@ -35,7 +35,7 @@ public:
+     void setChapterNumber(int);
+ 
+     void addSection(const Section& s);
+-    QVector<Section*> getSectionList();
++    QVector<Section*>* getSectionList();
+     int numSections() const;
+     
+     QString getTitle();
