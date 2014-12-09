@@ -136,6 +136,9 @@ ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCre
                                                      creds.password,
                                                      hash);
             if (success) {
+                qDebug() << "Successful login as " << creds.username
+                         << "\nPassword: " << hash;
+
                 response.code = Success;
                 int uRole = query.value(2).toInt();
 

@@ -20,8 +20,6 @@ void LoginTask::run()
 
     in >> credentials.username >> credentials.password;
 
-    qDebug() << credentials.username << credentials.password;
-
     Role userRole;
     ServerResponse r = server->authenticateUser(sessionId, userRole, credentials);
 
