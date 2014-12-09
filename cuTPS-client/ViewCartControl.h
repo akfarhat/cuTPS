@@ -1,29 +1,33 @@
 #ifndef VIEWCARTCONTROL_H
 #define VIEWCARTCONTROL_H
 
-#include "Entity/Student.h"
 #include "ClientNetworkHandler.h"
 #include "CartRequestsAPI.h"
 #include "CartDetailsWindow.h"
-#include "Entity/Student.h"
 
 #include <QWidget>
+#include <QObject>
 
 class CartDetailsWindow;
 
-class ViewCartControl {
+class ViewCartControl: public QObject {
+    Q_OBJECT
+
     public:
-        ViewCartControl(QWidget *, CartRequestsAPI *);
+        ViewCartControl(CartRequestsAPI *);
         ~ViewCartControl();
 
         void launchCartDetailsWindow();
 
+    signals:
+        void viewCartControlFinished();
+
+    private slots:
+        void cartDetailsWindowClosed();
+
 
     private:
-        QWidget *parentWidget;
-        Student *student;
         CartRequestsAPI *requestAPI;
-
         CartDetailsWindow *detailsWindow;
 };
 

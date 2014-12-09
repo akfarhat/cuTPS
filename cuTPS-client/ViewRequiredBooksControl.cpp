@@ -1,13 +1,54 @@
 #include "ViewRequiredBooksControl.h"
 
-ViewRequiredBooksControl::ViewRequiredBooksControl(ClientNetworkHandler &serverAPI)
-    : network(serverAPI) {}
+ViewRequiredBooksControl::ViewRequiredBooksControl(CartRequestsAPI *api)
+    : requestAPI(api)
+{
+    itemWindow = NULL;
 
-ViewRequiredBooksControl::~ViewRequiredBooksControl() {
+    QObject::connect(requestAPI->getNetwork(), SIGNAL(textbookLookupCompleted(QUuid, int, QVector<qint32> *)), this, SLOT(textbookLookupCompleted(QUuid, int, QVector<qint32> *)));
+    QObject::connect(requestAPI->getNetwork(), SIGNAL(textbookDetailsReceived(QUuid, int, QVector<Textbook *> *)), this, SLOT(textbookDetailsReceived(QUuid, int, QVector<Textbook *> *)));
+    connect(requestAPI->getNetwork(),
+            SIGNAL(requiredBooksReceived(QUuid,int,QMap<Course*,QList<Textbook*>*>*)),
+            this,
+            SLOT(requiredBooksReceived(QUuid,int,QMap<Course*,QList<Textbook*>*>*)));
+}
+
+ViewRequiredBooksControl::~ViewRequiredBooksControl()
+{
+    requestAPI = NULL;
+}
+
+QUuid ViewRequiredBooksControl::getRequiredBooks()
+{
+    return requestAPI->getRequiredBooks();
+}
+
+void ViewRequiredBooksControl::launchAvailableItemWindow()
+{
+    QString user = requestAPI->getStudent()->getUsername();
+    QUuid reqId = getRequiredBooks();
 
 }
 
-// TODO: Remove 'username' parameter, unused.
-void ViewRequiredBooksControl::getRequiredBooks(QUuid &reqId, QString& username) {
-    reqId = network.getRequiredBooks();
+void ViewRequiredBooksControl::requiredBooksReceived(QUuid requestId, int code, QMap<Course*, QList<Textbook*>*>*)
+{
+    qDebug() << "ViewRequiredBooksControl::requiredBooksReceived: Got response code " + QString::number(code) + " from server";
+
+    // TODO Call request to get chapters and sections
+
+    // itemWindow = new AvailableItemWindow(0, requestAPI, books);
+
+    QObject::connect(itemWindow, SIGNAL(availableItemWindowClosed()), this, SLOT(availableItemWindowClosed()));
+
+    itemWindow->exec();
+}
+
+void ViewRequiredBooksControl::availableItemWindowClosed()
+{
+    delete itemWindow;
+    qDebug() << "ViewRequiredBooksControl::AvailableItemWindowClosed: Deleted item window pointer";
+
+    requestAPI = NULL;
+
+    emit viewBooksControlFinished();
 }

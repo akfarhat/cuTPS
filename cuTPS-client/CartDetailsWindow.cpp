@@ -19,7 +19,9 @@ CartDetailsWindow::CartDetailsWindow(QWidget *parent, CartRequestsAPI *api)  : Q
 }
 
 CartDetailsWindow::~CartDetailsWindow() {
-    delete placeOrderCtrl;
+    requestAPI = NULL;
+    if (placeOrderCtrl != NULL)
+        delete placeOrderCtrl;
     delete ui;
 }
 
@@ -61,10 +63,9 @@ void CartDetailsWindow::updateView() {
 
 
 void CartDetailsWindow::on_backButton_clicked() {
-    // Show the main menu window (CartManagmentInterface)
-    this->parentWidget()->show();
-    // Close this window
+    requestAPI = NULL;
     this->close();
+    emit cartDetailsWindowClosed();
 }
 
 void CartDetailsWindow::on_cancelOrderButton_clicked() {
@@ -76,8 +77,9 @@ void CartDetailsWindow::on_cancelOrderButton_clicked() {
     delete cancelOrderCtrl;
 
 
-    this->parentWidget()->show();
+    requestAPI = NULL;
     this->close();
+    emit cartDetailsWindowClosed();
 }
 
 void CartDetailsWindow::on_placeOrderButton_clicked() {
@@ -86,7 +88,15 @@ void CartDetailsWindow::on_placeOrderButton_clicked() {
 
     placeOrderCtrl = new PlaceOrderControl(this, requestAPI);
 
+    QObject::connect(placeOrderCtrl, SIGNAL(placeOrderControlFinished()), this, SLOT(placeOrderControlFinished()));
+
     placeOrderCtrl->launchBillingWindow();
 
+}
 
+void CartDetailsWindow::placeOrderControlFinished()
+{
+    delete placeOrderCtrl;
+    placeOrderCtrl = NULL;
+    qDebug() << "CartDetailsWindow::placeOrderControlFinished: deleted placeOrderCtrl";
 }

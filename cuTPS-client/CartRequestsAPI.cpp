@@ -22,8 +22,7 @@ Student* CartRequestsAPI::getStudent() {
     return student;
 }
 
-// TODO: Remove 'username' parameter
-QUuid CartRequestsAPI::getRequiredBooks(QString &username)
+QUuid CartRequestsAPI::getRequiredBooks()
 {
     return network->getRequiredBooks();
 }
@@ -31,6 +30,10 @@ QUuid CartRequestsAPI::getRequiredBooks(QString &username)
 
 QUuid CartRequestsAPI::getBookDetails(int bookId) {
     return network->getBookDetails(bookId);
+}
+
+QUuid CartRequestsAPI::getBookDetails(const QVector<qint32> &ids) {
+    return network->getBookDetails(ids);
 }
 
 QUuid CartRequestsAPI::submitOrder(Order &newOrder)
