@@ -44,23 +44,7 @@ void LoginControl::loginSuccessful(QUuid requestId, Role userRole) {
           {
             qDebug() << "LoginControl::loginSuccessful creating studentInterface";
 
-            //---------------------------------------------------------
-            // TEMPORARY DATA. REAL DATA NEEDS TO BE OBTAINED FROM DB
-            //---------------------------------------------------------
-            Student *newStudent = new Student(15, "Joe Smith", "joesmith", 10101010);
-
-            // Create dummy items and add them to the shopping cart
-            SellableItem *t1 = new Textbook(1, "The First Book", "1st edition", "Someone", 554563, true, "123456678");
-            SellableItem *c1 = new Chapter(5, NULL, 1, "Chapter One", 432, true);
-            SellableItem *s1 = new Section(9, NULL, 1, "Section One", 325, true);
-
-            newStudent->setCreditCardInfo(new CreditCardInfo("Test", "Test@sfddsf", "fake address", "12344556", "VISA", "12334343", "25/2/1", "123"));
-            newStudent->setDeliveryInfo(new DeliveryInfo("Test@sfddsf"));
-
-            studentIF = new CartManagementInterface(0, network, newStudent);
-            newStudent->getCart()->addItem(t1);
-            newStudent->getCart()->addItem(c1);
-            newStudent->getCart()->addItem(s1);
+            studentIF = new CartManagementInterface(0, network);
             studentIF->show();
             loginWin->close();
             break;

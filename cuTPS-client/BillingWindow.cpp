@@ -12,7 +12,7 @@ BillingWindow::BillingWindow(QWidget *parent, PlaceOrderControl *control) :
 
     this->setWindowTitle("Order Information");
 
-    ui->errorLabel->hide();
+    ui->message->hide();
 
     // Fill in the fields with any saved information for the student
     if (placeOrderCtrl->getStudent() != NULL) {
@@ -33,6 +33,26 @@ BillingWindow::~BillingWindow()
     delete ui;
 }
 
+void BillingWindow::setError(QString message) {
+    ui->message->setStyleSheet("QLabel { color : red; }");
+    ui->message->setText(message);
+    ui->message->show();
+}
+
+bool BillingWindow::validateData()
+{
+    if (ui->nameField->text().isEmpty() ||
+            ui->numberField->text().isEmpty() ||
+            ui->expiryField->text().isEmpty() ||
+            ui->codeField->text().isEmpty() ||
+            ui->emailField->text().isEmpty())
+    {
+        setError("Error: all fields need to be filled in");
+        return false;
+    }
+    return true;
+}
+
 void BillingWindow::on_cancelButton_clicked()
 {
     qDebug() << "Cancel button was clicked in billing window";
@@ -45,8 +65,11 @@ void BillingWindow::on_submitButton_clicked()
 {
     qDebug() << "Submit button was clicked in billing window";
 
-    placeOrderCtrl->submitOrder();
+    if (validateData()) {
+        placeOrderCtrl->submitOrder();
 
-    placeOrderCtrl = NULL;
-    this->close();
+        placeOrderCtrl = NULL;
+        this->close();
+    }
+
 }

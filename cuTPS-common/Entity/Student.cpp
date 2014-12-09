@@ -1,7 +1,11 @@
 #include "Student.h"
 
 Student::Student()
-{}
+{
+    cart = new ShoppingCart();
+    billing = nullptr;
+    delivery = nullptr;
+}
 
 Student::Student(int id, QString name, QString username, int studentNum)
     : User(id, name, username), studentNumber(studentNum)
