@@ -23,9 +23,7 @@ void RemoveCourseTask::run()
     qint32 courseId;
     in >> courseId;
 
-    // TODO: Implement
-    // ServerResponse r = server->removeCourse(sessionId, courseId);
-    ServerResponse r; r.code = Fail;
+    ServerResponse r = server->removeCourse(sessionId, courseId);
 
     NetResponse* response = new NetResponse();
     response->setInvocation(request->getInvocation());

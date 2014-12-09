@@ -5,6 +5,7 @@
 #include "GetAllBooksTask.h"
 #include "GetAllCoursesTask.h"
 #include "RemoveItemTask.h"
+#include "RemoveCourseTask.h"
 
 using namespace TPSNetProtocolDef;
 
@@ -50,6 +51,10 @@ WorkerTask* ContentMgrTaskFactory::createTask(
     case IRmChapter:
     case IRmSection: {
         return new RemoveItemTask(srvInst);
+    }
+
+    case IRmCourse: {
+        return new RemoveCourseTask(srvInst);
     }
 
     default: {
