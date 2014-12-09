@@ -45,3 +45,8 @@ QUuid CourseRequestAPI::deleteCourse(int courseId)
 {
     return this->networking->removeCourse(courseId);
 }
+
+QUuid CourseRequestAPI::getAllBooks()
+{
+    return this->networking->getAllBooks();
+}

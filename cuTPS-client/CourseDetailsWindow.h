@@ -44,6 +44,7 @@ public slots:
     void updateCompleted(QUuid requestId, int code,
                          InvocationDescriptor invo, qint32 id);
 
+
 private slots:
     void on_backButton_clicked();
 

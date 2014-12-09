@@ -41,7 +41,8 @@ SOURCES += main.cpp \
     ClientTaskHandling/GetAllCoursesTask.cpp \
     SecurityUtils.cpp \
     ClientTaskHandling/RemoveItemTask.cpp \
-    ClientTaskHandling/RemoveCourseTask.cpp
+    ClientTaskHandling/RemoveCourseTask.cpp \
+    ClientTaskHandling/BookLinkTask.cpp
 
 HEADERS += \
     DatabaseManager.h \
@@ -71,7 +72,8 @@ HEADERS += \
     SecurityUtils.h \
     Secrets.h \
     ClientTaskHandling/RemoveItemTask.h \
-    ClientTaskHandling/RemoveCourseTask.h
+    ClientTaskHandling/RemoveCourseTask.h \
+    ClientTaskHandling/BookLinkTask.h
 
 
 OTHER_FILES += \

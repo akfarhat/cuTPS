@@ -669,6 +669,7 @@ void ClientNetworkHandler::readyRead()
                 numBooks--;
             }
 
+            qDebug() << "emitting textbookListReceived(size="<<bList->size()<<")";
             emit textbookListReceived(response.getRequestId(),
                                          response.getResponseCode(),
                                          bList);
