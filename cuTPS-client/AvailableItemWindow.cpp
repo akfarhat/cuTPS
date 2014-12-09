@@ -12,14 +12,20 @@ AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, 
     ui->setupUi(this);
     ui->addToCartButton->setEnabled(false);
 
+    this->setWindowTitle("Available Items");
+
     this->contentDepth = 0;
 
     this->bookId = -1;
     this->chapterId = -1;
 
+    listedBooks = new QList<Textbook*>();
+
     QMap<Course*, QList<Textbook*>*>::Iterator i;
     for (i = textbookMap->begin(); i != textbookMap->end(); ++i) {
-        listedBooks->append(*(i.value()));
+        for (Textbook *book: *(i.value())) {
+          listedBooks->append(book);
+        }
     }
 
 
@@ -28,6 +34,10 @@ AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, 
 
 AvailableItemWindow::~AvailableItemWindow()
 {
+    for (Textbook *book: *listedBooks) {
+        delete book;
+    }
+    delete listedBooks;
     delete ui;
 }
 
@@ -127,7 +137,6 @@ void AvailableItemWindow::displaySectionList(int chapterId)
 void AvailableItemWindow::on_backButton_clicked()
 {
     requestAPI = NULL;
-    listedBooks = NULL;
     selectedItem = NULL;
     this->close();
     emit availableItemWindowClosed();
