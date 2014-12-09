@@ -66,7 +66,15 @@ void BillingWindow::on_submitButton_clicked()
     qDebug() << "Submit button was clicked in billing window";
 
     if (validateData()) {
+        CreditCardInfo *cInfo = new CreditCardInfo(ui->nameField->text(), ui->emailField->text(), "", "", ui->nameField->text(), ui->numberField->text(), ui->expiryField->text(), ui->codeField->text());
+        DeliveryInfo *dInfo = new DeliveryInfo(ui->emailField->text());
+        placeOrderCtrl->getStudent()->setCreditCardInfo(cInfo);
+        placeOrderCtrl->getStudent()->setDeliveryInfo(dInfo);
+
         placeOrderCtrl->submitOrder();
+
+        delete cInfo;
+        delete dInfo;
 
         placeOrderCtrl = NULL;
         this->close();
