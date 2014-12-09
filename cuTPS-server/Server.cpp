@@ -672,7 +672,7 @@ ServerResponse Server::removeSellableItem(QUuid sessionID, qint32 id)
 
     QString queryString = "";
     queryString += "delete from SellableItem where id = ";
-    queryString += id;
+    queryString += QString::number(id);
     queryString += ";";
 
     qDebug() << "About to delete SellableItem, query'"
