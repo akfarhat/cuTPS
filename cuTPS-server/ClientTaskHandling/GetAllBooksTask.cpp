@@ -4,6 +4,7 @@
 #include <QUuid>
 #include <QByteArray>
 #include <QDataStream>
+#include <QtAlgorithms>
 
 #include "Entity/NetResponse.h"
 
@@ -18,7 +19,7 @@ void GetAllBooksTask::run()
     qDebug() << "Doing job for session: " << sessionId
              << "Request: " << request->getRequestId();
 
-    QVector<Textbook> books;
+    QVector<Textbook*> books;
     ServerResponse getBooks = server->getAllTextbooks(sessionId, books);
 
     NetResponse* response = new NetResponse();
@@ -30,19 +31,21 @@ void GetAllBooksTask::run()
     QByteArray responseDataBytes;
     QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
 
-    if (getBooks.code == Success)
+    if (response->getResponseCode() > 0)
     {
-        outData << static_cast<qint32>(books.size());
+        outData << books.size();
 
-        for (Textbook t : books)
+        for (int i = 0; i < books.size(); ++i)
         {
-            outData << t;
+            outData << *books.at(i);
+            outData << (qint8) 0;
         }
-
-        response->setData(responseDataBytes);
-    } else {
-        outData << static_cast<qint32>(0);
     }
+
+    response->setData(responseDataBytes);
+
+    qDeleteAll(books.begin(), books.end());
+    books.clear();
 
     emit result(response->getResponseCode(), response);
 }

@@ -854,7 +854,7 @@ ServerResponse Server::registerStudentUser(QUuid sessionID, Student& usr, QStrin
     return response;
 }
 
-ServerResponse Server::getAllTextbooks(QUuid sessionID, QVector<Textbook> &textbooks)
+ServerResponse Server::getAllTextbooks(QUuid sessionID, QVector<Textbook*> &textbooks)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -883,7 +883,7 @@ ServerResponse Server::getAllTextbooks(QUuid sessionID, QVector<Textbook> &textb
 
             getTextbookChapters(sessionID, textbook->getId(), textbook);
 
-            textbooks.append(*textbook);
+            textbooks.append(textbook);
         }
 
 

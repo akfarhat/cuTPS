@@ -3,6 +3,7 @@
 #include <QString>
 #include <QVector>
 #include <QDebug>
+#include <QList>
 #include <iostream>
 
 #include "Entity/NetRequest.h"
@@ -653,7 +654,31 @@ void ClientNetworkHandler::readyRead()
     }
 
     case IGetAllBooks:
-    case IGetBookDetails: {
+    {
+        QDataStream in(response.getData(), QIODevice::ReadOnly);
+
+        QList<Textbook*>* bList = new QList<Textbook*>();
+
+        qint32 numBooks;
+        in >> numBooks;
+
+        for (int i = 0; i < numBooks; ++i) {
+            Textbook* book = new Textbook();
+            in >> *book;
+            bList->append(book);
+            qint8 stub;
+            in >> stub;
+        }
+
+        qDebug() << "emitting textbookListReceived(size="<<bList->size()<<")";
+        emit textbookListReceived(response.getRequestId(),
+                                     response.getResponseCode(),
+                                     bList);
+        break;
+    }
+
+    case IGetBookDetails:
+    {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
 
         qint32 numBooks;

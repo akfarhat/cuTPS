@@ -110,7 +110,7 @@ QVector<Section*>& Chapter::getSectionList()
     return sections;
 }
 
-int Chapter::numSections() const
+quint16 Chapter::numSections() const
 {
     return sections.size();
 }

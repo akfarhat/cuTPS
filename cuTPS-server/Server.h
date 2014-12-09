@@ -75,7 +75,7 @@ public:
 
     ServerResponse registerStudentUser(QUuid, Student& usr, QString pwd, qint32* id);
 
-    ServerResponse getAllTextbooks(QUuid, QVector<Textbook>&);
+    ServerResponse getAllTextbooks(QUuid, QVector<Textbook*>&);
     ServerResponse getAllCourses(QUuid, QVector<Course>&);
 
     // Student request API.

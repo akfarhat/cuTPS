@@ -52,7 +52,7 @@ public:
 
     void addSection(const Section& s);
     QVector<Section*>& getSectionList();
-    int numSections() const;
+    quint16 numSections() const;
     
     QString getTitle();
     QString getType();
