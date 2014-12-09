@@ -894,10 +894,11 @@ ServerResponse Server::getStudentCourses(QUuid sessionID, const int& userID, QVe
     QSqlQuery query;
 
     QString queryString = "";
-    queryString += "select Course.id, Course.code, Course.name, Course.termSection, Course.termYear ";
-    queryString += "from User join User_Course on User.id = User_Course.user_id ";
-    queryString += "where User.id = ";
+    queryString += "select distinct user.id, course.code, course.name, course.term_section, course.term_year ";
+    queryString += "from user, user_course, course ";
+    queryString += "where user.id = ";
     queryString += QString::number(userID);
+    queryString += " and user_course.course_id = course.id";
     queryString += ";";
 
     qDebug() << "query string: '" << queryString << "'";
