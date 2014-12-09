@@ -220,6 +220,25 @@ ServerResponse Server::getSessionRole(QUuid sessionID, Role& userRole)
     return response;
 }
 
+ServerResponse Server::getSessionUserId(QUuid sessionID, int& userID)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    int id = openSessions.value(sessionID, -1);
+
+    if (id < 0) {
+        response.code = Fail;
+        response.message = "session not found or doesn't have associated user";
+        return response;
+    }
+
+    userID = id;
+
+    response.code = Success;
+    return response;
+}
+
 ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32& newId)
 {
     ServerResponse response;
@@ -227,11 +246,21 @@ ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32& newId)
 
     QSqlQuery query;
 
-    QString queryString = "insert into Course (code, name, term_section, term_year) values (\"" +
+    QString queryString;
+
+    if (course.getTermSection().size() < 1) {
+        queryString = "insert into Course (code, name, term_section, term_year) values (\"" +
+            course.getCourseCode() + "\", \"" +
+            course.getCourseName() + "\", \"\", " +
+            course.getTermYear() + ");";
+    }
+    else {
+        queryString = "insert into Course (code, name, term_section, term_year) values (\"" +
             course.getCourseCode() + "\", \"" +
             course.getCourseName() + "\", \"" +
             course.getTermSection().at(0) + "\", " +
             course.getTermYear() + ");";
+    }
 
     qDebug() << "About to insert Course, query'"
              << queryString << "'";
@@ -846,7 +875,7 @@ ServerResponse Server::getAllCourses(QUuid sessionID, QVector<Course>& courses)
     return response;
 }
 
-ServerResponse Server::getStudentCourses(QUuid sessionID, const QString& username, QVector<Course>& courses)
+ServerResponse Server::getStudentCourses(QUuid sessionID, const int& userID, QVector<Course>& courses)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -856,9 +885,9 @@ ServerResponse Server::getStudentCourses(QUuid sessionID, const QString& usernam
     QString queryString = "";
     queryString += "select Course.id, Course.code, Course.name, Course.termSection, Course.termYear ";
     queryString += "from User join User_Course on User.id = User_Course.user_id ";
-    queryString += "where User.username = \"";
-    queryString += username;
-    queryString += "\";";
+    queryString += "where User.id = ";
+    queryString += QString::number(userID);
+    queryString += ";";
 
     qDebug() << "query string: '" << queryString << "'";
     bool result = dbManager->runQuery(queryString, &query);
@@ -888,7 +917,7 @@ ServerResponse Server::getStudentCourses(QUuid sessionID, const QString& usernam
     return response;
 }
 
-ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& username, QVector<int>* textbookIDs)
+ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const int& userID, QVector<int>* textbookIDs)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -899,9 +928,9 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
     queryString += "select Course_Textbook.textbook_id from User ";
     queryString += "join User_Course on User.id = User_Course.user_id ";
     queryString += "join Course_Textbook on User_Course.course_id = Course_Textbook.course_id ";
-    queryString += "where User.username = \"";
-    queryString += username;
-    queryString += "\";";
+    queryString += "where User.id = ";
+    queryString += QString::number(userID);
+    queryString += ";";
 
     qDebug() << "query string: '" << queryString << "'";
     bool result = dbManager->runQuery(queryString, &query);
@@ -938,7 +967,7 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
     QString queryString = "";
     queryString += "select Textbook.item_id, Textbook.edition, Textbook.authors, Textbook.isbn, ";
     queryString += "SellableItem.name, SellableItem.price_cents, ";
-    queryString += "SellableItem.available from Textbook, SellableItem ";
+    queryString += "SellableItem.available from Textbook inner join SellableItem on id=item_id ";
     queryString += "where Textbook.item_id = ";
     queryString += QString::number(textbookID);
     queryString += ";";
@@ -951,7 +980,9 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
 
     // TODO : Handle case where attributes are null
     if (result) {
+        bool found = false;
         while(query.next()) {
+            found = true;
             // TODO: remove this debug log
             qDebug() << "Get Book Details("
                      << query.value(0).toInt() << ", "
@@ -971,8 +1002,17 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
                         );
         }
 
-        response.code = Success;
-        response.message = "";
+        if (found) {
+            response.code = Success;
+            response.message = "";
+        }
+        else {
+            //textbook with given ID not found
+            *textbook = new Textbook();
+
+            response.code = Fail;
+            response.message = "textbook with given ID not found";
+        }
     }
     else {
 

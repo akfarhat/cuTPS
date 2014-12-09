@@ -51,6 +51,7 @@ public:
     // All Users
     ServerResponse authenticateUser(QUuid, Role&, UserCredentials);
     ServerResponse getSessionRole(QUuid, Role&);
+    ServerResponse getSessionUserId(QUuid, int&);
 
     // Content Manager request API. Each of these requests
     // adds some content into the system availability
@@ -77,10 +78,10 @@ public:
     // Student request API.
 
     // Get the list of courses a student is registered in
-    ServerResponse getStudentCourses(QUuid, const QString&, QVector<Course>&);
+    ServerResponse getStudentCourses(QUuid, const int&, QVector<Course>&);
 
     // Get the list of required textbooks for a user
-    ServerResponse getRequiredTextbooks(QUuid, const QString&, QVector<int>*);
+    ServerResponse getRequiredTextbooks(QUuid, const int&, QVector<int>*);
 
     // Get the metadata for a sellable item
     ServerResponse getItemDetails(QUuid, int);
