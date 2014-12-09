@@ -231,7 +231,7 @@ ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32& newId)
             course.getCourseCode() + "\", \"" +
             course.getCourseName() + "\", \"" +
             course.getTermSection().at(0) + "\", " +
-            course.getTermYear() + ");";
+            QString::number(course.getTermYear()) + ");";
 
     qDebug() << "About to insert Course, query'"
              << queryString << "'";
@@ -257,9 +257,9 @@ ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32& newId)
     for (int textbookId : course.getRequiredTextIds()) {
         // TODO: this is we should form the query for all books and execute it once.
         QString queryString = "insert into Course_Textbook (course_id, textbook_id) values (";
-        queryString += course.getId();
+        queryString += QString::number(course.getId());
         queryString += ", ";
-        queryString += textbookId;
+        queryString += QString::number(textbookId);
         queryString += ");";
 
         result = dbManager->runQuery(queryString, &query);
@@ -310,8 +310,8 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& 
     }
 
     queryString = "insert into Textbook (edition, authors, isbn) values (\"" +
-                  textbook.getEdition() + "\", ";
-                  textbook.getEdition() + "\", ";
+                  textbook.getEdition() + "\", \"" +
+                  textbook.getEdition() + "\", \"" +
                   textbook.getISBN() + "\");";
 
     result = dbManager->runQuery(queryString, &query);

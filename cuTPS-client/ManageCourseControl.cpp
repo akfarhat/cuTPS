@@ -77,6 +77,8 @@ void ManageCourseControl::modifyCourse(int courseId,
     // TODO: not currently handling response
     QUuid reqId;
     ctrl.modifyCourse(reqId, c);
+
+    this->courseDetailsWin->refreshCourseList();
 }
 
 void ManageCourseControl::deleteCourse(int courseId)
@@ -88,6 +90,8 @@ void ManageCourseControl::deleteCourse(int courseId)
     // TODO: not currently handling response
     QUuid reqId;
     delCtrl.deleteCourse(reqId, courseId);
+
+    this->courseDetailsWin->refreshCourseList();
 }
 
 void ManageCourseControl::removeRequiredBook(int bookId, int courseId)
@@ -97,6 +101,8 @@ void ManageCourseControl::removeRequiredBook(int bookId, int courseId)
 
     // TODO: ignoring response from this request
     this->requestAPI->unlinkText(courseId, bookId);
+
+    // TODO: refresh required book list in courseDetailsWin
 }
 
 void ManageCourseControl::addRequiredBooks(QVector<int>& books, int courseId)
@@ -107,5 +113,7 @@ void ManageCourseControl::addRequiredBooks(QVector<int>& books, int courseId)
 
         // TODO: ignoring response from this request
         this->requestAPI->linkText(courseId, id);
+
+        // TODO: refresh required book list in courseDetailsWin
     }
 }
