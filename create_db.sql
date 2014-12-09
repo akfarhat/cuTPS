@@ -99,34 +99,64 @@ create table if not exists Report(
     script text not null
 );
 
-insert into User values (1, "admin", "Administrator", "6768baac184359a3aab593bceec8fe4882fc8b6d|FP2BX", 0);
-insert into Administrator values (1);
+insert into User values (1, "cm1", "Content Manager 1", "35838e20b2dbbe9314aaef4f1db266b2a96cf64a|123", 1);
+insert into ContentManager values (1);
 
-insert into User values (2, "cm", "Content Manager", "ad52a56dcdcc1348a60d639b952e4b22ef2675fc|8U8GW", 1);
+insert into User values (2, "cm2", "Content Manager 2", "1f6bf5e152fe4549e9fd1ffda4278bec736d9075|123", 1);
 insert into ContentManager values (2);
 
-insert into User values (3, "joesmith", "Joe Smith", "246a98379322b1065d1f047a5b19e2fa1985265d|A3SY6", 2);
-insert into Student values (3, "100123457", "joesmith@cmail.carleton.ca");
+insert into User values (3, "student1", "Student 1", "98c7003d92888a99c40f2f6163cbccdfeefa775f|123", 2);
+insert into ContentManager values (3);
 
-insert into User values (4, "woyorus", "woyorus", "c5bfcce2af6b93a2f9509549ffcbe0016ce56f44|JPO7X", 2);
-insert into Student values (4, "100867357", "woyorus@gmail.com");
+insert into User values (4, "student2", "Student 2", "b207e950d1acbcd07718a74614cce0c309b72bee|123", 2);
+insert into ContentManager values (4);
 
-insert into Course values (1, "COMP3004", "Object-Oriented Software Engineering", 'A', 2014);
-insert into Course values (2, "COMP3000", "Operating Systems", 'A', 2014);
+insert into Course values (1, "COMP3000", "Operating Systems", 'A', 2014);
+insert into Course values (2, "COMP3004", "Object-Oriented Software Engineering", 'A', 2014);
+insert into Course values (3, "COMP3005", "Database Management Systems", 'B', 2014);
+insert into Course values (4, "COMP3007", "Programming Paradigms", 'A', 2014);
+insert into Course values (5, "COMP3008", "Human-computer Interaction", 'D', 2014);
+insert into Course values (6, "COMP4109", "Applied Cryptography", 'C', 2014);
 
 insert into User_Course values (3,1);
+insert into User_Course values (3,3);
+insert into User_Course values (3,5);
+insert into User_Course values (3,6);
 insert into User_Course values (4,1);
 insert into User_Course values (4,2);
+insert into User_Course values (4,4);
 
-insert into SellableItem values (1, "Object-Oriented Software Engineering: Using UML, Patterns, and Java", "12356", 1);
-insert into SellableItem values (2, "Introduction", "1000", 1);
-insert into SellableItem values (3, "Welcome", "345", 1);
+insert into SellableItem values (1, "Object-Oriented Software Engineering: Using UML, Patterns, and Java", "10000", 1);
+insert into SellableItem values (2, "Introduction", "200", 1);
+insert into SellableItem values (3, "UML Diagrams", "200", 1);
+insert into SellableItem values (4, "System Design", "200", 1);
 
-insert into Textbook values (1, "2", "John Author", "123-456-7890");
+insert into SellableItem values (5, "Welcome", "100", 1);
+insert into SellableItem values (6, "Foreword", "100", 1);
+insert into SellableItem values (7, "Use Case Diagrams", "100", 1);
+insert into SellableItem values (8, "Sequence Diagrams", "100", 1);
+insert into SellableItem values (9, "Functional Model", "100", 1);
+insert into SellableItem values (10, "Dynamic Model", "100", 1);
+
+insert into SellableItem values (11, "Cryptography Engineering", "50000", 1);
+insert into SellableItem values (12, "Operation Systems: The Three Parts", "30000", 1);
+
+insert into Textbook values (1, "1", "John Author", "123-456-7890");
+insert into Textbook values (11, "2", "Ferguson, Schneier, Kohno", "987-456-1270");
+insert into Textbook values (12, "7", "Two People", "356-910-7890");
 
 insert into Chapter values (2, 1, 1);
+insert into Chapter values (3, 1, 2);
+insert into Chapter values (4, 1, 3);
 
-insert into Section values (3, 2, 1);
+insert into Section values (5, 2, 1);
+insert into Section values (6, 2, 2);
+insert into Section values (7, 3, 1);
+insert into Section values (8, 3, 2);
+insert into Section values (9, 4, 1);
+insert into Section values (10, 4, 2);
 
-insert into Course_Textbook values (1,1);
+insert into Course_Textbook values (2,1);
+insert into Course_Textbook values (6,11);
+insert into Course_Textbook values (1,12);
 
