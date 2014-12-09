@@ -56,5 +56,5 @@ Run instructions:
 
 Credentials:
 ------------
-Student user: johnsmith/alamepassword
+Student user: joesmith/alamepassword
 CM user: cm/pass
