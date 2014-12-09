@@ -1,4 +1,4 @@
-#include "RmItemTask.h"
+#include "RemoveItemTask.h"
 
 #include <QDebug>
 
@@ -6,12 +6,12 @@
 
 using namespace TPSNetProtocolDef;
 
-RmItemTask::RmItemTask(Server* srv)
+RemoveItemTask::RemoveItemTask(Server* srv)
     : WorkerTask(srv)
 {
 }
 
-void RmItemTask::run()
+void RemoveItemTask::run()
 {
     qDebug() << "Remove item task was run";
     qDebug() << "Doing job for session: " << sessionId

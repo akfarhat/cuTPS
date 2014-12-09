@@ -10,7 +10,7 @@
 #include "GetAllCoursesTask.h"
 #include "AddUserTask.h"
 #include "BanUserTask.h"
-#include "RmItemTask.h"
+#include "RemoveItemTask.h"
 
 using namespace TPSNetProtocolDef;
 
@@ -74,7 +74,7 @@ WorkerTask* SUTaskFactory::createTask(
     case IRmBook:
     case IRmChapter:
     case IRmSection: {
-        return new RmItemTask(srvInst);
+        return new RemoveItemTask(srvInst);
     }
 
     default: {

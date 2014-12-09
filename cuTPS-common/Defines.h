@@ -29,6 +29,7 @@ enum InvocationDescriptor {
     IRmBook,
     IRmChapter,
     IRmSection,
+    IRmCourse,
     IBookLink,
     IBookUnlink,
     IGenerateReport,

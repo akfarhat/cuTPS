@@ -126,6 +126,11 @@ public:
     QUuid removeChapter(qint32 id);
     QUuid removeSection(qint32 id);
 
+    // What: course removal routine
+    // Available for content managers
+    // Related reply signal: updateCompleted(QUuid, int, InvocationDescriptor, qint32)
+    QUuid removeCourse(qint32 id);
+
     // CONTENT MANAGERS + ADMINISTRATOR OPERATIONS
 
     // What: add a new student user to the system.
