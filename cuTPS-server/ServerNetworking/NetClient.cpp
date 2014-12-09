@@ -48,6 +48,7 @@ void NetClient::setSocket(int sockdescriptor)
     }
 
     sessionId = response.sessionID;
+
     clientStatusUpdated();
 
     qDebug() << "New Session. ID=" << sessionId;
@@ -188,16 +189,18 @@ void NetClient::clientStatusUpdated()
         return new SUTaskFactory();
     };
 
-    QMap<UsrPermissionGroup, std::function<TaskAbsFactory*(void)>> map;
-    map.insert(UsrAnonymous, anonymousFactoryCreator);
-    map.insert(UsrStu, studentFactoryCreator);
-    map.insert(UsrCm, cmFactoryCreator);
-    map.insert(UsrAdm, adminFactoryCreator);
-    map.insert(UsrSuperuser, superuserFactoryCreator);
+    QMap<Role, std::function<TaskAbsFactory*(void)>> map;
+    map.insert(Anonymous, anonymousFactoryCreator);
+    map.insert(StudentUser, studentFactoryCreator);
+    map.insert(ContentManagerUser, cmFactoryCreator);
+    map.insert(AdministratorUser, adminFactoryCreator);
+    map.insert(SuperUser, superuserFactoryCreator);
 
-    // TODO: request user permission group from the server passing sessionID
-    UsrPermissionGroup grp = UsrSuperuser;
+    Role role;
+    server->getSessionRole(sessionId, role);
+
+    qDebug() << "NetClient: User permissions update. Now=" << role;
 
     if (this->taskFactory) delete this->taskFactory;
-    this->taskFactory = map[grp]();
+    this->taskFactory = map[role]();
 }
