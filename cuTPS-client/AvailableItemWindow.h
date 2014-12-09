@@ -4,6 +4,8 @@
 #define MAX_ITEM_DEPTH 2
 
 #include <QDialog>
+#include <QMap>
+#include <QList>
 #include <QModelIndex>
 
 #include "CartRequestsAPI.h"
@@ -11,6 +13,7 @@
 #include "Entity/Textbook.h"
 #include "Entity/Chapter.h"
 #include "Entity/Section.h"
+#include "Entity/Course.h"
 
 
 namespace Ui {
@@ -22,7 +25,7 @@ class AvailableItemWindow : public QDialog
     Q_OBJECT
 
     public:
-        explicit AvailableItemWindow(QWidget *parent = 0, CartRequestsAPI *api = NULL, QVector<Textbook*> *books = NULL);
+        explicit AvailableItemWindow(QWidget *parent = 0, CartRequestsAPI *api = NULL, QMap<Course*, QList<Textbook*>*>* tmap = NULL);
         ~AvailableItemWindow();
 
     signals:
@@ -45,7 +48,9 @@ class AvailableItemWindow : public QDialog
 
         CartRequestsAPI *requestAPI;
 
-        QVector<Textbook*> *listedBooks;
+        QMap<Course*, QList<Textbook*>*>* textbookMap;
+
+        QList<Textbook*> *listedBooks;
 
         SellableItem * selectedItem;
 
@@ -62,8 +67,8 @@ class AvailableItemWindow : public QDialog
         void displayChapterList(int);
         void displaySectionList(int);
 
-        Textbook* getBookFromList(int bookId, QVector<Textbook*> *books);
-        Chapter* getChapterFromList(int bookId, int chapterId, QVector<Textbook*> *books);
+        Textbook* getBookFromList(int &bookId, QList<Textbook*> *books);
+        Chapter* getChapterFromList(int &bookId, int &chapterId, QList<Textbook *> *books);
 
         void setError(QString);
         void setMessage(QString);

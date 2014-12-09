@@ -7,6 +7,8 @@ CartDetailsWindow::CartDetailsWindow(QWidget *parent, CartRequestsAPI *api)  : Q
 
     ui->setupUi(this);
 
+    this->setWindowTitle("Shopping Cart Details");
+
     ui->itemList->setEnabled(false);
     ui->typeList->setEnabled(false);
     ui->priceList->setEnabled(false);

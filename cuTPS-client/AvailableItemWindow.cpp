@@ -3,19 +3,30 @@
 
 #include <QDebug>
 
-AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, QVector<Textbook*> *books) :
+AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, QMap<Course*, QList<Textbook*>*>* tmap) :
     QDialog(parent),
     requestAPI(api),
-    listedBooks(books),
+    textbookMap(tmap),
     ui(new Ui::AvailableItemWindow)
 {
     ui->setupUi(this);
     ui->addToCartButton->setEnabled(false);
 
+    this->setWindowTitle("Available Items");
+
     this->contentDepth = 0;
 
     this->bookId = -1;
     this->chapterId = -1;
+
+    listedBooks = new QList<Textbook*>();
+
+    QMap<Course*, QList<Textbook*>*>::Iterator i;
+    for (i = textbookMap->begin(); i != textbookMap->end(); ++i) {
+        for (Textbook *book: *(i.value())) {
+          listedBooks->append(book);
+        }
+    }
 
 
     this->displayBookList();
@@ -23,6 +34,10 @@ AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, 
 
 AvailableItemWindow::~AvailableItemWindow()
 {
+    for (Textbook *book: *listedBooks) {
+        delete book;
+    }
+    delete listedBooks;
     delete ui;
 }
 
@@ -39,7 +54,7 @@ void AvailableItemWindow::setMessage(QString message) {
     ui->message->show();
 }
 
-Textbook* AvailableItemWindow::getBookFromList(int bookId, QVector<Textbook *> *books)
+Textbook* AvailableItemWindow::getBookFromList(int &bookId, QList<Textbook *> *books)
 {
     for (Textbook *book: *books) {
         if (book->getId() == bookId) {
@@ -50,7 +65,7 @@ Textbook* AvailableItemWindow::getBookFromList(int bookId, QVector<Textbook *> *
     return NULL;
 }
 
-Chapter* AvailableItemWindow::getChapterFromList(int bookId, int chapterId, QVector<Textbook *> *books)
+Chapter* AvailableItemWindow::getChapterFromList(int &bookId, int &chapterId, QList<Textbook *> *books)
 {
     Textbook *theBook = getBookFromList(bookId, books);
 
@@ -122,7 +137,6 @@ void AvailableItemWindow::displaySectionList(int chapterId)
 void AvailableItemWindow::on_backButton_clicked()
 {
     requestAPI = NULL;
-    listedBooks = NULL;
     selectedItem = NULL;
     this->close();
     emit availableItemWindowClosed();
