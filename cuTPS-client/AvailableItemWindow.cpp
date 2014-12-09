@@ -3,10 +3,10 @@
 
 #include <QDebug>
 
-AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, QVector<Textbook*> *books) :
+AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, QMap<Course*, QList<Textbook*>*>* tmap) :
     QDialog(parent),
     requestAPI(api),
-    listedBooks(books),
+    textbookMap(tmap),
     ui(new Ui::AvailableItemWindow)
 {
     ui->setupUi(this);
@@ -16,6 +16,11 @@ AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, 
 
     this->bookId = -1;
     this->chapterId = -1;
+
+    QMap<Course*, QList<Textbook*>*>::Iterator i;
+    for (i = textbookMap->begin(); i != textbookMap->end(); ++i) {
+        listedBooks->append(*(i.value()));
+    }
 
 
     this->displayBookList();
@@ -39,7 +44,7 @@ void AvailableItemWindow::setMessage(QString message) {
     ui->message->show();
 }
 
-Textbook* AvailableItemWindow::getBookFromList(int bookId, QVector<Textbook *> *books)
+Textbook* AvailableItemWindow::getBookFromList(int &bookId, QList<Textbook *> *books)
 {
     for (Textbook *book: *books) {
         if (book->getId() == bookId) {
@@ -50,7 +55,7 @@ Textbook* AvailableItemWindow::getBookFromList(int bookId, QVector<Textbook *> *
     return NULL;
 }
 
-Chapter* AvailableItemWindow::getChapterFromList(int bookId, int chapterId, QVector<Textbook *> *books)
+Chapter* AvailableItemWindow::getChapterFromList(int &bookId, int &chapterId, QList<Textbook *> *books)
 {
     Textbook *theBook = getBookFromList(bookId, books);
 
