@@ -1,32 +1,48 @@
-#include "AddUserTask.h"
+#include "BookLinkTask.h"
 
 #include <QDebug>
-#include <QUuid>
-#include <QByteArray>
-#include <QDataStream>
 
-#include "Entity/NetResponse.h"
-#include "Entity/Student.h"
+#include "Defines.h"
 
-AddUserTask::AddUserTask(Server* srv)
+using namespace TPSNetProtocolDef;
+
+BookLinkTask::BookLinkTask(Server* srv)
     : WorkerTask(srv)
 {
 }
 
-void AddUserTask::run()
+void BookLinkTask::run()
 {
-    qDebug() << "AddUserTask task was run";
+    qDebug() << "Book link unlink task run!";
     qDebug() << "Doing job for session: " << sessionId
              << "Request: " << request->getRequestId();
 
     QDataStream in(request->getData(), QIODevice::ReadOnly);
-    Student usr;
-    QString pwd;
-    qint32 usrId;
 
-    in >> usr >> pwd;
+    qint32 courseId, textId;
 
-    ServerResponse r = server->registerStudentUser(sessionId, usr, pwd, &usrId);
+    in >> courseId >> textId;
+
+    ServerResponse r;
+    switch (request->getInvocation())
+    {
+
+    case IBookLink:
+    {
+        r = server->linkTextbook(sessionId, courseId, textId);
+        break;
+    }
+
+    case IBookUnlink:
+    {
+        r = server->unlinkTextbook(sessionId, courseId, textId);
+        break;
+    }
+
+    default:
+        r.code = Fail;
+        break;
+    }
 
     NetResponse* response = new NetResponse();
     response->setInvocation(request->getInvocation());
@@ -38,9 +54,10 @@ void AddUserTask::run()
     {
         QByteArray responseDataBytes;
         QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
-        outData << usrId;
+        outData << textId;
         response->setData(responseDataBytes);
     }
 
     emit result(response->getResponseCode(), response);
 }
+
