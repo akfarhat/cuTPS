@@ -5,8 +5,6 @@ ViewRequiredBooksControl::ViewRequiredBooksControl(CartRequestsAPI *api)
 {
     itemWindow = NULL;
 
-    QObject::connect(requestAPI->getNetwork(), SIGNAL(textbookLookupCompleted(QUuid, int, QVector<qint32> *)), this, SLOT(textbookLookupCompleted(QUuid, int, QVector<qint32> *)));
-    QObject::connect(requestAPI->getNetwork(), SIGNAL(textbookDetailsReceived(QUuid, int, QVector<Textbook *> *)), this, SLOT(textbookDetailsReceived(QUuid, int, QVector<Textbook *> *)));
     connect(requestAPI->getNetwork(),
             SIGNAL(requiredBooksReceived(QUuid,int,QMap<Course*,QList<Textbook*>*>*)),
             this,
