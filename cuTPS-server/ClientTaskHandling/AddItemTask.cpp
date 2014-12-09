@@ -37,6 +37,7 @@ void AddItemTask::run()
             // Replace an existing one
             r = server->replaceTextbook(sessionId, itemId, text);
         }
+        break;
     }
 
     case IAddChapter:
@@ -52,6 +53,7 @@ void AddItemTask::run()
         } else {
             r = server->replaceChapter(sessionId, itemId, ch);
         }
+        break;
     }
 
     case IAddSection:
@@ -68,10 +70,12 @@ void AddItemTask::run()
         } else {
             r = server->replaceSection(sessionId, itemId, s);
         }
+        break;
     }
 
     default:
         r.code = Fail;
+        break;
     }
 
     NetResponse* response = new NetResponse();

@@ -41,6 +41,8 @@ public slots:
     // server responses with requested data
     void textbookListReceived(QUuid requestId, int code, QList<Textbook*>*);
     void courseListReceived(QUuid requestId, int code, QList<Course*>*);
+    void updateCompleted(QUuid requestId, int code,
+                         InvocationDescriptor invo, qint32 id);
 
 private slots:
     void on_backButton_clicked();

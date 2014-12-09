@@ -23,22 +23,27 @@ WorkerTask* ContentMgrTaskFactory::createTask(
     case IAddSection:
     case IAddBook: {
         return new AddItemTask(srvInst);
+        break;
     }
 
     case IAddCourse: {
         return new AddCourseTask(srvInst);
+        break;
     }
 
     case IGetBookDetails: {
         return new GetBookDetailsTask(srvInst);
+        break;
     }
 
     case IGetAllBooks: {
         return new GetAllBooksTask(srvInst);
+        break;
     }
 
     case IGetAllCourses: {
         return new GetAllCoursesTask(srvInst);
+        break;
     }
 
     case IRmBook:

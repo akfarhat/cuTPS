@@ -18,10 +18,12 @@ WorkerTask* LoginTaskFactory::createTask(
 
     case ILogin: {
         return new LoginTask(srvInst);
+        break;
     }
 
     default: {
         throw PermissionDeniedExc();
+        break;
     }
 
     }

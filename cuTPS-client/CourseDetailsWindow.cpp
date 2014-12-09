@@ -148,6 +148,15 @@ void CourseDetailsWindow::on_backButton_clicked()
     emit courseNavigateBack();
 }
 
+void CourseDetailsWindow::updateCompleted(QUuid requestId, int code,
+                     InvocationDescriptor invo, qint32 id)
+{
+    qDebug() << "CourseDetailsWindow::updateCompleted! "
+             << requestId << " code=" << code;
+
+    this->refreshCourseList();
+}
+
 void CourseDetailsWindow::on_courseList_clicked(const QModelIndex &index)
 {
     this->displayCourseDetails(this->courses->at(index.row()));

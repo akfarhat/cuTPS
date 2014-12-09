@@ -319,7 +319,7 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& 
 
     QString queryString = "insert into SellableItem (name, price_cents, available) values (\"" +
                            textbook.getName() + "\", " +
-            QString::number(textbook.getPriceCents()) + ", " +
+                           QString::number(textbook.getPriceCents()) + ", " +
                            QString::number(textbook.getAvailability()) + ");";
 
     qDebug() << "Server::addTextbook running query: '" << queryString << "'";
@@ -341,7 +341,7 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& 
 
     queryString = "insert into Textbook (edition, authors, isbn) values (\"" +
                   textbook.getEdition() + "\", \"" +
-                  textbook.getEdition() + "\", \"" +
+                  textbook.getAuthors() + "\", \"" +
                   textbook.getISBN() + "\");";
 
     result = dbManager->runQuery(queryString, &query);
@@ -806,7 +806,9 @@ ServerResponse Server::getAllTextbooks(QUuid sessionID, QVector<Textbook> &textb
     QSqlQuery query;
 
     QString queryString = "";
-    queryString += "select id, name, edition, authors, price_cents, available, isbn from Textbook, SellableItem;";
+    queryString += "SELECT id, name, edition, authors, price_cents, available, isbn ";
+    queryString += "FROM Textbook tb JOIN SellableItem s ";
+    queryString += "ON (s.id = tb.item_id); ";
 
     qDebug() << "query string: '" << queryString << "'";
     bool result = dbManager->runQuery(queryString, &query);
@@ -856,10 +858,12 @@ ServerResponse Server::getAllCourses(QUuid sessionID, QVector<Course>& courses)
 
         while(query.next()) {
             Course* course = new Course(query.value(0).toInt(),
-                                       query.value(1).toString(),
-                                       query.value(2).toString(),
-                                       query.value(3).toString(),
-                                       query.value(4).toInt());
+                                        query.value(1).toString(),
+                                        query.value(2).toString(),
+                                        query.value(3).toString(),
+                                        query.value(4).toInt());
+            qDebug() << "course row with id="
+                     << QString::number(course->getId());
             courses.append(*course);
         }
 

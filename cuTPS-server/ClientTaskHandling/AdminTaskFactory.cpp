@@ -18,18 +18,22 @@ WorkerTask* AdminTaskFactory::createTask(
 
     case IGenerateReport: {
         return new GenerateReportTask(srvInst);
+        break;
     }
 
     case IAddUser: {
         return new AddUserTask(srvInst);
+        break;
     }
 
     case IBanUser: {
         return new BanUserTask(srvInst);
+        break;
     }
 
     default: {
         throw PermissionDeniedExc();
+        break;
     }
 
     }

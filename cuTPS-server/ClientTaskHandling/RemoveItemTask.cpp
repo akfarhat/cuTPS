@@ -28,28 +28,24 @@ void RemoveItemTask::run()
     case IRmBook:
     {
         r = server->removeSellableItem(sessionId, itemId);
-        r.code = Fail;
         break;
     }
 
     case IRmChapter:
     {
         r = server->removeSellableItem(sessionId, itemId);
-        r.code = Fail;
         break;
     }
 
     case IRmSection:
     {
         r = server->removeSellableItem(sessionId, itemId);
-        r.code = Fail;
         break;
     }
 
     default:
         r.code = Fail;
         break;
-
     }
 
     NetResponse* response = new NetResponse();

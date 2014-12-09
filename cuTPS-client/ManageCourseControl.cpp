@@ -39,6 +39,9 @@ ManageCourseControl::ManageCourseControl(ContentManagementInterface *cmIf,
 
     connect(this->networking, SIGNAL(textbookListReceived(QUuid,int,QList<Textbook*>*)),
             this->courseDetailsWin, SLOT(textbookListReceived(QUuid,int,QList<Textbook*>*)));
+
+    connect(this->networking, SIGNAL(updateCompleted(QUuid,int,InvocationDescriptor,qint32)),
+            this->courseDetailsWin, SLOT(updateCompleted(QUuid,int,InvocationDescriptor,qint32)));
 }
 
 ManageCourseControl::~ManageCourseControl()
@@ -58,8 +61,6 @@ void ManageCourseControl::saveNewCourse(QString code, QString name)
     // TODO: we are not currently handling the response for this
     QUuid reqId;
     ctrl.addCourse(reqId, c);
-
-    this->courseDetailsWin->refreshCourseList();
 }
 
 void ManageCourseControl::modifyCourse(int courseId,
@@ -77,8 +78,6 @@ void ManageCourseControl::modifyCourse(int courseId,
     // TODO: not currently handling response
     QUuid reqId;
     ctrl.modifyCourse(reqId, c);
-
-    this->courseDetailsWin->refreshCourseList();
 }
 
 void ManageCourseControl::deleteCourse(int courseId)
@@ -90,8 +89,6 @@ void ManageCourseControl::deleteCourse(int courseId)
     // TODO: not currently handling response
     QUuid reqId;
     delCtrl.deleteCourse(reqId, courseId);
-
-    this->courseDetailsWin->refreshCourseList();
 }
 
 void ManageCourseControl::removeRequiredBook(int bookId, int courseId)

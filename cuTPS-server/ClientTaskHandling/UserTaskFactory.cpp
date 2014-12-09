@@ -18,18 +18,22 @@ WorkerTask* UserTaskFactory::createTask(
 
     case IGetBookDetails: {
         return new GetBookDetailsTask(srvInst);
+        break;
     }
 
     case IGetRequiredBooks: {
         return new GetRequiredBooksTask(srvInst);
+        break;
     }
 
     case ISubmitOrder: {
         return new SubmitOrderTask(srvInst);
+        break;
     }
 
     default: {
         throw PermissionDeniedExc();
+        break;
     }
 
     }
