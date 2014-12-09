@@ -54,6 +54,14 @@ void RemoveItemTask::run()
     response->setResponseCode(r.code == Fail ? 0x0 : 0x1);
     response->setSessionId(sessionId);
 
+    if (response->getResponseCode() > 0)
+    {
+        QByteArray responseDataBytes;
+        QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
+        outData << itemId;
+        response->setData(responseDataBytes);
+    }
+
     emit result(response->getResponseCode(), response);
 }
 

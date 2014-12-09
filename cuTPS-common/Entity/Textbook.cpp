@@ -45,7 +45,7 @@ void Textbook::setISBN(const QString& newISBN) {
 }
 
 QString Textbook::getDetails() const {
-    return QString("[Textbook: ID=%1, '%2' by %6, %7. ISBN=%3, $$=%4, OnSell? %5]")
+    return QString("Item ID: %1,\nName: '%2'\nAuthors: %6\nEdition: %7\nISBN: %3\nPrice: $%4\nAvailable for Sale: %5")
             .arg(QString::number(getId()),
                  getName(),
                  getISBN(),

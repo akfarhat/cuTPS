@@ -57,7 +57,7 @@ QString Section::getDetails() const {
     }
 
     QString details = "";
-    details += "Type: Section\nID:";
+    details += "Item ID: ";
     details += QString::number(this->getId());
     details += "\nSection Name: ";
     details += this->getName();
@@ -71,7 +71,7 @@ QString Section::getDetails() const {
     details += textbookName;
     details += "\nPrice: $";
     details += QString::number(this->getPriceCents() / 100.00f);
-    details += "\nAvailable: ";
+    details += "\nAvailable for Sale: ";
     details += (this->getAvailability() == true) ? "yes" : "no";
     return details;
 }

@@ -734,6 +734,53 @@ ServerResponse Server::removeSellableItem(QUuid sessionID, qint32 id)
     return response;
 }
 
+ServerResponse Server::linkTextbook(QUuid sessionId, qint32 courseId, qint32 textId)
+{
+    ServerResponse response;
+    response.sessionID = sessionId;
+    QSqlQuery query;
+
+    QString queryString = "insert into Course_Textbook (course_id, textbook_id) " \
+            "values (" + QString::number(courseId) + ", " + QString::number(textId)
+            + ");";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+    } else {
+        response.code = Fail;
+        qDebug() << "Error while linking textbook: " << query.lastError().text();
+        return response;
+    }
+
+    return response;
+}
+
+ServerResponse Server::unlinkTextbook(QUuid sessionId, qint32 courseId, qint32 textId)
+{
+    ServerResponse response;
+    response.sessionID = sessionId;
+    QSqlQuery query;
+
+    QString queryString = "delete from Course_Textbook " \
+            "where course_id=" + QString::number(courseId)
+            + " and text_id=" + QString::number(textId) + ";";
+
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+    } else {
+        response.code = Fail;
+        qDebug() << "Error while unlinking textbook: " << query.lastError().text();
+        return response;
+    }
+
+    return response;
+}
+
 ServerResponse Server::registerStudentUser(QUuid sessionID, Student& usr, QString pwd, qint32* id)
 {
     ServerResponse response;
