@@ -43,8 +43,5 @@ QUuid CourseRequestAPI::unlinkText(int courseId, int textId)
 
 QUuid CourseRequestAPI::deleteCourse(int courseId)
 {
-    QUuid id;
-    return id;
-
-    // TODO: implement and invoke the networking method
+    return this->networking->removeCourse(courseId);
 }

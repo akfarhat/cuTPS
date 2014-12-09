@@ -47,20 +47,25 @@ void CartDetailsWindow::updateView() {
     ui->typeList->clear();
     ui->priceList->clear();
 
-    // Populate the lists
-    for (SellableItem *item: requestAPI->getStudent()->getCart()->getItems()) {
-        ui->itemList->addItem(item->getName());
-        ui->typeList->addItem(item->getType());
-        ui->priceList->addItem("$" + QString::number(item->getPriceCents() / 100.00f));
+    if (requestAPI->getStudent()) {
+        // Populate the lists
+
+        for (SellableItem *item: requestAPI->getStudent()->getCart()->getItems()) {
+            ui->itemList->addItem(item->getName());
+            ui->typeList->addItem(item->getType());
+            ui->priceList->addItem("$" + QString::number(item->getPriceCents() / 100.00f));
+        }
+
+        ui->totalPrice->setText(QString::number(requestAPI->getStudent()->getCart()->getTotalPrice() / 100.00f));
+
+        // Disable place order and cancel order buttons if cart is empty
+
+        if (requestAPI->getStudent()->getCart()->getItems().empty()) {
+            ui->cancelOrderButton->setEnabled(false);
+            ui->placeOrderButton->setEnabled(false);
+        }
     }
 
-    ui->totalPrice->setText(QString::number(requestAPI->getStudent()->getCart()->getTotalPrice() / 100.00f));
-
-    // Disable place order and cancel order buttons if cart is empty
-    if (requestAPI->getStudent()->getCart()->getItems().empty()) {
-        ui->cancelOrderButton->setEnabled(false);
-        ui->placeOrderButton->setEnabled(false);
-    }
 }
 
 

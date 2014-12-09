@@ -20,30 +20,32 @@ void GetRequiredBooksTask::run()
     qDebug() << "Doing job for session: " << sessionId
              << "Request: " << request->getRequestId();
 
-    QDataStream in(request->getData(), QIODevice::ReadOnly);
-
-    QVector<Course> courses;
-    // TODO: get list of actual user's courses
-    //ServerResponse getCourses = server->getStudentCourses(sessionId, username, courses)
-    Course c;
-    c.setId(42);
-    c.addRequiredTextId(1);
-    c.addRequiredTextId(2);
-    courses.append(c);
-
     NetResponse* response = new NetResponse();
     response->setInvocation(request->getInvocation());
     response->setRequestId(request->getRequestId());
-    //response->setResponseCode(getBooks.code == Fail ? 0x0 : 0x1);
-    response->setResponseCode(0x1);
     response->setSessionId(sessionId);
+    ServerResponse r;
+    QVector<Course> courses;
+    int sessionUserId;
+
+    r = server->getSessionUserId(sessionId, sessionUserId);
+
+    if (r.code == Fail)
+    {
+        emit result(response->getResponseCode(), response);
+        return;
+    }
+
+    r = server->getStudentCourses(sessionId, sessionUserId, courses);
 
     QByteArray responseDataBytes;
     QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
 
     if (response->getResponseCode() > 0)
     {
-        // |numcourses|(|course||numbooks||..books..|)(|course||numbooks|...
+        // Format:
+        // |numcourses=n|(|course||numbooks||..books..|)(|course||numbooks|...books..|)..n
+
         outData << static_cast<qint32>(courses.size());
 
         for (Course course : courses)

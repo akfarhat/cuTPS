@@ -136,6 +136,9 @@ ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCre
                                                      creds.password,
                                                      hash);
             if (success) {
+                qDebug() << "Successful login as " << creds.username
+                         << "\nPassword: " << hash;
+
                 response.code = Success;
                 int uRole = query.value(2).toInt();
 
@@ -862,8 +865,10 @@ ServerResponse Server::getAllCourses(QUuid sessionID, QVector<Course>& courses)
                                         query.value(2).toString(),
                                         query.value(3).toString(),
                                         query.value(4).toInt());
+
             qDebug() << "course row with id="
                      << QString::number(course->getId());
+
             courses.append(*course);
         }
 

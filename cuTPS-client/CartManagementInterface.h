@@ -29,7 +29,7 @@ class CartManagementInterface : public QDialog
     Q_OBJECT
 
 public:
-    explicit CartManagementInterface(QWidget *, ClientNetworkHandler *, Student *);
+    explicit CartManagementInterface(QWidget *, ClientNetworkHandler *);
     ~CartManagementInterface();
 
     Student* getStudent();
