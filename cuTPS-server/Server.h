@@ -92,6 +92,8 @@ public:
     ServerResponse getTextbookDetails(QUuid, int, Textbook**);
 
     // Get a list of chapter and section objects in a particular textbook
+    ServerResponse getTextbookChapters(QUuid, int, Textbook*);
+    ServerResponse getChapterSections(QUuid, int, QVector<Section>&);
     ServerResponse getTextbookParts(QUuid, int, QVector<SellableItem*>*);
 
     // submit a student's order to the billing system

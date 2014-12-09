@@ -1015,6 +1015,13 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
         }
 
         if (found) {
+            QVector<Chapter> chapters;
+            getTextbookChapters(sessionID, (*textbook)->getId(), *textbook);
+
+            for(Chapter c : chapters) {
+                (*textbook)->addChapter(c);
+            }
+
             response.code = Success;
             response.message = "";
         }
@@ -1038,6 +1045,101 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
     return response;
 }
 
+ServerResponse Server::getTextbookChapters(QUuid sessionID, int textbookID, Textbook* textbook)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select Chapter.item_id, Chapter.chapter_num, SellableItem.name, SellableItem.price, SellableItem.available from Chapter ";
+    queryString += "where Chapter.textbook_id = ";
+    queryString += QString::number(textbookID);
+    queryString += ";";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        while(query.next()) {
+            Chapter* chapter = new Chapter(
+                        query.value(0).toInt(),
+                        NULL,
+                        query.value(1).toInt(),
+                        query.value(2).toString(),
+                        query.value(3).toInt(),
+                        query.value(4).toBool()
+                        );
+
+            chapter->setParentTextbookId(textbookID);
+
+            QVector<Section> sections;
+            getChapterSections(sessionID, chapter->getId(), sections);
+
+            for(Section s : sections) {
+                chapter->addSection(s);
+            }
+
+            textbook->addChapter(*chapter);
+        }
+
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+        return response;
+    }
+
+
+    response.code = Success;
+    response.message = "";
+
+    return response;
+}
+
+ServerResponse Server::getChapterSections(QUuid sessionID, int chapterID, QVector<Section>& sections)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select Section.item_id, Section.section_num, SellableItem.name, SellableItem.price, SellableItem.available from Section ";
+    queryString += "where Section.chapter_id = ";
+    queryString += QString::number(chapterID);
+    queryString += ";";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        while(query.next()) {
+            Section* section = new Section(
+                        query.value(0).toInt(),
+                        NULL,
+                        query.value(1).toInt(),
+                        query.value(2).toString(),
+                        query.value(3).toInt(),
+                        query.value(4).toBool()
+                        );
+
+            section->setParentChapterId(chapterID);
+            sections.append(*section);
+        }
+
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+        return response;
+    }
+
+    response.code = Success;
+    response.message = "";
+
+    return response;
+}
+
 ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector<SellableItem*>* parts)
 {
     ServerResponse response;
@@ -1048,7 +1150,7 @@ ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector
     QString queryString = "";
     queryString += "select Chapter.item_id, Chapter.chapter_num, SellableItem.name, SellableItem.price, SellableItem.available from Chapter ";
     queryString += "where Chapter.textbook_id = ";
-    queryString += textbookID;
+    queryString += QString::number(textbookID);
     queryString += ";";
 
     bool result = dbManager->runQuery(queryString, &query);
@@ -1082,7 +1184,7 @@ ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector
         queryString = "";
         queryString += "select Section.item_id, Section.section_num, SellableItem.name, SellableItem.price, SellableItem.available from Section ";
         queryString += "where Section.chapter_id = ";
-        queryString += chapter->getId();
+        queryString += QString::number(chapter->getId());
         queryString += ";";
 
         result = dbManager->runQuery(queryString, &query);
