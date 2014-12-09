@@ -640,7 +640,7 @@ ServerResponse Server::removeCourse(QUuid sessionID, qint32 id)
 
     QString queryString = "";
     queryString += "delete from Course where id = ";
-    queryString += id;
+    queryString += QString::number(id);
     queryString += ";";
 
     qDebug() << "About to delete Course, query'"
