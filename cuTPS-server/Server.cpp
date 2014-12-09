@@ -282,8 +282,6 @@ ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32& newId)
 
 ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& newId)
 {
-    // TODO: For every chapter in textbook (i.e. textbook.getChapterList()) -- add them all as well.
-    //       Same goes for every section of every chapter (i.e. chapter.getSectionList())
     ServerResponse response;
     response.sessionID = sessionID;
 
@@ -311,7 +309,9 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& 
         return response;
     }
 
-    queryString = "insert into Textbook (isbn) values (\"" +
+    queryString = "insert into Textbook (edition, authors, isbn) values (\"" +
+                  textbook.getEdition() + "\", ";
+                  textbook.getEdition() + "\", ";
                   textbook.getISBN() + "\");";
 
     result = dbManager->runQuery(queryString, &query);
@@ -334,7 +334,7 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& 
     qint32 stub;
     for (Chapter* c : textbook.getChapterList())
     {
-        addChapter(sessionID, *c, &stub);
+        addChapter(sessionID, *c, stub);
     }
 
     return response;
@@ -342,7 +342,6 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& 
 
 ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32& newId)
 {
-    // TODO: Also add every section of the chapter -- i.e. chapter.getSectionList()
     ServerResponse response;
     response.sessionID = sessionID;
     QSqlQuery query;
@@ -381,7 +380,7 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32& new
 
     for (Section* s : chapter.getSectionList())
     {
-        addSection(sessionID, *s, &lastInsertId);
+        addSection(sessionID, *s, lastInsertId);
     }
 
     return response;
@@ -429,39 +428,208 @@ ServerResponse Server::addSection(QUuid sessionID, Section& section, qint32& new
     return response;
 }
 
-ServerResponse Server::replaceCourse(QUuid sessionID, qint32 id, Course& c)
+ServerResponse Server::replaceCourse(QUuid sessionID, qint32 id, Course& course)
 {
-    // TODO: Implement
     ServerResponse response;
     response.sessionID = sessionID;
-    response.code = Fail;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "update Course set ";
+    queryString += "code = \"" + course.getCourseCode() + "\", ";
+    queryString += "name = \"" + course.getCourseName() + "\", ";
+    queryString += "termSection = \"" + course.getTermSection().at(0) + "\", ";
+    queryString += "termYear = " + course.getTermYear() + " ";
+    queryString += "where id = " + id + ";";
+
+    qDebug() << "About to replace Course, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace course: " << response.message;
+        return response;
+    }
+
     return response;
 }
 
-ServerResponse Server::replaceTextbook(QUuid sessionID, qint32 id, Textbook& c)
+ServerResponse Server::replaceTextbook(QUuid sessionID, qint32 id, Textbook& textbook)
 {
-    // TODO: Implement
     ServerResponse response;
     response.sessionID = sessionID;
-    response.code = Fail;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "update SellableItem set ";
+    queryString += "name = \"" + textbook.getName() + "\", ";
+    queryString += "price_cents = " + textbook.getPriceCents() + ", ";
+    queryString += "available = " + (textbook.getAvailability()? 1 : 0) + " ";
+    queryString += "where id = " + id + ";";
+
+    qDebug() << "About to replace SellableItem, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace SellableItem: " << response.message;
+        return response;
+    }
+
+    queryString = "";
+    queryString += "update Textbook set ";
+    queryString += "edition = \"" + textbook.getEdition() + "\", ";
+    queryString += "authors = \"" + textbook.getAuthors() + "\", ";
+    queryString += "isbn = \"" + textbook.getISBN() + "\" ";
+    queryString += "where item_id = " + id + ";";
+
+    qDebug() << "About to replace Textbook, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace Textbook: " << response.message;
+        return response;
+    }
+
     return response;
 }
 
-ServerResponse Server::replaceChapter(QUuid sessionID, qint32 id, Chapter& c)
+ServerResponse Server::replaceChapter(QUuid sessionID, qint32 id, Chapter& chapter)
 {
-    // TODO: Implement
     ServerResponse response;
     response.sessionID = sessionID;
-    response.code = Fail;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "update SellableItem set ";
+    queryString += "name = \"" + chapter.getName() + "\", ";
+    queryString += "price_cents = " + chapter.getPriceCents() + ", ";
+    queryString += "available = " + (chapter.getAvailability()? 1 : 0) + " ";
+    queryString += "where id = " + id + ";";
+
+    qDebug() << "About to replace SellableItem, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace SellableItem: " << response.message;
+        return response;
+    }
+
+    queryString = "";
+    queryString += "update Chapter set ";
+    queryString += "chapter_num = " + chapter.getChapterNumber() + " ";
+    queryString += "where item_id = " + id + ";";
+
+    qDebug() << "About to replace Chapter, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace Chapter: " << response.message;
+        return response;
+    }
+
     return response;
 }
 
-ServerResponse Server::replaceSection(QUuid sessionID, qint32 id, Section& c)
+ServerResponse Server::replaceSection(QUuid sessionID, qint32 id, Section& section)
 {
-    // TODO: Implement
     ServerResponse response;
     response.sessionID = sessionID;
-    response.code = Fail;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "update SellableItem set ";
+    queryString += "name = \"" + section.getName() + "\", ";
+    queryString += "price_cents = " + section.getPriceCents() + ", ";
+    queryString += "available = " + (section.getAvailability()? 1 : 0) + " ";
+    queryString += "where id = " + id + ";";
+
+    qDebug() << "About to replace SellableItem, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace SellableItem: " << response.message;
+        return response;
+    }
+
+    queryString = "";
+    queryString += "update Section set ";
+    queryString += "section_num = " + section.getSectionNumber() + " ";
+    queryString += "where item_id = " + id + ";";
+
+    qDebug() << "About to replace Section, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace Section: " << response.message;
+        return response;
+    }
+
     return response;
 }
 
@@ -770,7 +938,9 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
     qDebug() << "textBookId param in server API = " << textbookID;
 
     QString queryString = "";
-    queryString += "select SellableItem.id, SellableItem.name, SellableItem.price_cents, SellableItem.available, Textbook.isbn from Textbook, SellableItem ";
+    queryString += "select Textbook.item_id, Textbook.edition, Textbook.authors, Textbook.isbn, ";
+    queryString += "SellableItem.name, SellableItem.price_cents, ";
+    queryString += "SellableItem.available from Textbook, SellableItem ";
     queryString += "where Textbook.item_id = ";
     queryString += QString::number(textbookID);
     queryString += ";";
@@ -795,15 +965,13 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
             *textbook = new Textbook(
                         query.value(0).toInt(),
                         query.value(1).toString(),
-                        "<not implemented: Server.cpp:389>",
-                        "<not implemented: Server.cpp:390>",
-                        query.value(2).toInt(),
-                        query.value(3).toBool(),
-                        query.value(4).toString()
+                        query.value(2).toString(),
+                        query.value(3).toString(),
+                        query.value(4).toString(),
+                        query.value(5).toInt(),
+                        query.value(6).toBool()
                         );
         }
-
-        // TODO : send textbook object to client
 
         response.code = Success;
         response.message = "";

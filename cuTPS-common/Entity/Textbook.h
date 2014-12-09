@@ -29,6 +29,13 @@ public:
              int price,
              bool avail,
              QString isbn);
+    Textbook(int id,
+             QString edition,
+             QString authors,
+             QString isbn,
+             QString name,
+             int price,
+             bool avail);
     Textbook(QString, int);
     virtual ~Textbook();
 

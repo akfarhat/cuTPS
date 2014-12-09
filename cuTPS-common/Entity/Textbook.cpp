@@ -9,6 +9,12 @@ Textbook::Textbook(int textId, QString name, QString edition, QString authors, i
 {
 }
 
+Textbook::Textbook(int textId, QString edition, QString authors, QString iISBN, QString name, int price, bool isAvailable)
+    : SellableItem(textId, name, price, isAvailable),
+    authors(authors), isbn(iISBN), edition(edition)
+{
+}
+
 Textbook::Textbook(const Textbook& src) : SellableItem(src.getId(), src.getName(), src.getPriceCents(), src.getAvailability()), isbn(src.getISBN())
 {
     // Copy over all the chapters
