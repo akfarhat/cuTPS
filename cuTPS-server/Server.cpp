@@ -938,7 +938,7 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
     QString queryString = "";
     queryString += "select Textbook.item_id, Textbook.edition, Textbook.authors, Textbook.isbn, ";
     queryString += "SellableItem.name, SellableItem.price_cents, ";
-    queryString += "SellableItem.available from Textbook, SellableItem ";
+    queryString += "SellableItem.available from Textbook inner join SellableItem on id=item_id ";
     queryString += "where Textbook.item_id = ";
     queryString += QString::number(textbookID);
     queryString += ";";
@@ -951,7 +951,9 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
 
     // TODO : Handle case where attributes are null
     if (result) {
+        bool found = false;
         while(query.next()) {
+            found = true;
             // TODO: remove this debug log
             qDebug() << "Get Book Details("
                      << query.value(0).toInt() << ", "
@@ -971,8 +973,17 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
                         );
         }
 
-        response.code = Success;
-        response.message = "";
+        if (found) {
+            response.code = Success;
+            response.message = "";
+        }
+        else {
+            //textbook with given ID not found
+            *textbook = new Textbook();
+
+            response.code = Fail;
+            response.message = "textbook with given ID not found";
+        }
     }
     else {
 
