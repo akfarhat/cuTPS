@@ -74,6 +74,7 @@ void ManageCourseControl::modifyCourse(int courseId,
     ModifyCourseControl ctrl(this->requestAPI);
 
     Course c(courseCode, courseName);
+    c.setId(courseId);
 
     // TODO: not currently handling response
     QUuid reqId;
