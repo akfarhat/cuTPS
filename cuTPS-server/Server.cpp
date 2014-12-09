@@ -252,14 +252,14 @@ ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32& newId)
         queryString = "insert into Course (code, name, term_section, term_year) values (\"" +
             course.getCourseCode() + "\", \"" +
             course.getCourseName() + "\", \"\", " +
-            course.getTermYear() + ");";
+            QString::number(course.getTermYear()) + ");";
     }
     else {
         queryString = "insert into Course (code, name, term_section, term_year) values (\"" +
             course.getCourseCode() + "\", \"" +
             course.getCourseName() + "\", \"" +
             course.getTermSection().at(0) + "\", " +
-            course.getTermYear() + ");";
+            QString::number(course.getTermYear()) + ");";
     }
 
     qDebug() << "About to insert Course, query'"
@@ -286,9 +286,9 @@ ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32& newId)
     for (int textbookId : course.getRequiredTextIds()) {
         // TODO: this is we should form the query for all books and execute it once.
         QString queryString = "insert into Course_Textbook (course_id, textbook_id) values (";
-        queryString += course.getId();
+        queryString += QString::number(course.getId());
         queryString += ", ";
-        queryString += textbookId;
+        queryString += QString::number(textbookId);
         queryString += ");";
 
         result = dbManager->runQuery(queryString, &query);
@@ -855,10 +855,10 @@ ServerResponse Server::getAllCourses(QUuid sessionID, QVector<Course>& courses)
 
         while(query.next()) {
             Course* course = new Course(query.value(0).toInt(),
-                                       query.value(1).toString(),
-                                       query.value(2).toString(),
-                                       query.value(3).toString(),
-                                       query.value(4).toInt());
+                                        query.value(1).toString(),
+                                        query.value(2).toString(),
+                                        query.value(3).toString(),
+                                        query.value(4).toInt());
             courses.append(*course);
         }
 

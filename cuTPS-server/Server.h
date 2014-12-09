@@ -102,7 +102,7 @@ signals:
 public slots:
 
 private:
-    QMap<QUuid, int> openSessions;
+    QHash<QUuid, int> openSessions;
     DatabaseManager* dbManager;
 
 private:
