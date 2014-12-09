@@ -370,6 +370,8 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32& new
     queryString += QString::number(chapter.getParentTextbookId()) + ", ";
     queryString += QString::number(chapter.getChapterNumber()) + ");";
 
+    result = dbManager->runQuery(queryString, &query);
+
     if (!result) {
         qDebug() << "Error while adding chapter info: " << query.lastError().text();
     }
@@ -414,6 +416,8 @@ ServerResponse Server::addSection(QUuid sessionID, Section& section, qint32& new
     queryString += QString::number(newId) + ", ";
     queryString += QString::number(section.getParentChapterId()) + ", ";
     queryString += QString::number(section.getSectionNumber()) + ");";
+
+    result = dbManager->runQuery(queryString, &query);
 
     if (!result) {
         qDebug() << "Error while adding Section info: " << query.lastError().text();
@@ -949,7 +953,7 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
     if (result) {
         while(query.next()) {
             // TODO: remove this debug log
-            qDebug() << "Adding a textbook("
+            qDebug() << "Get Book Details("
                      << query.value(0).toInt() << ", "
                      << query.value(1).toString() << ", "
                      << query.value(2).toInt() << ", "
