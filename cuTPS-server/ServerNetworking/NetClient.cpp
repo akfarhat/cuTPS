@@ -48,6 +48,7 @@ void NetClient::setSocket(int sockdescriptor)
     }
 
     sessionId = response.sessionID;
+
     clientStatusUpdated();
 
     qDebug() << "New Session. ID=" << sessionId;

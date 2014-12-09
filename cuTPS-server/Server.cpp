@@ -184,8 +184,8 @@ ServerResponse Server::getSessionRole(QUuid sessionID, Role& userRole)
     int userID = openSessions.value(sessionID, -1);
 
     if (userID < 0) {
-        response.code = Fail;
-        response.message = "session not found or doesn't have associated user";
+        userRole = Role::Anonymous;
+        response.code = Success;
         return response;
     }
 
