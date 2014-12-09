@@ -77,6 +77,10 @@ WorkerTask* SUTaskFactory::createTask(
         return new RemoveItemTask(srvInst);
     }
 
+    case IGetAllCourses: {
+        return new GetAllCoursesTask(srvInst);
+    }
+
     default: {
         throw PermissionDeniedExc();
     }
