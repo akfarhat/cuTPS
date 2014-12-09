@@ -52,3 +52,9 @@ Run instructions:
 
 * run the cutpsd server daemon. Ensure that the server is started and proper database file is used. (look in the standard output)
 * run the cuTPS-client
+
+
+Credentials:
+------------
+Student user: johnsmith/alamepassword
+CM user: cm/pass
