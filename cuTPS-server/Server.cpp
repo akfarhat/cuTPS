@@ -467,12 +467,17 @@ ServerResponse Server::replaceCourse(QUuid sessionID, qint32 id, Course& course)
 
     QSqlQuery query;
 
+    qDebug() << "Server::replaceCourse, id=" << QString::number(id);
+
     QString queryString = "";
     queryString += "update Course set ";
     queryString += "code = \"" + course.getCourseCode() + "\", ";
     queryString += "name = \"" + course.getCourseName() + "\", ";
-    queryString += "termSection = \"" + QString(course.getTermSection().at(0)) + "\", ";
-    queryString += "termYear = " + QString::number(course.getTermYear()) + " ";
+    if (course.getTermSection() == "")
+        queryString += "term_section = \"\", ";
+    else
+        queryString += "term_section = \"" + QString(course.getTermSection().at(0)) + "\", ";
+    queryString += "term_year = " + QString::number(course.getTermYear()) + " ";
     queryString += "where id = " + QString::number(id) + ";";
 
     qDebug() << "About to replace Course, query'"
