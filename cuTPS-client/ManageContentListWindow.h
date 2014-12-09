@@ -13,6 +13,10 @@
 #include "AddChapterWindow.h"
 #include "AddSectionWindow.h"
 
+#include "Entity/Section.h"
+#include "Entity/Chapter.h"
+#include "Entity/Textbook.h"
+
 // Forward decleration to avoid circular dep
 class ManageContentControl;
 
@@ -30,8 +34,17 @@ public:
                                      ContentRequestAPI *api = NULL);
     ~ManageContentListWindow();
 
+    void refreshContents();
+
 signals:
     void navigateBack();
+    void deleteItem(int, QString);
+
+public slots:
+    // Response from networking for getAllBooks()
+    void textbookListReceived(QUuid,int,QList<Textbook*>*);
+    void updateCompleted(QUuid requestId, int code,
+                         InvocationDescriptor invo, qint32 id);
 
 private slots:
     void on_backButton_clicked();
@@ -44,6 +57,10 @@ private slots:
 
     void on_newContentButton_clicked();
 
+    void on_deleteItemButton_clicked();
+
+    void on_modifyItemButton_clicked();
+
 private:
     int contentDepth;
 
@@ -53,7 +70,11 @@ private:
 
     ContentRequestAPI *requestAPI;
 
-    QVector<SellableItem*> *listedItems;
+    // There is probably a much nicer approach to this
+    // using polymorphism. Taking a shortcut to get a P.O.C.
+    QVector<Textbook*> *textbookList;
+    QVector<Chapter*> *chapterList;
+    QVector<Section*> *sectionList;
 
     AddTextbookWindow *addBookWin;
 
@@ -68,12 +89,20 @@ private:
     int bookId;
     int chapterId;
 
+    SellableItem *getSelectedItem();
+    SellableItem *getSelectedItem(int);
     void displayBookList();
-    void displayChapterList(int);
-    void displaySectionList(int);
+    void displayChapterList(Textbook*);
+    void displaySectionList(Chapter*);
     void addTextbook();
     void addChapter();
     void addSection();
+    void modTextbook();
+    void modChapter();
+    void modSection();
+    void clearTextbooks();
+    void clearChapters();
+    void clearSections();
 };
 
 #endif // MANAGECONTENTLISTWINDOW_H

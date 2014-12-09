@@ -3,14 +3,13 @@
 #include <QString>
 #include <QVector>
 #include <QDebug>
+#include <QList>
 #include <iostream>
 
 #include "Entity/NetRequest.h"
 #include "Entity/NetResponse.h"
 
 #include "Defines.h"
-#include "Utils.h"
-
 
 #define ASSERT_VALID                                                    \
     if (!isValid())                                                     \
@@ -19,7 +18,7 @@
         return QUuid();                                                 \
     }                                                                   \
 
-using namespace TPSNetProtocolDefs;
+using namespace TPSNetProtocolDef;
 
 ClientNetworkHandler::ClientNetworkHandler()
 {
@@ -98,7 +97,7 @@ QUuid ClientNetworkHandler::login(UserCredentials& credentials)
     return requestId;
 }
 
-QUuid ClientNetworkHandler::getRequiredBooks(QString &username)
+QUuid ClientNetworkHandler::getRequiredBooks()
 {
     ASSERT_VALID
 
@@ -108,12 +107,45 @@ QUuid ClientNetworkHandler::getRequiredBooks(QString &username)
     request.setInvocation(IGetRequiredBooks);
     request.setRequestId(requestId);
 
-    QByteArray data;
-    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
 
-    outDataStream << username;
+    outStream << request;
 
-    request.setData(data);
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::getAllBooks()
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IGetAllBooks);
+    request.setRequestId(requestId);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::getAllCourses()
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IGetAllCourses);
+    request.setRequestId(requestId);
 
     QByteArray requestBytes;
     QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
@@ -146,6 +178,60 @@ QUuid ClientNetworkHandler::getBookDetails(const QVector<qint32>& ids)
     qDebug() << "forming book request for these guys: " << ids;
 
     outDataStream << ids;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::linkTextbook(qint32 courseId, qint32 textId)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IBookLink);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << courseId << textId;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::unlinkTextbook(qint32 courseId, qint32 textId)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IBookUnlink);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << courseId << textId;
 
     request.setData(data);
 
@@ -240,6 +326,224 @@ QUuid ClientNetworkHandler::addBook(Textbook& text)
     return requestId;
 }
 
+QUuid ClientNetworkHandler::addChapter(qint32 textId, Chapter& c)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IAddChapter);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << textId;
+    outDataStream << c;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::addSection(qint32 textId, qint32 chId, Section& s)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IAddSection);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << textId << chId << s;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::removeBook(qint32 id)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IRmBook);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << id;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::removeChapter(qint32 id)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IRmChapter);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << id;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::removeSection(qint32 id)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IRmSection);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << id;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::removeCourse(qint32 id)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IRmCourse);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << id;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::addStudentUser(Student& usr, QString passwd)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IAddUser);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << usr;
+    outDataStream << passwd;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
+QUuid ClientNetworkHandler::banUser(qint32 uid)
+{
+    ASSERT_VALID
+
+    QUuid requestId = QUuid::createUuid();
+
+    NetRequest request;
+    request.setInvocation(IBanUser);
+    request.setRequestId(requestId);
+
+    QByteArray data;
+    QDataStream outDataStream(&data, QIODevice::WriteOnly);
+
+    outDataStream << uid;
+
+    request.setData(data);
+
+    QByteArray requestBytes;
+    QDataStream outStream(&requestBytes, QIODevice::WriteOnly);
+
+    outStream << request;
+
+    connection->write(requestBytes);
+
+    return requestId;
+}
+
 QTcpSocket::SocketState ClientNetworkHandler::getSocketState() const
 {
     return connection->state();
@@ -274,7 +578,7 @@ void ClientNetworkHandler::disconnected()
 void ClientNetworkHandler::readyRead()
 {
     QDataStream in(connection);
-    in.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    in.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     if (blockSize == 0)
     {
@@ -323,63 +627,143 @@ void ClientNetworkHandler::readyRead()
 
     switch (response.getInvocation()) {
 
-    case IAddBook: {
-        qDebug() << "emitting update completed evt";
-        emit updateCompleted(response.getInvocation(),
-                             response.getRequestId(),
-                             (int)response.getResponseCode());
+    case IAddBook:
+    case IAddChapter:
+    case IAddSection:
+    case IAddCourse:
+    case IAddUser:
+    case IBanUser:
+    case IRmBook:
+    case IRmChapter:
+    case IRmSection:
+    case IRmCourse:
+    case IBookLink:
+    case IBookUnlink:
+    {
+        QDataStream in(response.getData(), QIODevice::ReadOnly);
+
+        qint32 id;
+        in >> id;
+
+        qDebug() << "emitting update completed evt. id=" << id;
+        emit updateCompleted(response.getRequestId(),
+                             (int)response.getResponseCode(),
+                             response.getInvocation(),
+                             id);
         break;
     }
 
-    case IAddCourse: {
-        qDebug() << "emitting update completed evt";
-        emit updateCompleted(response.getInvocation(),
-                             response.getRequestId(),
-                             response.getResponseCode());
+    case IGetAllBooks:
+    {
+        QDataStream in(response.getData(), QIODevice::ReadOnly);
+
+        QList<Textbook*>* bList = new QList<Textbook*>();
+
+        qint32 numBooks;
+        in >> numBooks;
+
+        for (int i = 0; i < numBooks; ++i) {
+            Textbook* book = new Textbook();
+            in >> *book;
+            bList->append(book);
+            qint8 stub;
+            in >> stub;
+        }
+
+        qDebug() << "emitting textbookListReceived(size="<<bList->size()<<")";
+        emit textbookListReceived(response.getRequestId(),
+                                     response.getResponseCode(),
+                                     bList);
         break;
     }
 
-    case IGetBookDetails: {
+    case IGetBookDetails:
+    {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
 
         qint32 numBooks;
         in >> numBooks;
 
-        QVector<Textbook*>* vec = new QVector<Textbook*>();
+        if (numBooks > 1 || response.getInvocation() == IGetAllBooks) {
+            QList<Textbook*>* bList = new QList<Textbook*>();
 
-        for (int i = 0; i < numBooks; ++i)
-        {
+            while (numBooks > 0) {
+                Textbook* book = new Textbook();
+                in >> *book;
+                bList->append(book);
+                numBooks--;
+            }
+
+            qDebug() << "emitting textbookListReceived(size="<<bList->size()<<")";
+            emit textbookListReceived(response.getRequestId(),
+                                         response.getResponseCode(),
+                                         bList);
+        } else if (numBooks == 1) {
             Textbook* book = new Textbook();
             in >> *book;
-            vec->append(book);
+
+            emit textbookReceived(response.getRequestId(),
+                                  response.getResponseCode(),
+                                  book);
         }
 
-        emit textbookDetailsReceived(response.getRequestId(),
-                                     response.getResponseCode(),
-                                     vec);
         break;
     }
 
     case IGetRequiredBooks: {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
+        QMap<Course*, QList<Textbook*>*>* cmap = new QMap<Course*, QList<Textbook*>*>();
+        qint32 numCourses;
 
-        qint32 numBooks;
-        in >> numBooks;
+        in >> numCourses;
 
-        QVector<qint32>* vec = new QVector<qint32>();
+        while (numCourses > 0) {
+            QList<Textbook*>* tbList = new QList<Textbook*>();
+            Course* c = new Course();
+            in >> *c;
 
-        for (int i = 0; i < numBooks; ++i)
-        {
-            qint32 id;
-            in >> id;
-            vec->append(id);
+            qint32 numBooks;
+            in >> numBooks;
+
+            while (numBooks > 0) {
+                Textbook* book = new Textbook();
+                in >> *book;
+                tbList->append(book);
+                numBooks--;
+            }
+
+            cmap->insert(c, tbList);
+
+            numCourses--;
         }
 
-        emit textbookLookupCompleted(response.getRequestId(),
-                                     response.getResponseCode(),
-                                     vec);
+        emit requiredBooksReceived(response.getRequestId(),
+                                   response.getResponseCode(),
+                                   cmap);
+
         break;
     }
+
+    case IGetAllCourses: {
+        QDataStream in(response.getData(), QIODevice::ReadOnly);
+        QList<Course*>* clist = new QList<Course*>();
+        qint32 count;
+
+        in >> count;
+
+        while (count > 0) {
+            Course* c = new Course();
+            in >> *c;
+            clist->append(c);
+            count--;
+        }
+
+        emit courseListReceived(response.getRequestId(),
+                                response.getResponseCode(),
+                                clist);
+        break;
+    }
+
 
     case ILogin: {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
@@ -409,6 +793,10 @@ void ClientNetworkHandler::readyRead()
         break;
     }
 
+    case IGenerateReport: {
+        break;
+    }
+
     case IGoodbye:
     default:
         this->disconnectFromServer();
@@ -428,5 +816,4 @@ void ClientNetworkHandler::error(QAbstractSocket::SocketError e)
     qDebug() << "socket error: " << e;
     emit networkError(e);
 }
-
 

@@ -10,9 +10,9 @@
 
 #include "libcutps_global.h"
 
-#include "User.h"
 #include <QString>
-using namespace std;
+
+#include "User.h"
 
 class LIBCUTPS_EXPORT ContentManager : public User {
 
@@ -20,7 +20,7 @@ class LIBCUTPS_EXPORT ContentManager : public User {
         QString emailAddress;
 
     public:
-        ContentManager(int, QString, QString);
+        ContentManager(qint32, QString, QString);
         ~ContentManager();
 
         QString getEmailAddress();

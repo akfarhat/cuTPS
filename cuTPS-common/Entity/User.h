@@ -12,28 +12,39 @@
 
 #include <QString>
 
-using namespace std;
+#include "Defines.h"
 
-class LIBCUTPS_EXPORT User {
+using namespace TPSDef;
 
-    private:
-        int userId;
-        QString name;
-        QString username;
+class LIBCUTPS_EXPORT User
+{
+public:
+    User(QString name="<NO_NAME>", QString uname="alpine");
+    User(qint32 id, QString name, QString uname);
+    ~User();
 
-    public:
-        User(int, QString, QString);
-        ~User();
-        int getUserId();
-        void setUserId(int);
+    qint32 getUserId();
+    void setUserId(qint32);
 
-        QString getUsername();
-        void setUsername(QString);
+    QString getUsername();
+    void setUsername(QString);
 
-        QString getName();
-        void setName(QString);
+    QString getName();
+    void setName(QString);
 
-        virtual QString getDetails() = 0;
+    virtual QString getDetails();
+
+    Role getRole() const;
+    void setRole(const Role value);
+
+    // Serialization routines
+    friend QDataStream& operator<<(QDataStream& os, const User& u); // output
+    friend QDataStream& operator>>(QDataStream& is, User& u); // input
+
+private:
+    qint32 userId;
+    QString name;
+    QString username;
 };
 
 #endif // USER_H

@@ -1,60 +1,52 @@
 #include "Course.h"
 #include "Defines.h"
 
-Course::Course()
+Course::Course(qint32 cid, QString ccode, QString cname, QString csection, qint32 cyear)
+    : id(cid), code(ccode), name(cname), termSection(csection), termYear(cyear)
 {
-    code = "";
-}
-
-Course::Course(QString course)
-{
-    code = course;
-    name = "";
 }
 
 Course::Course(const QString course,
-               const QString courseName,
-               const QVector<Textbook*>& books)
+               const QString courseName)
+    : id(-1), code(course), name(courseName)
 {
-    code = course;
-    name = courseName;
-
-    for (int i=0; i<books.size(); i++) {
-        requiredBooks.append(books[i]);
-        reqBooksIds.append(books[i]->getId());
-    }
 }
 
 Course::~Course() {}
 
-int Course::getId() const {
+qint32 Course::getId() const
+{
     return id;
 }
 
-void Course::setId(const int newId) {
+void Course::setId(const qint32 newId)
+{
     id = newId;
 }
 
-QString Course::getCourseCode() const {
+QString Course::getCourseCode() const
+{
     return code;
 }
 
-void Course::setCourseCode(const QString newCode) {
+void Course::setCourseCode(const QString newCode)
+{
     code = newCode;
 }
 
-void Course::addRequiredText(Textbook *book) {
-    requiredBooks.append(book);
-    reqBooksIds.append(static_cast<qint32>(book->getId()));
+void Course::addRequiredTextId(qint32 id)
+{
+    reqBooksIds.append(id);
 }
 
-QVector<Textbook*>* Course::getRequiredTexts() {
-    // Return a pointer to the vector contatining books
-    return &this->requiredBooks;
+void Course::addRequiredTextIds(const QVector<qint32>& v)
+{
+    for (int i : v) addRequiredTextId(i);
 }
 
-QVector<qint32>* Course::getRequiredTextsIds() {
-    return &this->reqBooksIds;
+const QVector<qint32>& Course::getRequiredTextIds() const
+{
+    return this->reqBooksIds;
 }
 
 QString Course::getCourseName() const
@@ -72,14 +64,37 @@ QString Course::stringRepr() const {
             .arg(getCourseCode(), getCourseName(), QString::number(getId()));
 }
 
+QString Course::getTermSection() const
+{
+    return termSection;
+}
+
+void Course::setTermSection(const QString value)
+{
+    // Take first uppercase letter
+    termSection = value.toUpper().at(0);
+}
+
+qint32 Course::getTermYear() const
+{
+    return termYear;
+}
+
+void Course::setTermYear(const qint32 value)
+{
+    termYear = value;
+}
+
 QDataStream& operator<<(QDataStream& os, const Course& c)
 {
-    os.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     // Write course data
-    os << static_cast<qint32>(c.id)
+    os << c.id
        << c.name
-       << c.code;
+       << c.code
+       << c.termSection
+       << c.termYear;
 
     // Then required textbooks count..
     os << static_cast<quint16>(c.reqBooksIds.size());
@@ -95,19 +110,16 @@ QDataStream& operator<<(QDataStream& os, const Course& c)
 
 QDataStream& operator>>(QDataStream& is, Course& c)
 {
-    is.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
-    qint32 courseId;
+    is >> c.id
+       >> c.name
+       >> c.code
+       >> c.termSection
+       >> c.termYear;
+
     quint16 textCount;
-    QString name, code;
-
-    is >> courseId
-       >> name
-       >> code;
-
-    c.name = name;
-    c.code = code;
-    c.id = static_cast<int>(courseId);
+    c.reqBooksIds.clear();
 
     is >> textCount;
 

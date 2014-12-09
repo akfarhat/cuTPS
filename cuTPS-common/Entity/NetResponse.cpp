@@ -41,13 +41,13 @@ qint8 NetResponse::getResponseCode() const
 
 QDataStream& operator<<(QDataStream& os, const NetResponse& r)
 {
-    os.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     qint8 invocationInteger = static_cast<qint8>(r.invocation);
 
     // Do not change the sequence!
     os << (qint16) 0;
-    os << TPSNetProtocolDefs::PROTOCOL_MAGIC;
+    os << TPSNetProtocolDef::PROTOCOL_MAGIC;
     os << invocationInteger;
     os << r.requestId;
     os << r.sessionId;
@@ -76,7 +76,7 @@ QDataStream& operator<<(QDataStream& os, const NetResponse& r)
 
 QDataStream& operator>>(QDataStream& is, NetResponse& r)
 {
-    is.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     qint8 invocationInteger, responseCode;
     QUuid requestId, sessionId;
@@ -84,7 +84,7 @@ QDataStream& operator>>(QDataStream& is, NetResponse& r)
 
     is >> magicCheck;
 
-    if (magicCheck != TPSNetProtocolDefs::PROTOCOL_MAGIC)
+    if (magicCheck != TPSNetProtocolDef::PROTOCOL_MAGIC)
         throw NetMessage::BadRequestException();
 
     is >> invocationInteger
@@ -93,7 +93,7 @@ QDataStream& operator>>(QDataStream& is, NetResponse& r)
         >> responseCode
         >> dataSz;
 
-    r.setInvocation(static_cast<TPSNetProtocolDefs::InvocationDescriptor>(invocationInteger));
+    r.setInvocation(static_cast<TPSNetProtocolDef::InvocationDescriptor>(invocationInteger));
     r.setRequestId(requestId);
     r.setSessionId(sessionId);
     r.setResponseCode(responseCode);

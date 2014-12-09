@@ -1,9 +1,11 @@
 #include "AddSectionWindow.h"
 #include "ui_AddSectionWindow.h"
 
-AddSectionWindow::AddSectionWindow(QWidget *parent, int chapID) :
+AddSectionWindow::AddSectionWindow(QWidget *parent, int bookID, int chapID, int sectID) :
     QDialog(parent),
+    bookId(bookID),
     chapterId(chapID),
+    secId(sectID),
     ui(new Ui::AddSectionWindow)
 {
     ui->setupUi(this);
@@ -33,7 +35,15 @@ void AddSectionWindow::on_addButton_clicked()
 
     bool available = this->ui->avaiBox->isChecked();
 
-    emit addSection(name, priceCents, available, this->chapterId);
+    emit addSection(name, secId, priceCents, available, this->bookId, this->chapterId);
 
     this->close();
+}
+
+void AddSectionWindow::populateValues(Section *section)
+{
+    this->ui->nameEdit->setText(section->getName());
+    this->ui->priceEdit->setText(QString::number(
+                                     section->getPriceCents() / 100));
+    this->ui->avaiBox->setChecked(section->getAvailability());
 }

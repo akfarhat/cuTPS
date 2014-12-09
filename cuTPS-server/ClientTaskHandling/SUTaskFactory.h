@@ -12,7 +12,7 @@ public:
     virtual ~SUTaskFactory();
     virtual WorkerTask* createTask(
             Server *srvInst,
-            TPSNetProtocolDefs::InvocationDescriptor invoc);
+            TPSNetProtocolDef::InvocationDescriptor invoc);
 };
 
 #endif // SUTASKFACTORY_H

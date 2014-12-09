@@ -7,6 +7,8 @@
 
 #include <QDialog>
 
+#include "Entity/Textbook.h"
+
 namespace Ui {
 class AddTextbookWindow;
 }
@@ -16,11 +18,14 @@ class AddTextbookWindow : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddTextbookWindow(QWidget *parent = 0);
+    explicit AddTextbookWindow(QWidget *parent = 0, int bookId = -1);
     ~AddTextbookWindow();
 
+    void populateValues(Textbook *);
+
 signals:
-    void addTextbook(QString, int, bool, QString);
+    void addTextbook(QString, QString, QString, int, int, bool, QString);
+
 private slots:
     void on_cancelButton_clicked();
 
@@ -28,6 +33,7 @@ private slots:
 
 private:
     Ui::AddTextbookWindow *ui;
+    int bookId; // in case of modify
 };
 
 #endif // ADDTEXTBOOKWINDOW_H

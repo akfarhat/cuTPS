@@ -17,10 +17,10 @@ public:
     virtual ~NetMessage();
 
     void    setRequestId(QUuid id);
-    void    setInvocation(TPSNetProtocolDefs::InvocationDescriptor invo);
+    void    setInvocation(TPSNetProtocolDef::InvocationDescriptor invo);
 
     QUuid   getRequestId() const;
-    TPSNetProtocolDefs::InvocationDescriptor getInvocation() const;
+    TPSNetProtocolDef::InvocationDescriptor getInvocation() const;
 
     QByteArray*     getData();  // nullptr is returned if data not present
     void            setData(const QByteArray& data); // copy-on-write enabled. (fast!)
@@ -46,7 +46,7 @@ protected:
 
     // Identifies the action to be performed for this request message, or the action
     // that has been performed for this response message.
-    TPSNetProtocolDefs::InvocationDescriptor invocation;
+    TPSNetProtocolDef::InvocationDescriptor invocation;
 
     // Holds any extra data to parametrize the request or provide response data.
     QByteArray* data;

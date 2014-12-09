@@ -8,6 +8,7 @@
 
 #include <QDialog>
 #include <QVector>
+#include <QList>
 
 #include "Entity/Textbook.h"
 #include "CourseRequestAPI.h"
@@ -26,6 +27,8 @@ public:
                                    int courseId = -1);
     ~AddRequiredBookWindow();
 
+    void populateBooks(QList<Textbook*>*);
+
 signals:
     void addRequiredBooks(QVector<int> &, int);
 
@@ -36,9 +39,8 @@ private slots:
 
 private:
     Ui::AddRequiredBookWindow *ui;
-    QVector<Textbook*> *books;
+    QList<Textbook*> *books;
     CourseRequestAPI *courseRequests;
-    void populateBooks();
     int courseID;
 };
 

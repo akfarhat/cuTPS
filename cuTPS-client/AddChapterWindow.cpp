@@ -1,9 +1,10 @@
 #include "AddChapterWindow.h"
 #include "ui_AddChapterWindow.h"
 
-AddChapterWindow::AddChapterWindow(QWidget *parent, int bookID) :
+AddChapterWindow::AddChapterWindow(QWidget *parent, int bookID, int chapID) :
     QDialog(parent),
     bookId(bookID),
+    chapId(chapID),
     ui(new Ui::AddChapterWindow)
 {
     ui->setupUi(this);
@@ -33,7 +34,15 @@ void AddChapterWindow::on_addButton_clicked()
 
     bool available = this->ui->avaiBox->isChecked();
 
-    emit addChapter(name, priceCents, available, bookId);
+    emit addChapter(name, chapId, priceCents, available, bookId);
 
     this->close();
+}
+
+void AddChapterWindow::populateValues(Chapter *chapter)
+{
+    this->ui->nameEdit->setText(chapter->getName());
+    this->ui->priceEdit->setText(QString::number(
+                                     chapter->getPriceCents() / 100));
+    this->ui->avaiBox->setChecked(chapter->getAvailability());
 }

@@ -4,30 +4,32 @@
 #include <QSettings>
 #include <QDir>
 
+using namespace TPSPrefDef;
+
 ServerPrefs::ServerPrefs()
 {
 }
 
 const QString ServerPrefs::GetDbPath()
 {
-    QSettings settings("cutpsd.conf", QSettings::IniFormat);
-    const QString dbPath = settings.value(TPSConstants::PREF_DB_PATH_SEC, QDir::currentPath() + QString("/db/cutpsd.db")).toString();
-    settings.setValue(TPSConstants::PREF_DB_PATH_SEC, dbPath);
+    QSettings settings(PREF_CONF_FILE, QSettings::IniFormat);
+    const QString dbPath = settings.value(PREF_DB_PATH_SEC, QDir::currentPath() + QString("/db/cutps.db")).toString();
+    settings.setValue(PREF_DB_PATH_SEC, dbPath);
     return dbPath;
 }
 
 int ServerPrefs::GetPort()
 {
-    QSettings settings("cutpsd.conf", QSettings::IniFormat);
-    const int port = settings.value(TPSConstants::PREF_PORT, TPSConstants::PREF_PORT_DEF).toInt();
-    settings.setValue(TPSConstants::PREF_PORT, port);
+    QSettings settings(PREF_CONF_FILE, QSettings::IniFormat);
+    const int port = settings.value(PREF_PORT, PREF_PORT_DEF).toInt();
+    settings.setValue(PREF_PORT, port);
     return port;
 }
 
 int ServerPrefs::MaxThreads()
 {
-    QSettings settings("cutpsd.conf", QSettings::IniFormat);
-    const int nThreads = settings.value(TPSConstants::PREF_MAX_THR, TPSConstants::PREF_MAX_THR_DEF).toInt();
-    settings.setValue(TPSConstants::PREF_MAX_THR, nThreads);
+    QSettings settings(PREF_CONF_FILE, QSettings::IniFormat);
+    const int nThreads = settings.value(PREF_MAX_THR, PREF_MAX_THR_DEF).toInt();
+    settings.setValue(PREF_MAX_THR, nThreads);
     return nThreads;
 }

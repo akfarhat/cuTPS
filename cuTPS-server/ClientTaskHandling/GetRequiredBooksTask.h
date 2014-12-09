@@ -1,9 +1,6 @@
 #ifndef GETREQUIREDBOOKSTASK_H
 #define GETREQUIREDBOOKSTASK_H
 
-#include <QUuid>
-#include <QDataStream>
-
 #include "WorkerTask.h"
 #include "Server.h"
 

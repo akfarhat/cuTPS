@@ -1,3 +1,10 @@
+// Class: Login
+// Description:
+//   Provides a GUI dialog for the user to enter
+//   their credentials.
+// Traceability:
+//   LoginWindow in the LoginInterface subsystem
+
 #ifndef LOGIN_H
 #define LOGIN_H
 
@@ -27,6 +34,8 @@ private slots:
     void on_loginButton_clicked();
 
     void on_cancelButton_clicked();
+
+    void on_connected();
 
 private:
     Ui::Login *ui;

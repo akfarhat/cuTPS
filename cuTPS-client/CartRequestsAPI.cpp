@@ -22,14 +22,18 @@ Student* CartRequestsAPI::getStudent() {
     return student;
 }
 
-QUuid CartRequestsAPI::getRequiredBooks(QString &username)
+QUuid CartRequestsAPI::getRequiredBooks()
 {
-    return network->getRequiredBooks(username);
+    return network->getRequiredBooks();
 }
 
 
 QUuid CartRequestsAPI::getBookDetails(int bookId) {
     return network->getBookDetails(bookId);
+}
+
+QUuid CartRequestsAPI::getBookDetails(const QVector<qint32> &ids) {
+    return network->getBookDetails(ids);
 }
 
 QUuid CartRequestsAPI::submitOrder(Order &newOrder)

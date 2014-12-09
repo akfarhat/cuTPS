@@ -3,7 +3,7 @@
 #include "GetRequiredBooksTask.h"
 #include "SubmitOrderTask.h"
 
-using namespace TPSNetProtocolDefs;
+using namespace TPSNetProtocolDef;
 
 UserTaskFactory::UserTaskFactory()
 {
@@ -11,25 +11,29 @@ UserTaskFactory::UserTaskFactory()
 
 WorkerTask* UserTaskFactory::createTask(
         Server *srvInst,
-        TPSNetProtocolDefs::InvocationDescriptor invoc)
+        TPSNetProtocolDef::InvocationDescriptor invoc)
 {
     switch (invoc)
     {
 
     case IGetBookDetails: {
         return new GetBookDetailsTask(srvInst);
+        break;
     }
 
     case IGetRequiredBooks: {
         return new GetRequiredBooksTask(srvInst);
+        break;
     }
 
     case ISubmitOrder: {
         return new SubmitOrderTask(srvInst);
+        break;
     }
 
     default: {
         throw PermissionDeniedExc();
+        break;
     }
 
     }

@@ -23,20 +23,36 @@ class LIBCUTPS_EXPORT Chapter: public SellableItem
 {
 public:
     Chapter();
+
     Chapter(Chapter&); // Copy cTor
-    Chapter(int, Textbook*, int, QString, int, bool);
-    Chapter(Textbook*, int, QString, int);
+
+    Chapter(qint32 id,
+            Textbook* parent,
+            quint16 number,
+            QString title,
+            quint32 price,
+            bool available);
+
+    Chapter(Textbook* parent,
+            quint16 number,
+            QString title,
+            quint32 price,
+            bool available);
+
     virtual ~Chapter();
 
     Textbook* getParentTextbook();
     void setParentTextbook(Textbook*);
 
-    int getChapterNumber() const;
-    void setChapterNumber(int);
+    quint16 getChapterNumber() const;
+    void setChapterNumber(quint16);
+
+    qint32 getParentTextbookId() const;
+    void setParentTextbookId(const qint32 value);
 
     void addSection(const Section& s);
-    QVector<Section*> getSectionList();
-    int numSections() const;
+    QVector<Section*>& getSectionList();
+    quint16 numSections() const;
     
     QString getTitle();
     QString getType();
@@ -47,8 +63,8 @@ public:
 
 private:
     Textbook* parentTextbook;
-    int number;
-    int parentTextbookId;
+    quint16 number;
+    qint32 parentTextbookId;
     QVector<Section*> sections;
 };
 

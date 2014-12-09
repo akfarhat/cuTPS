@@ -7,6 +7,8 @@ CartDetailsWindow::CartDetailsWindow(QWidget *parent, CartRequestsAPI *api)  : Q
 
     ui->setupUi(this);
 
+    this->setWindowTitle("Shopping Cart Details");
+
     ui->itemList->setEnabled(false);
     ui->typeList->setEnabled(false);
     ui->priceList->setEnabled(false);
@@ -19,7 +21,9 @@ CartDetailsWindow::CartDetailsWindow(QWidget *parent, CartRequestsAPI *api)  : Q
 }
 
 CartDetailsWindow::~CartDetailsWindow() {
-    delete placeOrderCtrl;
+    requestAPI = NULL;
+    if (placeOrderCtrl != NULL)
+        delete placeOrderCtrl;
     delete ui;
 }
 
@@ -43,28 +47,32 @@ void CartDetailsWindow::updateView() {
     ui->typeList->clear();
     ui->priceList->clear();
 
-    // Populate the lists
-    for (SellableItem *item: requestAPI->getStudent()->getCart()->getItems()) {
-        ui->itemList->addItem(item->getName());
-        ui->typeList->addItem(item->getType());
-        ui->priceList->addItem("$" + QString::number(item->getPriceCents() / 100.00f));
+    if (requestAPI->getStudent()) {
+        // Populate the lists
+
+        for (SellableItem *item: requestAPI->getStudent()->getCart()->getItems()) {
+            ui->itemList->addItem(item->getName());
+            ui->typeList->addItem(item->getType());
+            ui->priceList->addItem("$" + QString::number(item->getPriceCents() / 100.00f));
+        }
+
+        ui->totalPrice->setText(QString::number(requestAPI->getStudent()->getCart()->getTotalPrice() / 100.00f));
+
+        // Disable place order and cancel order buttons if cart is empty
+
+        if (requestAPI->getStudent()->getCart()->getItems().empty()) {
+            ui->cancelOrderButton->setEnabled(false);
+            ui->placeOrderButton->setEnabled(false);
+        }
     }
 
-    ui->totalPrice->setText(QString::number(requestAPI->getStudent()->getCart()->getTotalPrice() / 100.00f));
-
-    // Disable place order and cancel order buttons if cart is empty
-    if (requestAPI->getStudent()->getCart()->getItems().empty()) {
-        ui->cancelOrderButton->setEnabled(false);
-        ui->placeOrderButton->setEnabled(false);
-    }
 }
 
 
 void CartDetailsWindow::on_backButton_clicked() {
-    // Show the main menu window (CartManagmentInterface)
-    this->parentWidget()->show();
-    // Close this window
+    requestAPI = NULL;
     this->close();
+    emit cartDetailsWindowClosed();
 }
 
 void CartDetailsWindow::on_cancelOrderButton_clicked() {
@@ -76,8 +84,9 @@ void CartDetailsWindow::on_cancelOrderButton_clicked() {
     delete cancelOrderCtrl;
 
 
-    this->parentWidget()->show();
+    requestAPI = NULL;
     this->close();
+    emit cartDetailsWindowClosed();
 }
 
 void CartDetailsWindow::on_placeOrderButton_clicked() {
@@ -86,7 +95,15 @@ void CartDetailsWindow::on_placeOrderButton_clicked() {
 
     placeOrderCtrl = new PlaceOrderControl(this, requestAPI);
 
+    QObject::connect(placeOrderCtrl, SIGNAL(placeOrderControlFinished()), this, SLOT(placeOrderControlFinished()));
+
     placeOrderCtrl->launchBillingWindow();
 
+}
 
+void CartDetailsWindow::placeOrderControlFinished()
+{
+    delete placeOrderCtrl;
+    placeOrderCtrl = NULL;
+    qDebug() << "CartDetailsWindow::placeOrderControlFinished: deleted placeOrderCtrl";
 }
