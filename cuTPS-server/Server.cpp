@@ -153,7 +153,7 @@ ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCre
 
                 //update openSessions to indicate that this session belongs to
                 // authenticated user
-                openSessions.insert(sessionID, query.value(0));
+                openSessions.insert(sessionID, query.value(0).toInt());
 
             } else {
                 response.code = Fail;
@@ -186,7 +186,7 @@ ServerResponse Server::getSessionRole(QUuid sessionID, Role& userRole)
         return response;
     }
 
-    QString queryString = "select role from User where id = " + userID + ";";
+    QString queryString = "select role from User where id = " + QString::number(userID) + ";";
 
     bool result = dbManager->runQuery(queryString,
                                       &query);
@@ -365,18 +365,16 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32& new
         return response;
     }
 
-    // if that doesn't work, use query "select seq from sqlite_sequence where name="table_name""
-    qint32 lastInsertId = query.lastInsertId().toInt();
-    *newId = lastInsertId;
-
     queryString = "insert into Chapter (item_id, textbook_id, chapter_num) values (";
-    queryString += QString::number(lastInsertId) + ", ";
+    queryString += QString::number(newId) + ", ";
     queryString += QString::number(chapter.getParentTextbookId()) + ", ";
     queryString += QString::number(chapter.getChapterNumber()) + ");";
 
     if (!result) {
         qDebug() << "Error while adding chapter info: " << query.lastError().text();
     }
+
+    qint32 lastInsertId;
 
     for (Section* s : chapter.getSectionList())
     {
@@ -412,12 +410,8 @@ ServerResponse Server::addSection(QUuid sessionID, Section& section, qint32& new
         return response;
     }
 
-    // if that doesn't work, use query "select seq from sqlite_sequence where name="table_name""
-    qint32 lastInsertId = query.lastInsertId().toInt();
-    *newId = lastInsertId;
-
     queryString = "insert into Section (item_id, chapter_id, section_num) values (";
-    queryString += QString::number(lastInsertId) + ", ";
+    queryString += QString::number(newId) + ", ";
     queryString += QString::number(section.getParentChapterId()) + ", ";
     queryString += QString::number(section.getSectionNumber()) + ");";
 
@@ -439,9 +433,9 @@ ServerResponse Server::replaceCourse(QUuid sessionID, qint32 id, Course& course)
     queryString += "update Course set ";
     queryString += "code = \"" + course.getCourseCode() + "\", ";
     queryString += "name = \"" + course.getCourseName() + "\", ";
-    queryString += "termSection = \"" + course.getTermSection().at(0) + "\", ";
-    queryString += "termYear = " + course.getTermYear() + " ";
-    queryString += "where id = " + id + ";";
+    queryString += "termSection = \"" + QString(course.getTermSection().at(0)) + "\", ";
+    queryString += "termYear = " + QString::number(course.getTermYear()) + " ";
+    queryString += "where id = " + QString::number(id) + ";";
 
     qDebug() << "About to replace Course, query'"
              << queryString << "'";
@@ -473,9 +467,9 @@ ServerResponse Server::replaceTextbook(QUuid sessionID, qint32 id, Textbook& tex
     QString queryString = "";
     queryString += "update SellableItem set ";
     queryString += "name = \"" + textbook.getName() + "\", ";
-    queryString += "price_cents = " + textbook.getPriceCents() + ", ";
-    queryString += "available = " + (textbook.getAvailability()? 1 : 0) + " ";
-    queryString += "where id = " + id + ";";
+    queryString += "price_cents = " + QString::number(textbook.getPriceCents()) + ", ";
+    queryString += "available = " + QString::number(textbook.getAvailability()? 1 : 0) + " ";
+    queryString += "where id = " + QString::number(id) + ";";
 
     qDebug() << "About to replace SellableItem, query'"
              << queryString << "'";
@@ -499,12 +493,12 @@ ServerResponse Server::replaceTextbook(QUuid sessionID, qint32 id, Textbook& tex
     queryString += "edition = \"" + textbook.getEdition() + "\", ";
     queryString += "authors = \"" + textbook.getAuthors() + "\", ";
     queryString += "isbn = \"" + textbook.getISBN() + "\" ";
-    queryString += "where item_id = " + id + ";";
+    queryString += "where item_id = " + QString::number(id) + ";";
 
     qDebug() << "About to replace Textbook, query'"
              << queryString << "'";
 
-    bool result = dbManager->runQuery(queryString, &query);
+    result = dbManager->runQuery(queryString, &query);
 
     if (result) {
         response.code = Success;
@@ -531,9 +525,9 @@ ServerResponse Server::replaceChapter(QUuid sessionID, qint32 id, Chapter& chapt
     QString queryString = "";
     queryString += "update SellableItem set ";
     queryString += "name = \"" + chapter.getName() + "\", ";
-    queryString += "price_cents = " + chapter.getPriceCents() + ", ";
-    queryString += "available = " + (chapter.getAvailability()? 1 : 0) + " ";
-    queryString += "where id = " + id + ";";
+    queryString += "price_cents = " + QString::number(chapter.getPriceCents()) + ", ";
+    queryString += "available = " + QString::number(chapter.getAvailability()? 1 : 0) + " ";
+    queryString += "where id = " + QString::number(id) + ";";
 
     qDebug() << "About to replace SellableItem, query'"
              << queryString << "'";
@@ -554,13 +548,13 @@ ServerResponse Server::replaceChapter(QUuid sessionID, qint32 id, Chapter& chapt
 
     queryString = "";
     queryString += "update Chapter set ";
-    queryString += "chapter_num = " + chapter.getChapterNumber() + " ";
-    queryString += "where item_id = " + id + ";";
+    queryString += "chapter_num = " + QString::number(chapter.getChapterNumber()) + " ";
+    queryString += "where item_id = " + QString::number(id) + ";";
 
     qDebug() << "About to replace Chapter, query'"
              << queryString << "'";
 
-    bool result = dbManager->runQuery(queryString, &query);
+    result = dbManager->runQuery(queryString, &query);
 
     if (result) {
         response.code = Success;
@@ -587,9 +581,9 @@ ServerResponse Server::replaceSection(QUuid sessionID, qint32 id, Section& secti
     QString queryString = "";
     queryString += "update SellableItem set ";
     queryString += "name = \"" + section.getName() + "\", ";
-    queryString += "price_cents = " + section.getPriceCents() + ", ";
-    queryString += "available = " + (section.getAvailability()? 1 : 0) + " ";
-    queryString += "where id = " + id + ";";
+    queryString += "price_cents = " + QString::number(section.getPriceCents()) + ", ";
+    queryString += "available = " + QString::number(section.getAvailability()? 1 : 0) + " ";
+    queryString += "where id = " + QString::number(id) + ";";
 
     qDebug() << "About to replace SellableItem, query'"
              << queryString << "'";
@@ -610,13 +604,13 @@ ServerResponse Server::replaceSection(QUuid sessionID, qint32 id, Section& secti
 
     queryString = "";
     queryString += "update Section set ";
-    queryString += "section_num = " + section.getSectionNumber() + " ";
-    queryString += "where item_id = " + id + ";";
+    queryString += "section_num = " + QString::number(section.getSectionNumber()) + " ";
+    queryString += "where item_id = " + QString::number(id) + ";";
 
     qDebug() << "About to replace Section, query'"
              << queryString << "'";
 
-    bool result = dbManager->runQuery(queryString, &query);
+    result = dbManager->runQuery(queryString, &query);
 
     if (result) {
         response.code = Success;
@@ -787,14 +781,14 @@ ServerResponse Server::getAllTextbooks(QUuid sessionID, QVector<Textbook> &textb
         qDebug() << "Query for all texts successful. Rows: " << query.size();
 
         while(query.next()) {
-            Textbook textbook = new Textbook(query.value(0),
-                                             query.value(1),
-                                             query.value(2),
-                                             query.value(3),
-                                             query.value(4),
-                                             query.value(5),
-                                             query.value(6));
-            textbooks.append(textbook);
+            Textbook* textbook = new Textbook(query.value(0).toInt(),
+                                             query.value(1).toString(),
+                                             query.value(2).toString(),
+                                             query.value(3).toString(),
+                                             query.value(4).toInt(),
+                                             query.value(5).toBool(),
+                                             query.value(6).toString());
+            textbooks.append(*textbook);
         }
 
         response.code = Success;
@@ -827,12 +821,12 @@ ServerResponse Server::getAllCourses(QUuid sessionID, QVector<Course>& courses)
         qDebug() << "Query for all courses successful. Rows: " << query.size();
 
         while(query.next()) {
-            Course course = new Course(query.value(0),
-                                       query.value(1),
-                                       query.value(2),
-                                       query.value(3),
-                                       query.value(4));
-            courses.append(course);
+            Course* course = new Course(query.value(0).toInt(),
+                                       query.value(1).toString(),
+                                       query.value(2).toString(),
+                                       query.value(3).toString(),
+                                       query.value(4).toInt());
+            courses.append(*course);
         }
 
         response.code = Success;
@@ -869,12 +863,12 @@ ServerResponse Server::getStudentCourses(QUuid sessionID, const QString& usernam
         qDebug() << "Query for registered courses successful. Rows: " << query.size();
 
         while(query.next()) {
-            Course course = new Course(query.value(0),
-                                       query.value(1),
-                                       query.value(2),
-                                       query.value(3),
-                                       query.value(4));
-            courses.append(course);
+            Course* course = new Course(query.value(0).toInt(),
+                                       query.value(1).toString(),
+                                       query.value(2).toString(),
+                                       query.value(3).toString(),
+                                       query.value(4).toInt());
+            courses.append(*course);
         }
 
         response.code = Success;

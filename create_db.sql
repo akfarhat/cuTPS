@@ -122,7 +122,7 @@ insert into SellableItem values (1, "Object-Oriented Software Engineering: Using
 insert into SellableItem values (2, "Introduction", "1000", 1);
 insert into SellableItem values (3, "Welcome", "345", 1);
 
-insert into Textbook values (1, "123-456-7890");
+insert into Textbook values (1, "2", "John Author", "123-456-7890");
 
 insert into Chapter values (2, 1, 1);
 
