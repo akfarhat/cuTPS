@@ -50,9 +50,3 @@ Run instructions:
 
 * run the cutpsd server daemon. Ensure that the server is started and proper database file is used. (look in the standard output)
 * run the cuTPS-client
-
-Known Issues:
--------------
-
-* The client is disconnected from the server after running any test after the 'Add course' test. All API calls and tests work correctly but they will fail if run right after 'Add course'. So run the 'Add course' test last and everything will work fine.
-* When running the executables outside of QtCreator, it's possible that things will not be displayed properly in the client GUI. This seems to be a problem with the VM and we can't change the VM configuration.
