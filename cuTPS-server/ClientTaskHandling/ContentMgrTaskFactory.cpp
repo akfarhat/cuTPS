@@ -6,6 +6,7 @@
 #include "GetAllCoursesTask.h"
 #include "RemoveItemTask.h"
 #include "RemoveCourseTask.h"
+#include "BookLinkTask.h"
 
 using namespace TPSNetProtocolDef;
 
@@ -22,39 +23,52 @@ WorkerTask* ContentMgrTaskFactory::createTask(
 
     case IAddChapter:
     case IAddSection:
-    case IAddBook: {
+    case IAddBook:
+    {
         return new AddItemTask(srvInst);
         break;
     }
 
-    case IAddCourse: {
+    case IAddCourse:
+    {
         return new AddCourseTask(srvInst);
         break;
     }
 
-    case IGetBookDetails: {
+    case IGetBookDetails:
+    {
         return new GetBookDetailsTask(srvInst);
         break;
     }
 
-    case IGetAllBooks: {
+    case IGetAllBooks:
+    {
         return new GetAllBooksTask(srvInst);
         break;
     }
 
-    case IGetAllCourses: {
+    case IGetAllCourses:
+    {
         return new GetAllCoursesTask(srvInst);
         break;
     }
 
     case IRmBook:
     case IRmChapter:
-    case IRmSection: {
+    case IRmSection:
+    {
         return new RemoveItemTask(srvInst);
     }
 
-    case IRmCourse: {
+    case IRmCourse:
+    {
         return new RemoveCourseTask(srvInst);
+    }
+
+    case IBookLink:
+    case IBookUnlink:
+    {
+        return new BookLinkTask(srvInst);
     }
 
     default: {

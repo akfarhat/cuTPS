@@ -70,6 +70,9 @@ public:
     ServerResponse removeCourse(QUuid, qint32 id);
     ServerResponse removeSellableItem(QUuid, qint32 id);
 
+    ServerResponse linkTextbook(QUuid, qint32 courseId, qint32 textId);
+    ServerResponse unlinkTextbook(QUuid, qint32 courseId, qint32 textId);
+
     ServerResponse registerStudentUser(QUuid, Student& usr, QString pwd, qint32* id);
 
     ServerResponse getAllTextbooks(QUuid, QVector<Textbook>&);

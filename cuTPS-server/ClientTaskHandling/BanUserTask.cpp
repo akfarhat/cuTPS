@@ -20,7 +20,7 @@ void BanUserTask::run()
     qint32 uid;
     in >> uid;
 
-    // TODO: implement this
+    // TODO: Administator's task.
     // ServerResponse r = server->banUser(sessionId, uid);
 
     NetResponse* response = new NetResponse();
