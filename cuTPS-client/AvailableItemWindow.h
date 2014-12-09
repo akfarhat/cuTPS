@@ -50,7 +50,7 @@ class AvailableItemWindow : public QDialog
 
         QMap<Course*, QList<Textbook*>*>* textbookMap;
 
-        QList<Textbook*> *listedBooks;
+        QList<Textbook*> *bookList;
 
         SellableItem * selectedItem;
 

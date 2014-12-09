@@ -21,12 +21,14 @@ AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, 
 
     this->selectedItem = NULL;
 
-    listedBooks = new QList<Textbook*>();
+    bookList = new QList<Textbook*>();
 
     QMap<Course*, QList<Textbook*>*>::Iterator i;
     for (i = textbookMap->begin(); i != textbookMap->end(); ++i) {
         for (Textbook *book: *(i.value())) {
-          listedBooks->append(book);
+            if (book->getId() > 0) {
+                bookList->append(book);
+            }
         }
     }
 
@@ -36,10 +38,10 @@ AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, 
 
 AvailableItemWindow::~AvailableItemWindow()
 {
-    for (Textbook *book: *listedBooks) {
+    for (Textbook *book: *bookList) {
         delete book;
     }
-    delete listedBooks;
+    delete bookList;
     delete ui;
 }
 
@@ -89,7 +91,7 @@ void AvailableItemWindow::displayBookList()
 
     // Display the books
     this->ui->contentList->clear();
-    for (Textbook *book: *listedBooks) {
+    for (Textbook *book: *bookList) {
         this->ui->contentList->addItem(book->getTitle());
     }
 
@@ -104,7 +106,7 @@ void AvailableItemWindow::displayChapterList(int bookId)
 
 
     // Get the book with the specified book ID from the list of books
-    Textbook *theBook = getBookFromList(bookId, listedBooks);
+    Textbook *theBook = getBookFromList(bookId, bookList);
 
 
     // Display the Chapters
@@ -125,7 +127,7 @@ void AvailableItemWindow::displaySectionList(int chapterId)
 
 
     // Get the chapter of the book associated with the sections
-    Chapter *theChapter = getChapterFromList(this->bookId, chapterId, listedBooks);
+    Chapter *theChapter = getChapterFromList(this->bookId, chapterId, bookList);
 
     // Display the sections
     this->ui->contentList->clear();
@@ -150,12 +152,12 @@ void AvailableItemWindow::on_contentList_clicked(const QModelIndex &index)
     ui->addToCartButton->setEnabled(true);
 
     if (contentDepth == 0) {
-        selectedItem = this->listedBooks->at(index.row());
+        selectedItem = this->bookList->at(index.row());
     } else if (contentDepth == 1) {
-        Textbook *theBook = getBookFromList(bookId, listedBooks);
+        Textbook *theBook = getBookFromList(bookId, bookList);
         selectedItem = theBook->getChapterList().at(index.row());
     } else if (contentDepth == 2) {
-        Chapter *theChapter = getChapterFromList(bookId, chapterId, listedBooks);
+        Chapter *theChapter = getChapterFromList(bookId, chapterId, bookList);
         selectedItem = theChapter->getSectionList().at(index.row());
     }
 
@@ -172,12 +174,12 @@ void AvailableItemWindow::on_contentList_doubleClicked(const QModelIndex &index)
         return;
 
     if (contentDepth == 0) {
-        selectedItem = this->listedBooks->at(index.row());
+        selectedItem = this->bookList->at(index.row());
     } else if (contentDepth == 1) {
-        Textbook *theBook = getBookFromList(bookId, listedBooks);
+        Textbook *theBook = getBookFromList(bookId, bookList);
         selectedItem = theBook->getChapterList().at(index.row());
     } else if (contentDepth == 2) {
-        Chapter *theChapter = getChapterFromList(bookId, chapterId, listedBooks);
+        Chapter *theChapter = getChapterFromList(bookId, chapterId, bookList);
         selectedItem = theChapter->getSectionList().at(index.row());
     }
 
