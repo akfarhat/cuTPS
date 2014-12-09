@@ -15,6 +15,7 @@
 class LIBCUTPS_EXPORT BillingInfo
 {
 public:
+    BillingInfo();
     BillingInfo(QString name, QString email, QString addr, QString number);
     virtual inline ~BillingInfo() {}
     // This string will represent the information required to

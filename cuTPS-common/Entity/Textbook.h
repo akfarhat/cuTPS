@@ -1,4 +1,4 @@
-// Class: Textbook
+﻿// Class: Textbook
 // Type: Entity
 // Description:
 //     Entity object representing a textbook that
@@ -22,19 +22,36 @@ class LIBCUTPS_EXPORT Textbook : public SellableItem {
 public:
     Textbook();
     Textbook(const Textbook&); // Copy cTor
-    Textbook(int, QString, int, bool, QString);
+    Textbook(int id,
+             QString name,
+             QString edition,
+             QString authors,
+             int price,
+             bool avail,
+             QString isbn);
+    Textbook(int id,
+             QString edition,
+             QString authors,
+             QString isbn,
+             QString name,
+             int price,
+             bool avail);
     Textbook(QString, int);
     virtual ~Textbook();
 
     QString getISBN() const;
-    void setISBN(const QString);
+    void setISBN(const QString&);
+    QString getAuthors() const;
+    void setAuthors(const QString &value);
+    QString getEdition() const;
+    void setEdition(const QString &value);
 
     QString getDetails() const;
     QString getTitle();
     QString getType();
 
     void addChapter(const Chapter& c);
-    QVector<Chapter*> getChapterList();
+    QVector<Chapter*>& getChapterList();
     const QVector<Chapter*> getConstChapterList() const;
     int numChapters() const;
 
@@ -43,7 +60,9 @@ public:
     friend QDataStream& operator>>(QDataStream& is, Textbook& b); // input
 
 private:
-    QString ISBN;
+    QString authors;
+    QString isbn;
+    QString edition;
     QVector<Chapter*> chapters;
 };
 

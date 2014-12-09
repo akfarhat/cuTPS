@@ -16,13 +16,16 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 
-#include "Utils.h"
+#include "Defines.h"
 #include "DatabaseManager.h"
 #include "Entity/Course.h"
 #include "Entity/Textbook.h"
 #include "Entity/Order.h"
 #include "Entity/Chapter.h"
 #include "Entity/Section.h"
+#include "Entity/Student.h"
+
+using namespace TPSDef;
 
 class Server : public QObject
 {
@@ -47,19 +50,41 @@ public:
 
     // All Users
     ServerResponse authenticateUser(QUuid, Role&, UserCredentials);
+    ServerResponse getSessionRole(QUuid, Role&);
+    ServerResponse getSessionUserId(QUuid, int&);
 
     // Content Manager request API. Each of these requests
     // adds some content into the system availability
 
-    ServerResponse addCourse(QUuid, Course);
-    ServerResponse addTextbook(QUuid, Textbook);
-    ServerResponse addChapter(QUuid, Chapter);
-    ServerResponse addSection(QUuid, Section);
+    // TODO: make server return ids for created items (i.e. set newId)
+    ServerResponse addCourse(QUuid, Course&, qint32& newId);
+    ServerResponse addTextbook(QUuid, Textbook&, qint32& newId);
+    ServerResponse addChapter(QUuid, Chapter&, qint32& newId);
+    ServerResponse addSection(QUuid, Section&, qint32& newId);
+
+    ServerResponse replaceCourse(QUuid, qint32 id, Course&);
+    ServerResponse replaceTextbook(QUuid, qint32 id, Textbook&);
+    ServerResponse replaceChapter(QUuid, qint32 id, Chapter&);
+    ServerResponse replaceSection(QUuid, qint32 id, Section&);
+
+    ServerResponse removeCourse(QUuid, qint32 id);
+    ServerResponse removeSellableItem(QUuid, qint32 id);
+
+    ServerResponse linkTextbook(QUuid, qint32 courseId, qint32 textId);
+    ServerResponse unlinkTextbook(QUuid, qint32 courseId, qint32 textId);
+
+    ServerResponse registerStudentUser(QUuid, Student& usr, QString pwd, qint32* id);
+
+    ServerResponse getAllTextbooks(QUuid, QVector<Textbook*>&);
+    ServerResponse getAllCourses(QUuid, QVector<Course>&);
 
     // Student request API.
 
+    // Get the list of courses a student is registered in
+    ServerResponse getStudentCourses(QUuid, const int&, QVector<Course>&);
+
     // Get the list of required textbooks for a user
-    ServerResponse getRequiredTextbooks(QUuid, const QString&, QVector<int>*);
+    ServerResponse getRequiredTextbooks(QUuid, const int&, QVector<int>*);
 
     // Get the metadata for a sellable item
     ServerResponse getItemDetails(QUuid, int);
@@ -70,6 +95,8 @@ public:
     ServerResponse getTextbookDetails(QUuid, int, Textbook**);
 
     // Get a list of chapter and section objects in a particular textbook
+    ServerResponse getTextbookChapters(QUuid, int, Textbook*);
+    ServerResponse getChapterSections(QUuid, int, QVector<Section>&);
     ServerResponse getTextbookParts(QUuid, int, QVector<SellableItem*>*);
 
     // submit a student's order to the billing system
@@ -80,7 +107,7 @@ signals:
 public slots:
 
 private:
-    QVector<QUuid> openSessions;
+    QHash<QUuid, int> openSessions;
     DatabaseManager* dbManager;
 
 private:

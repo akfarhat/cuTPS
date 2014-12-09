@@ -1,9 +1,14 @@
 #include "CreditCardInfo.h"
 #include "Defines.h"
 
+CreditCardInfo::CreditCardInfo()
+{
+}
+
 CreditCardInfo::CreditCardInfo(QString name, QString email, QString addr, QString pnumber,
                                QString cholder, QString cnumber, QString expiry, QString sCode)
-                               : BillingInfo(name, email, addr, pnumber) {
+                               : BillingInfo(name, email, addr, pnumber)
+{
     cardholder = cholder;
     number = cnumber;
     expiryDate = expiry;
@@ -54,3 +59,37 @@ CreditCardInfo* CreditCardInfo::clone() const
 {
     return new CreditCardInfo(*this);
 }
+
+// TODO: add basic text encryption
+QDataStream& operator<<(QDataStream& os, const CreditCardInfo& d)
+{
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
+
+    os << d.billingName
+       << d.billingAddress
+       << d.emailAddress
+       << d.phoneNumber
+       << d.cardholder
+       << d.number
+       << d.expiryDate
+       << d.securityCode;
+
+    return os;
+}
+
+QDataStream& operator>>(QDataStream& is, CreditCardInfo& d)
+{
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
+
+    is >> d.billingName
+       >> d.billingAddress
+       >> d.emailAddress
+       >> d.phoneNumber
+       >> d.cardholder
+       >> d.number
+       >> d.expiryDate
+       >> d.securityCode;
+
+    return is;
+}
+

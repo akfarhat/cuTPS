@@ -1,8 +1,12 @@
 #include "User.h"
 
-User::User(int id, QString n, QString u) : userId(id), name(n), username(u) {
+User::User(QString name, QString uname)
+    : name(name), username(uname)
+{}
 
-}
+User::User(int id, QString n, QString u)
+    : userId(id), name(n), username(u)
+{}
 
 User::~User() {}
 
@@ -28,4 +32,31 @@ QString User::getName() {
 
 void User::setName(QString newName) {
     name = newName;
+}
+
+QString User::getDetails()
+{
+
+}
+
+QDataStream& operator<<(QDataStream& os, const User& u)
+{
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
+
+    os << u.userId
+       << u.username
+       << u.name;
+
+    return os;
+}
+
+QDataStream& operator>>(QDataStream& is, User& u)
+{
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
+
+    is >> u.userId
+       >> u.username
+       >> u.name;
+
+    return is;
 }

@@ -21,14 +21,14 @@ void DeliveryInfo::setEmailAddress(QString newEmail) {
 
 QDataStream& operator<<(QDataStream& os, const DeliveryInfo& d)
 {
-    os.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
     os << d.emailAddress;
     return os;
 }
 
 QDataStream& operator>>(QDataStream& is, DeliveryInfo& d)
 {
-    is.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
     is >> d.emailAddress;
     return is;
 }

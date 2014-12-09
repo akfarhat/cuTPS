@@ -2,10 +2,16 @@
 #include "Section.h"
 #include "Defines.h"
 
-Chapter::Chapter() {}
+Chapter::Chapter()
+{
+    number = 1;
+}
 
 Chapter::Chapter(Chapter& src)
-    : SellableItem(src.getId(), src.getName(), src.getPriceCents(), src.getAvailability()),
+    : SellableItem(src.getId(),
+                   src.getName(),
+                   src.getPriceCents(),
+                   src.getAvailability()),
       parentTextbook(src.getParentTextbook()),
       number(src.getChapterNumber())
 {
@@ -15,15 +21,30 @@ Chapter::Chapter(Chapter& src)
     }
 }
 
-Chapter::Chapter(int id, Textbook* textbook, int chNumber, QString name, int price, bool isAvailable) : SellableItem(id, name, price, isAvailable), parentTextbook(textbook), number(chNumber) {
+Chapter::Chapter(qint32 id,
+                 Textbook* textbook,
+                 quint16 chNumber,
+                 QString name,
+                 quint32 price,
+                 bool available)
+    : SellableItem(id, name, price, available),
+      parentTextbook(textbook), number(chNumber)
+{
 }
 
-Chapter::Chapter(Textbook* textbook, int chNumber, QString name, int price) :  SellableItem(name, price), parentTextbook(textbook), number(chNumber) {
+Chapter::Chapter(Textbook* textbook,
+                 quint16 chNumber,
+                 QString name,
+                 quint32 price,
+                 bool available)
+    :  SellableItem(name, price, available),
+      parentTextbook(textbook), number(chNumber)
+{
 }
 
 Chapter::~Chapter() {
     for (Section* s : sections)
-        delete s;
+        if (s != NULL) delete s;
 }
 
 Textbook* Chapter::getParentTextbook() {
@@ -35,11 +56,11 @@ void Chapter::setParentTextbook(Textbook *newTextbook) {
     parentTextbookId = newTextbook->getId();
 }
 
-int Chapter::getChapterNumber() const {
+quint16 Chapter::getChapterNumber() const {
     return number;
 }
 
-void Chapter::setChapterNumber(int newNumber) {
+void Chapter::setChapterNumber(quint16 newNumber) {
     number = newNumber;
 }
 
@@ -47,7 +68,7 @@ QString Chapter::getDetails() const {
     QString bookName = parentTextbook == NULL
             ? "NULL" : parentTextbook->getName();
     QString details = "";
-    details += "Type: Chapter\nID: ";
+    details += "Item ID: ";
     details += QString::number(this->getId());
     details += "\nChapter Name: ";
     details += this->getName();
@@ -57,9 +78,19 @@ QString Chapter::getDetails() const {
     details += bookName;
     details += "\nPrice: $";
     details += QString::number(this->getPriceCents() / 100.00f);
-    details += "\nAvailable: ";
+    details += "\nAvailable for Sale: ";
     details += (this->getAvailability() == true) ? "yes" : "no";
     return details;
+}
+
+qint32 Chapter::getParentTextbookId() const
+{
+    return parentTextbookId;
+}
+
+void Chapter::setParentTextbookId(const qint32 value)
+{
+    parentTextbookId = value;
 }
 
 void Chapter::addSection(const Section& s)
@@ -77,26 +108,28 @@ QString Chapter::getType() {
     return "Chapter";
 }
 
-QVector<Section*> Chapter::getSectionList()
+QVector<Section*>& Chapter::getSectionList()
 {
     return sections;
 }
 
-int Chapter::numSections() const
+quint16 Chapter::numSections() const
 {
     return sections.size();
 }
 
 QDataStream& operator<<(QDataStream& os, const Chapter& c)
 {
-    os.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     // Insert chapter
     os << dynamic_cast<const SellableItem&>(c);
-    os << static_cast<qint32>(c.number);
-    os << static_cast<qint32>(c.parentTextbookId);
+    os << c.number; // quint16
+    os << c.parentTextbookId; // qint32
+
     // Followed by number of sections
-    os << static_cast<qint32>(c.numSections());
+    os << c.numSections(); // quint16
+
     // And every section
     for (Section* s : c.sections) {
         os << *s;
@@ -107,16 +140,15 @@ QDataStream& operator<<(QDataStream& os, const Chapter& c)
 
 QDataStream& operator>>(QDataStream& is, Chapter& c)
 {
-    is.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     // Read chapter
     is >> dynamic_cast<SellableItem&>(c);
-    qint32 parentId, chNumber, numSections;
-    is >> chNumber >> parentId;
-    c.parentTextbookId = parentId;
-    c.number = chNumber;
+    is >> c.number;
+    is >> c.parentTextbookId;
 
     // Read number of sections
+    quint16 numSections;
     is >> numSections;
 
     // Read sections

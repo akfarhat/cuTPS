@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+#include "SecurityUtils.h"
+
 Server::Server(QObject *parent) :
     QObject(parent)
 {
@@ -39,7 +41,7 @@ bool Server::generateSessionID(QUuid& sessionID, QString& errorMessage)
     }
 
     if (i < 10) {
-        openSessions.append(id);
+        openSessions.insert(id, -1);
         sessionID = id;
         return true;
     }
@@ -67,10 +69,9 @@ ServerResponse Server::closeSession(QUuid sessionID)
 {
     ServerResponse response;
 
-    int index = openSessions.indexOf(sessionID);
+    int numRemoved = openSessions.remove(sessionID);
 
-    if (index > -1) {
-        openSessions.remove(index);
+    if (numRemoved > 0) {
         response.code = Success;
         response.message = "";
     }
@@ -111,50 +112,159 @@ Role Server::getUserRole(QString &username)
         if (query.first())
             return Role::AdministratorUser;
 
-    return Role::None;
+    return Role::Anonymous;
 }
 
 ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCredentials creds)
 {
     ServerResponse response;
+    SecurityUtils security;
     response.sessionID = sessionID;
-
     QSqlQuery query;
-    bool result = dbManager->runQuery("select * from User where username = \"" +
-                                      creds.username + "\" and password = \"" +
-                                      creds.password + "\";", &query);
+
+    // Get password hash from db
+    QString queryString = "select id, password, role from User where username = \""
+            + creds.username + "\";";
+
+    bool result = dbManager->runQuery(queryString,
+                                      &query);
 
     if (result) {
         if (query.first()) {
-            response.code = Success;
-            response.message = "";
+            QString hash = query.value(1).toString();
+            bool success = security.validatePassword(creds.username,
+                                                     creds.password,
+                                                     hash);
+            if (success) {
+                qDebug() << "Successful login as " << creds.username
+                         << "\nPassword: " << hash;
 
-            userRole = getUserRole(creds.username);
-        }
-        else {
+                response.code = Success;
+                int uRole = query.value(2).toInt();
+
+                switch (uRole) {
+                case 0:
+                    userRole = Role::AdministratorUser;
+                    break;
+                case 1:
+                    userRole = Role::ContentManagerUser;
+                    break;
+                case 2:
+                    userRole = Role::StudentUser;
+                    break;
+                }
+
+                //update openSessions to indicate that this session belongs to
+                // authenticated user
+                openSessions.insert(sessionID, query.value(0).toInt());
+
+            } else {
+                response.code = Fail;
+            }
+        } else {
             response.code = Fail;
-            response.message = "Invalid credentials, user not found.";
         }
-    }
-    else {
-        response.code = Fail;
+    } else {
         response.message = query.lastError().text();
+
+        qDebug() << "Failed to auth user: " << response.message;
+        response.code = Fail;
     }
 
     return response;
 }
 
-ServerResponse Server::addCourse(QUuid sessionID, Course course)
+ServerResponse Server::getSessionRole(QUuid sessionID, Role& userRole)
 {
     ServerResponse response;
     response.sessionID = sessionID;
 
     QSqlQuery query;
 
-    QString queryString = "insert into Course (code, name) values (\"" +
-                           course.getCourseCode() + "\", \"" +
-                           course.getCourseName() + "\")" +
-                           ";";
+    int userID = openSessions.value(sessionID, -1);
+
+    if (userID < 0) {
+        userRole = Role::Anonymous;
+        response.code = Success;
+        return response;
+    }
+
+    QString queryString = "select role from User where id = " + QString::number(userID) + ";";
+
+    bool result = dbManager->runQuery(queryString,
+                                      &query);
+
+    if (result) {
+        if (query.first()) {
+            response.code = Success;
+            int uRole = query.value(0).toInt();
+
+            switch (uRole) {
+            case 0:
+                userRole = Role::AdministratorUser;
+                break;
+            case 1:
+                userRole = Role::ContentManagerUser;
+                break;
+            case 2:
+                userRole = Role::StudentUser;
+                break;
+            }
+        } else {
+            response.code = Fail;
+        }
+    } else {
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to auth user: " << response.message;
+        response.code = Fail;
+    }
+
+    return response;
+}
+
+ServerResponse Server::getSessionUserId(QUuid sessionID, int& userID)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    int id = openSessions.value(sessionID, -1);
+
+    if (id < 0) {
+        response.code = Fail;
+        response.message = "session not found or doesn't have associated user";
+        return response;
+    }
+
+    userID = id;
+
+    response.code = Success;
+    return response;
+}
+
+ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32& newId)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString;
+
+    if (course.getTermSection().size() < 1) {
+        queryString = "insert into Course (code, name, term_section, term_year) values (\"" +
+            course.getCourseCode() + "\", \"" +
+            course.getCourseName() + "\", \"\", " +
+            QString::number(course.getTermYear()) + ");";
+    }
+    else {
+        queryString = "insert into Course (code, name, term_section, term_year) values (\"" +
+            course.getCourseCode() + "\", \"" +
+            course.getCourseName() + "\", \"" +
+            course.getTermSection().at(0) + "\", " +
+            QString::number(course.getTermYear()) + ");";
+    }
+
 
     qDebug() << "About to insert Course, query'"
              << queryString << "'";
@@ -164,6 +274,7 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
     if (result) {
         response.code = Success;
         response.message = "";
+        newId = query.lastInsertId().toInt();
     }
     else {
         response.code = Fail;
@@ -176,12 +287,12 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
     qDebug() << "About to insert " //<< QString::number(course.getRequiredTexts()->size())
              << " Course_Textbooks";
 
-    for (Textbook* textbook : *(course.getRequiredTexts())) {
+    for (int textbookId : course.getRequiredTextIds()) {
         // TODO: this is we should form the query for all books and execute it once.
         QString queryString = "insert into Course_Textbook (course_id, textbook_id) values (";
-        queryString += course.getId();
+        queryString += QString::number(course.getId());
         queryString += ", ";
-        queryString += textbook->getId();
+        queryString += QString::number(textbookId);
         queryString += ");";
 
         result = dbManager->runQuery(queryString, &query);
@@ -202,7 +313,7 @@ ServerResponse Server::addCourse(QUuid sessionID, Course course)
     return response;
 }
 
-ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
+ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& newId)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -211,7 +322,7 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
 
     QString queryString = "insert into SellableItem (name, price_cents, available) values (\"" +
                            textbook.getName() + "\", " +
-            QString::number(textbook.getPriceCents()) + ", " +
+                           QString::number(textbook.getPriceCents()) + ", " +
                            QString::number(textbook.getAvailability()) + ");";
 
     qDebug() << "Server::addTextbook running query: '" << queryString << "'";
@@ -220,6 +331,7 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
     if (result) {
         response.code = Success;
         response.message = "";
+        newId = query.lastInsertId().toInt();
     }
     else {
         response.code = Fail;
@@ -230,7 +342,10 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
         return response;
     }
 
-    queryString = "insert into Textbook (isbn) values (\"" +
+    queryString = "insert into Textbook (item_id, edition, authors, isbn) values (" +
+                  QString::number(newId) + ", \"" +
+                  textbook.getEdition() + "\", \"" +
+                  textbook.getAuthors() + "\", \"" +
                   textbook.getISBN() + "\");";
 
     result = dbManager->runQuery(queryString, &query);
@@ -250,22 +365,123 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook textbook)
         return response;
     }
 
+    qint32 stub;
+    for (Chapter* c : textbook.getChapterList())
+    {
+        addChapter(sessionID, *c, stub);
+    }
+
     return response;
 }
 
-ServerResponse Server::addChapter(QUuid sessionID, Chapter chapter)
+ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32& newId)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+    QSqlQuery query;
+
+    // TODO: ensure that getParentChapterId() belongs to getParentTextbookId().
+
+    QString queryString = "insert into SellableItem (name, price_cents, available) values (";
+    queryString += "\"" + chapter.getName() + "\", ";
+    queryString += QString::number(chapter.getPriceCents()) + ", ";
+    queryString += QString::number((int) chapter.getAvailability());
+    queryString += ");";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        newId = query.lastInsertId().toInt();
+    } else {
+        response.code = Fail;
+        qDebug() << "Error while adding chapter: " << query.lastError().text();
+        return response;
+    }
+
+    queryString = "insert into Chapter (item_id, textbook_id, chapter_num) values (";
+    queryString += QString::number(newId) + ", ";
+    queryString += QString::number(chapter.getParentTextbookId()) + ", ";
+    queryString += QString::number(chapter.getChapterNumber()) + ");";
+
+    result = dbManager->runQuery(queryString, &query);
+
+    if (!result) {
+        qDebug() << "Error while adding chapter info: " << query.lastError().text();
+    }
+
+    qint32 lastInsertId;
+
+    for (Section* s : chapter.getSectionList())
+    {
+        addSection(sessionID, *s, lastInsertId);
+    }
+
+    return response;
+}
+
+ServerResponse Server::addSection(QUuid sessionID, Section& section, qint32& newId)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+    QSqlQuery query;
+
+    // TODO: ensure that getParentChapterId() belongs to getParentTextbookId().
+
+
+    QString queryString = "insert into SellableItem (name, price_cents, available) values (";
+    queryString += "\"" + section.getName() + "\", ";
+    queryString += QString::number(section.getPriceCents()) + ", ";
+    queryString += QString::number((int) section.getAvailability());
+    queryString += ");";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        newId = query.lastInsertId().toInt();
+    } else {
+        response.code = Fail;
+        qDebug() << "Error while adding section: " << query.lastError().text();
+        return response;
+    }
+
+    queryString = "insert into Section (item_id, chapter_id, section_num) values (";
+    queryString += QString::number(newId) + ", ";
+    queryString += QString::number(section.getParentChapterId()) + ", ";
+    queryString += QString::number(section.getSectionNumber()) + ");";
+
+    result = dbManager->runQuery(queryString, &query);
+
+    if (!result) {
+        qDebug() << "Error while adding Section info: " << query.lastError().text();
+    }
+
+    return response;
+}
+
+ServerResponse Server::replaceCourse(QUuid sessionID, qint32 id, Course& course)
 {
     ServerResponse response;
     response.sessionID = sessionID;
 
     QSqlQuery query;
-    QString queryString = "insert into Chapter (textbook_id, name, available) values (";
-    queryString += chapter.getParentTextbook()->getId();
-    queryString += ", ";
-    queryString += chapter.getName();
-    queryString += ", ";
-    queryString += chapter.getAvailability();
-    queryString += ");";
+
+    qDebug() << "Server::replaceCourse, id=" << QString::number(id);
+
+    QString queryString = "";
+    queryString += "update Course set ";
+    queryString += "code = \"" + course.getCourseCode() + "\", ";
+    queryString += "name = \"" + course.getCourseName() + "\", ";
+    if (course.getTermSection() == "")
+        queryString += "term_section = \"\", ";
+    else
+        queryString += "term_section = \"" + QString(course.getTermSection().at(0)) + "\", ";
+    queryString += "term_year = " + QString::number(course.getTermYear()) + " ";
+    queryString += "where id = " + QString::number(id) + ";";
+
+    qDebug() << "About to replace Course, query'"
+             << queryString << "'";
 
     bool result = dbManager->runQuery(queryString, &query);
 
@@ -276,25 +492,30 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter chapter)
     else {
         response.code = Fail;
         response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace course: " << response.message;
         return response;
     }
 
     return response;
 }
 
-ServerResponse Server::addSection(QUuid sessionID, Section section)
+ServerResponse Server::replaceTextbook(QUuid sessionID, qint32 id, Textbook& textbook)
 {
     ServerResponse response;
     response.sessionID = sessionID;
 
     QSqlQuery query;
-    QString queryString = "insert into Section (chapter_id, name, available) values (";
-    queryString += section.getParentChapter()->getId();
-    queryString += ", ";
-    queryString += section.getName();
-    queryString += ", ";
-    queryString += section.getAvailability();
-    queryString += ");";
+
+    QString queryString = "";
+    queryString += "update SellableItem set ";
+    queryString += "name = \"" + textbook.getName() + "\", ";
+    queryString += "price_cents = " + QString::number(textbook.getPriceCents()) + ", ";
+    queryString += "available = " + QString::number(textbook.getAvailability()? 1 : 0) + " ";
+    queryString += "where id = " + QString::number(id) + ";";
+
+    qDebug() << "About to replace SellableItem, query'"
+             << queryString << "'";
 
     bool result = dbManager->runQuery(queryString, &query);
 
@@ -305,13 +526,486 @@ ServerResponse Server::addSection(QUuid sessionID, Section section)
     else {
         response.code = Fail;
         response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace SellableItem: " << response.message;
+        return response;
+    }
+
+    queryString = "";
+    queryString += "update Textbook set ";
+    queryString += "edition = \"" + textbook.getEdition() + "\", ";
+    queryString += "authors = \"" + textbook.getAuthors() + "\", ";
+    queryString += "isbn = \"" + textbook.getISBN() + "\" ";
+    queryString += "where item_id = " + QString::number(id) + ";";
+
+    qDebug() << "About to replace Textbook, query'"
+             << queryString << "'";
+
+    result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace Textbook: " << response.message;
         return response;
     }
 
     return response;
 }
 
-ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& username, QVector<int>* textbookIDs)
+ServerResponse Server::replaceChapter(QUuid sessionID, qint32 id, Chapter& chapter)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "update SellableItem set ";
+    queryString += "name = \"" + chapter.getName() + "\", ";
+    queryString += "price_cents = " + QString::number(chapter.getPriceCents()) + ", ";
+    queryString += "available = " + QString::number(chapter.getAvailability()? 1 : 0) + " ";
+    queryString += "where id = " + QString::number(id) + ";";
+
+    qDebug() << "About to replace SellableItem, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace SellableItem: " << response.message;
+        return response;
+    }
+
+    queryString = "";
+    queryString += "update Chapter set ";
+    queryString += "chapter_num = " + QString::number(chapter.getChapterNumber()) + " ";
+    queryString += "where item_id = " + QString::number(id) + ";";
+
+    qDebug() << "About to replace Chapter, query'"
+             << queryString << "'";
+
+    result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace Chapter: " << response.message;
+        return response;
+    }
+
+    return response;
+}
+
+ServerResponse Server::replaceSection(QUuid sessionID, qint32 id, Section& section)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "update SellableItem set ";
+    queryString += "name = \"" + section.getName() + "\", ";
+    queryString += "price_cents = " + QString::number(section.getPriceCents()) + ", ";
+    queryString += "available = " + QString::number(section.getAvailability()? 1 : 0) + " ";
+    queryString += "where id = " + QString::number(id) + ";";
+
+    qDebug() << "About to replace SellableItem, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace SellableItem: " << response.message;
+        return response;
+    }
+
+    queryString = "";
+    queryString += "update Section set ";
+    queryString += "section_num = " + QString::number(section.getSectionNumber()) + " ";
+    queryString += "where item_id = " + QString::number(id) + ";";
+
+    qDebug() << "About to replace Section, query'"
+             << queryString << "'";
+
+    result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to replace Section: " << response.message;
+        return response;
+    }
+
+    return response;
+}
+
+ServerResponse Server::removeCourse(QUuid sessionID, qint32 id)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "delete from Course where id = ";
+    queryString += QString::number(id);
+    queryString += ";";
+
+    qDebug() << "About to delete Course, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to delete course: " << response.message;
+        return response;
+    }
+
+    return response;
+}
+
+ServerResponse Server::removeSellableItem(QUuid sessionID, qint32 id)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "delete from SellableItem where id = ";
+    queryString += QString::number(id);
+    queryString += ";";
+
+    qDebug() << "About to delete SellableItem, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to delete SellableItem: " << response.message;
+        return response;
+    }
+
+    return response;
+}
+
+ServerResponse Server::linkTextbook(QUuid sessionId, qint32 courseId, qint32 textId)
+{
+    ServerResponse response;
+    response.sessionID = sessionId;
+    QSqlQuery query;
+
+    QString queryString = "insert into Course_Textbook (course_id, textbook_id) " \
+            "values (" + QString::number(courseId) + ", " + QString::number(textId)
+            + ");";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+    } else {
+        response.code = Fail;
+        qDebug() << "Error while linking textbook: " << query.lastError().text();
+        return response;
+    }
+
+    return response;
+}
+
+ServerResponse Server::unlinkTextbook(QUuid sessionId, qint32 courseId, qint32 textId)
+{
+    ServerResponse response;
+    response.sessionID = sessionId;
+    QSqlQuery query;
+
+    QString queryString = "delete from Course_Textbook " \
+            "where course_id=" + QString::number(courseId)
+            + " and text_id=" + QString::number(textId) + ";";
+
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+    } else {
+        response.code = Fail;
+        qDebug() << "Error while unlinking textbook: " << query.lastError().text();
+        return response;
+    }
+
+    return response;
+}
+
+ServerResponse Server::registerStudentUser(QUuid sessionID, Student& usr, QString pwd, qint32* id)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+    QSqlQuery query;
+    SecurityUtils security;
+
+    // Make password hash
+    QString hash = security.makePasswordHash(usr.getUsername(), pwd);
+
+    QString queryString = "insert into User (username, name, password, role) values (\"" +
+            usr.getUsername() + "\", \"" + usr.getName() + "\", \"" +
+            hash + "\", " + QString::number(2) + ");";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+    } else {
+        response.code = Fail;
+        qDebug() << "Error while adding user: " << query.lastError().text();
+        return response;
+    }
+
+    // if that doesn't work, use query "select seq from sqlite_sequence where name="table_name""
+    qint32 lastInsertId = query.lastInsertId().toInt();
+
+    queryString = "insert into Student (user_id, student_num, email) values (" +
+            QString::number(lastInsertId) + ", \""
+            + usr.getStudentNumber() + "\", \"" + usr.getEmailAddress() + "\");";
+
+    result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        *id = lastInsertId;
+    } else {
+        response.code = Fail;
+        qDebug() << "Error while adding student user: " << query.lastError().text();
+        return response;
+    }
+
+    if (usr.getDeliveryInfo()) {
+        queryString = "insert into DeliveryInfo (user_id, email) values (" +
+                QString::number(lastInsertId) + ", \"" +
+                usr.getDeliveryInfo()->getEmailAddress() + "\");";
+
+        result = dbManager->runQuery(queryString, &query);
+
+        if (!result) {
+            qDebug() << "Error while adding delivery info: " << query.lastError().text();
+        }
+    }
+
+    if (usr.getCreditCardInfo()) {
+        queryString = "insert into CreditCardInfo " \
+                "(user_id, holder_name, number, expiry_date, security_code) values (" +
+                QString::number(lastInsertId) + ", \"" +
+                usr.getCreditCardInfo()->getCardholderName() + "\", \"" +
+                usr.getCreditCardInfo()->getCardNumber() + "\", \"" +
+                usr.getCreditCardInfo()->getExpiry() + "\", \"" +
+                usr.getCreditCardInfo()->getSecurityCode() + "\");";
+
+        result = dbManager->runQuery(queryString, &query);
+
+        if (!result) {
+            qDebug() << "Error while adding billing info: " << query.lastError().text();
+        }
+    }
+
+    return response;
+}
+
+ServerResponse Server::getAllTextbooks(QUuid sessionID, QVector<Textbook*> &textbooks)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "SELECT id, name, edition, authors, price_cents, available, isbn ";
+    queryString += "FROM Textbook tb JOIN SellableItem s ";
+    queryString += "ON (s.id = tb.item_id); ";
+
+    qDebug() << "query string: '" << queryString << "'";
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        qDebug() << "Query for all texts successful. Rows: " << query.size();
+
+        while(query.next()) {
+            Textbook* textbook = new Textbook(query.value(0).toInt(),
+                                             query.value(1).toString(),
+                                             query.value(2).toString(),
+                                             query.value(3).toString(),
+                                             query.value(4).toInt(),
+                                             query.value(5).toBool(),
+                                             query.value(6).toString());
+
+            getTextbookChapters(sessionID, textbook->getId(), textbook);
+
+            textbooks.append(textbook);
+        }
+
+
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        qDebug() << "Query for all texts failed.";
+
+        response.code = Fail;
+        response.message = query.lastError().text();
+    }
+
+    return response;
+}
+
+ServerResponse Server::getAllCourses(QUuid sessionID, QVector<Course>& courses)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select id, code, name, term_section, term_year from Course;";
+
+    qDebug() << "query string: '" << queryString << "'";
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        qDebug() << "Query for all courses successful. Rows: " << query.size();
+
+        while(query.next()) {
+            Course* course = new Course(query.value(0).toInt(),
+                                        query.value(1).toString(),
+                                        query.value(2).toString(),
+                                        query.value(3).toString(),
+                                        query.value(4).toInt());
+
+            qDebug() << "course row with id="
+                     << QString::number(course->getId());
+
+            courses.append(*course);
+        }
+
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        qDebug() << "Query for all courses failed.";
+
+        response.code = Fail;
+        response.message = query.lastError().text();
+    }
+
+    return response;
+}
+
+ServerResponse Server::getStudentCourses(QUuid sessionID, const int& userID, QVector<Course>& courses)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+
+    queryString += "select course.id, course.code, course.name, course.term_section, course.term_year ";
+    queryString += "from user, user_course, course ";
+    queryString += "where user.id = user_course.user_id and user.id = ";
+    queryString += QString::number(userID);
+    queryString += " and user_course.course_id = course.id";
+    queryString += ";";
+
+    qDebug() << "query string: '" << queryString << "'";
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        qDebug() << "Query for registered courses successful. Rows: " << query.size();
+
+        while(query.next()) {
+            Course* course = new Course(query.value(0).toInt(),
+                                       query.value(1).toString(),
+                                       query.value(2).toString(),
+                                       query.value(3).toString(),
+                                       query.value(4).toInt());
+
+            QSqlQuery query2;
+
+            QString queryString2 = "";
+            queryString2 += "select Course_Textbook.textbook_id ";
+            queryString2 += "from Course_Textbook ";
+            queryString2 += "where Course_Textbook.course_id = ";
+            queryString2 += QString::number(course->getId());
+            queryString2 += ";";
+
+            qDebug() << "query string: '" << queryString2 << "'";
+            bool result2 = dbManager->runQuery(queryString2, &query2);
+
+            if (result2) {
+                while(query2.next()) {
+                    course->addRequiredTextId(query2.value(0).toInt());
+                }
+            }
+
+            courses.append(*course);
+        }
+
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        qDebug() << "Query for registered courses failed.";
+
+        response.code = Fail;
+        response.message = query.lastError().text();
+    }
+
+    return response;
+}
+
+ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const int& userID, QVector<int>* textbookIDs)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -322,9 +1016,9 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
     queryString += "select Course_Textbook.textbook_id from User ";
     queryString += "join User_Course on User.id = User_Course.user_id ";
     queryString += "join Course_Textbook on User_Course.course_id = Course_Textbook.course_id ";
-    queryString += "where User.username = \"";
-    queryString += username;
-    queryString += "\";";
+    queryString += "where User.id = ";
+    queryString += QString::number(userID);
+    queryString += ";";
 
     qDebug() << "query string: '" << queryString << "'";
     bool result = dbManager->runQuery(queryString, &query);
@@ -335,8 +1029,6 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
         while(query.next()) {
             textbookIDs->append(query.value(0).toInt());
         }
-
-        // TODO : send textbookIDs to client
 
         response.code = Success;
         response.message = "";
@@ -361,7 +1053,9 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
     qDebug() << "textBookId param in server API = " << textbookID;
 
     QString queryString = "";
-    queryString += "select SellableItem.id, SellableItem.name, SellableItem.price_cents, SellableItem.available, Textbook.isbn from Textbook, SellableItem ";
+    queryString += "select Textbook.item_id, Textbook.edition, Textbook.authors, Textbook.isbn, ";
+    queryString += "SellableItem.name, SellableItem.price_cents, ";
+    queryString += "SellableItem.available from Textbook inner join SellableItem on id=item_id ";
     queryString += "where Textbook.item_id = ";
     queryString += QString::number(textbookID);
     queryString += ";";
@@ -374,9 +1068,11 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
 
     // TODO : Handle case where attributes are null
     if (result) {
+        bool found = false;
         while(query.next()) {
+            found = true;
             // TODO: remove this debug log
-            qDebug() << "Adding a textbook("
+            qDebug() << "Get Book Details("
                      << query.value(0).toInt() << ", "
                      << query.value(1).toString() << ", "
                      << query.value(2).toInt() << ", "
@@ -384,18 +1080,29 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
                      << query.value(4).toString() << ")";
 
             *textbook = new Textbook(
-                query.value(0).toInt(),
-                query.value(1).toString(),
-                query.value(2).toInt(),
-                query.value(3).toBool(),
-                query.value(4).toString()
-            );
+                        query.value(0).toInt(),
+                        query.value(1).toString(),
+                        query.value(2).toString(),
+                        query.value(3).toString(),
+                        query.value(4).toString(),
+                        query.value(5).toInt(),
+                        query.value(6).toBool()
+                        );
         }
 
-        // TODO : send textbook object to client
+        if (found) {
+            getTextbookChapters(sessionID, (*textbook)->getId(), *textbook);
 
-        response.code = Success;
-        response.message = "";
+            response.code = Success;
+            response.message = "";
+        }
+        else {
+            //textbook with given ID not found
+            *textbook = new Textbook();
+
+            response.code = Fail;
+            response.message = "textbook with given ID not found";
+        }
     }
     else {
 
@@ -405,6 +1112,101 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
         response.code = Fail;
         response.message = query.lastError().text();
     }
+
+    return response;
+}
+
+ServerResponse Server::getTextbookChapters(QUuid sessionID, int textbookID, Textbook* textbook)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select Chapter.item_id, Chapter.chapter_num, SellableItem.name, SellableItem.price_cents, SellableItem.available from Chapter ";
+    queryString += "join SellableItem on Chapter.item_id = SellableItem.id where Chapter.textbook_id = ";
+    queryString += QString::number(textbookID);
+    queryString += ";";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        while(query.next()) {
+            Chapter* chapter = new Chapter(
+                        query.value(0).toInt(),
+                        NULL,
+                        query.value(1).toInt(),
+                        query.value(2).toString(),
+                        query.value(3).toInt(),
+                        query.value(4).toBool()
+                        );
+
+            chapter->setParentTextbookId(textbookID);
+
+            QVector<Section> sections;
+            getChapterSections(sessionID, chapter->getId(), sections);
+
+            for(Section s : sections) {
+                chapter->addSection(s);
+            }
+
+            textbook->addChapter(*chapter);
+        }
+
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+        return response;
+    }
+
+
+    response.code = Success;
+    response.message = "";
+
+    return response;
+}
+
+ServerResponse Server::getChapterSections(QUuid sessionID, int chapterID, QVector<Section>& sections)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select Section.item_id, Section.section_num, SellableItem.name, SellableItem.price_cents, SellableItem.available from Section ";
+    queryString += "join SellableItem on Section.item_id=SellableItem.id where Section.chapter_id = ";
+    queryString += QString::number(chapterID);
+    queryString += ";";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        while(query.next()) {
+            Section* section = new Section(
+                        query.value(0).toInt(),
+                        NULL,
+                        query.value(1).toInt(),
+                        query.value(2).toString(),
+                        query.value(3).toInt(),
+                        query.value(4).toBool()
+                        );
+
+            section->setParentChapterId(chapterID);
+            sections.append(*section);
+        }
+
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+        return response;
+    }
+
+    response.code = Success;
+    response.message = "";
 
     return response;
 }
@@ -419,7 +1221,7 @@ ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector
     QString queryString = "";
     queryString += "select Chapter.item_id, Chapter.chapter_num, SellableItem.name, SellableItem.price, SellableItem.available from Chapter ";
     queryString += "where Chapter.textbook_id = ";
-    queryString += textbookID;
+    queryString += QString::number(textbookID);
     queryString += ";";
 
     bool result = dbManager->runQuery(queryString, &query);
@@ -453,7 +1255,7 @@ ServerResponse Server::getTextbookParts(QUuid sessionID, int textbookID, QVector
         queryString = "";
         queryString += "select Section.item_id, Section.section_num, SellableItem.name, SellableItem.price, SellableItem.available from Section ";
         queryString += "where Section.chapter_id = ";
-        queryString += chapter->getId();
+        queryString += QString::number(chapter->getId());
         queryString += ";";
 
         result = dbManager->runQuery(queryString, &query);

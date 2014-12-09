@@ -1,13 +1,17 @@
 // Class: LoginControl
 // Type: Control
 // Description:
-//     This class is responsible for requesting session
-//     credentials for the client use
+//   This class is responsible for requesting
+//   validation of user credentials from the server
+//   and creating the appropriate post-login
+//   user interface, depending on the user's role.
+// Traceability:
+//   The LoginControl class in the LoginInterface subsystem.
 
 #ifndef LOGINCONTROL_H
 #define LOGINCONTROL_H
 
-#include "Utils.h"
+#include "Defines.h"
 #include "Login.h"
 #include "ClientNetworkHandler.h"
 #include "ContentManagementInterface.h"

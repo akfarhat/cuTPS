@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>241</width>
-    <height>233</height>
+    <width>245</width>
+    <height>309</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,8 +30,8 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>60</y>
-     <width>71</width>
+     <y>140</y>
+     <width>41</width>
      <height>16</height>
     </rect>
    </property>
@@ -43,7 +43,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>100</y>
+     <y>180</y>
      <width>41</width>
      <height>16</height>
     </rect>
@@ -55,7 +55,7 @@
   <widget class="QLineEdit" name="nameEdit">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>90</x>
      <y>20</y>
      <width>113</width>
      <height>26</height>
@@ -65,8 +65,8 @@
   <widget class="QLineEdit" name="priceEdit">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>60</y>
+     <x>90</x>
+     <y>140</y>
      <width>113</width>
      <height>26</height>
     </rect>
@@ -75,8 +75,8 @@
   <widget class="QLineEdit" name="isbnEdit">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>100</y>
+     <x>90</x>
+     <y>180</y>
      <width>113</width>
      <height>26</height>
     </rect>
@@ -86,7 +86,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>140</y>
+     <y>220</y>
      <width>89</width>
      <height>21</height>
     </rect>
@@ -98,8 +98,8 @@
   <widget class="QPushButton" name="addButton">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>180</y>
+     <x>130</x>
+     <y>260</y>
      <width>88</width>
      <height>27</height>
     </rect>
@@ -112,13 +112,59 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>180</y>
+     <y>260</y>
      <width>88</width>
      <height>27</height>
     </rect>
    </property>
    <property name="text">
     <string>Cancel</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="editionEdit">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>60</y>
+     <width>111</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="editionLbl">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>60</y>
+     <width>51</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Edition</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="authorEdit">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>100</y>
+     <width>113</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="authorLbl">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>100</y>
+     <width>51</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Author</string>
    </property>
   </widget>
  </widget>

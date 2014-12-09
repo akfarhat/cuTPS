@@ -1,5 +1,9 @@
 #include "ManageCourseControl.h"
 #include "ContentManagementInterface.h"
+#include "AddCourseControl.h"
+#include "ModifyCourseControl.h"
+#include "DeleteCourseControl.h"
+
 
 #include <QDebug>
 
@@ -29,7 +33,15 @@ ManageCourseControl::ManageCourseControl(ContentManagementInterface *cmIf,
     connect(this->courseDetailsWin, SIGNAL(removeRequiredBook(int,int)),
             this, SLOT(removeRequiredBook(int, int)));
 
-    // TODO: connect slots for requests that the networking will signal
+    // Connect networking responses to the window controls that required the data
+    connect(this->networking, SIGNAL(courseListReceived(QUuid,int,QList<Course*>*)),
+            this->courseDetailsWin, SLOT(courseListReceived(QUuid,int,QList<Course*>*)));
+
+    connect(this->networking, SIGNAL(textbookListReceived(QUuid,int,QList<Textbook*>*)),
+            this->courseDetailsWin, SLOT(textbookListReceived(QUuid,int,QList<Textbook*>*)));
+
+    connect(this->networking, SIGNAL(updateCompleted(QUuid,int,InvocationDescriptor,qint32)),
+            this->courseDetailsWin, SLOT(updateCompleted(QUuid,int,InvocationDescriptor,qint32)));
 }
 
 ManageCourseControl::~ManageCourseControl()
@@ -42,9 +54,13 @@ void ManageCourseControl::saveNewCourse(QString code, QString name)
 {
     qDebug() << "Saving new course " << code << ": " << name;
 
-    // TODO: create an AddCourseControl with the courseReqAPI and delegate.
+    AddCourseControl ctrl(this->requestAPI);
 
-    this->courseDetailsWin->displayCourseList();
+    Course c(code, name);
+
+    // TODO: we are not currently handling the response for this
+    QUuid reqId;
+    ctrl.addCourse(reqId, c);
 }
 
 void ManageCourseControl::modifyCourse(int courseId,
@@ -54,28 +70,48 @@ void ManageCourseControl::modifyCourse(int courseId,
     qDebug() << "Modifying existing course id=" << courseId
              << " code = " << courseCode
              << " name = " << courseName;
-    // TODO: create a modifyCourseControl to handle the request
+
+    ModifyCourseControl ctrl(this->requestAPI);
+
+    Course c(courseCode, courseName);
+    c.setId(courseId);
+
+    // TODO: not currently handling response
+    QUuid reqId;
+    ctrl.modifyCourse(reqId, c);
 }
 
 void ManageCourseControl::deleteCourse(int courseId)
 {
     qDebug() << "Deleting course with ID = " << courseId;
 
-    // TODO: create a deleteCourseControl object to handle request
+    DeleteCourseControl delCtrl(this->requestAPI);
+
+    // TODO: not currently handling response
+    QUuid reqId;
+    delCtrl.deleteCourse(reqId, courseId);
 }
 
 void ManageCourseControl::removeRequiredBook(int bookId, int courseId)
 {
     qDebug() << "Removing book with id=" << bookId
              << " from required texts for course id=" << courseId;
+
+    // TODO: ignoring response from this request
+    this->requestAPI->unlinkText(courseId, bookId);
+
+    // TODO: refresh required book list in courseDetailsWin
 }
 
 void ManageCourseControl::addRequiredBooks(QVector<int>& books, int courseId)
 {
-    // TODO: spawn an AddRequiredBooks control to handle the requestAPI call
-
     for (int id: books) {
         qDebug() << "Adding bookId = " << id
                  << " as required text for course ID = " << courseId;
+
+        // TODO: ignoring response from this request
+        this->requestAPI->linkText(courseId, id);
+
+        // TODO: refresh required book list in courseDetailsWin
     }
 }

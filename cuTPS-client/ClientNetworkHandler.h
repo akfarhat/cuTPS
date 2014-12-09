@@ -7,44 +7,34 @@
 //     This class offers the client side API for possible
 //     requests to the server.
 
-// === API change history === //
-// Dec, 2:      --- getBookDetails() now take just the IDs of textbooks
-//                  getBookDetail(qint32) <- will return a single textbook with that id
-//                  getBookDetail(QVector<qint32>&) <- will return a vector of books.
-//
-//              --- textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*>* books)
-//                  now returns vector of textbook pointers. All textbooks and vector itself are
-//                  created using new, so delete them after use. qDeleteAll().
-//                  You may want to use qDeleteAll(const Container& c) from <QtAlgorithms> header.
-//
-//              --- void textbookLookupCompleted(QUuid requestId, int code, QVector<qint32>* booksIds)
-//                  also returns a vector of book ids. You can pass the output right to getBookDetails() 
-//                  to receive details about all of them in one bunch, via textbookDetailsReceived().
-//
-//              --- getRequiredBooks() now returns only IDs of books for performance reasons.
-//                  Use chained requests to receive ids first, then details.
-//
-//                  <woyorus>
-
 #include <QObject>
 #include <QMetaObject>
 #include <QHostAddress>
 #include <QTcpSocket>
 #include <QUuid>
 #include <QVector>
+#include <QList>
+#include <QMap>
 #include <QDataStream>
 
 #include "Defines.h"
-#include "Utils.h"
+
 #include "Entity/Textbook.h"
+#include "Entity/Chapter.h"
+#include "Entity/Section.h"
 #include "Entity/Order.h"
 #include "Entity/Course.h"
+#include "Entity/Student.h"
 
-using namespace TPSNetProtocolDefs;
+using namespace TPSNetProtocolDef;
+using namespace TPSDef;
 
 // metatype declarations for correct signalling
-Q_DECLARE_METATYPE(QVector<Textbook*>*)
-Q_DECLARE_METATYPE(QVector<qint32>*)
+typedef QMap<Course*, QList<Textbook*>*>* CourseTextMap;
+Q_DECLARE_METATYPE(CourseTextMap)
+Q_DECLARE_METATYPE(Textbook*)
+Q_DECLARE_METATYPE(QList<Textbook*>*)
+Q_DECLARE_METATYPE(QList<Course*>*)
 
 // Note, this could inherit from a NetworkHandler
 // that manages the networking
@@ -63,28 +53,97 @@ public:
     // Disconnect from the server
     void disconnectFromServer();
 
-    // Login to the server - request a session id
+    // What: attemt to log in into the server.
+    // Available for: anonymous user.
+    // Related reply: loginSuccessful / loginFailed.
     QUuid login(UserCredentials&);
 
-    // Request the list of available textbooks
-    // for the user with this session.
-    // TODO: it makes sense to return course objects with linked textbooks
-    QUuid getRequiredBooks(QString&);
+    //// STUDENT USER OPERATIONS
 
-    // Request the details of a particular textbook id
-    QUuid getBookDetails(const qint32 id);
+    // What: Request the list of _available_ (available==true) textbooks
+    // for the user on this session. Note: textbooks include sections and chapters
+    // Related reply signal: requiredBooksReceived()
+    QUuid getRequiredBooks();
 
-    // Request details for a list of textbook ids
-    QUuid getBookDetails(const QVector<qint32>& ids);
-
-    // Submit an order to the server
+    // What: Submit an order to the server
+    // Reltated reply signal: orderStatusReceived(QUuid, int);
     QUuid submitOrder(Order&);
 
-    // Add a course to the content availability of the system
+    //// STUDENT + CONTENT MANAGER OPERATIONS
+
+    // What: Request the details (i.e. Textbook object itself) of a particular textbook id
+    // Note: textbooks include sections and chapters
+    // Available for: Students, ContentManagers.
+    // Related reply signal: textbookRecevied(Textbook*)
+    QUuid getBookDetails(const qint32 id);
+
+    // What: Request details for a list of textbook ids
+    // Note: textbooks include sections and chapters
+    // Available for: Students, ContentManagers.
+    // Related reply signal: textbookListReceived(QList<Textbook*>*)
+    QUuid getBookDetails(const QVector<qint32>& ids);
+
+    //// CONTENT MANAGER OPERATIONS
+
+    // What: Request for all the books registered (including unavailable ones)
+    // Note: textbooks include sections and chapters
+    // Available for: ContentManagers
+    // Related reply signal: textbookListReceived(QList<Textbook*>*)
+    QUuid getAllBooks();
+
+    // What: request a list of all courses in the system.
+    // Available for: content managers
+    // Related reply signal: courseListRecevied(QList<Course*>*)
+    QUuid getAllCourses();
+
+    // What: Add a new course to the system.
+    // Available for content managers
+    // Related reply signal: updateCompleted(QUuid, int, InvocationDescriptor, qint32)
     QUuid addCourse(Course&);
 
-    // Add a textbook to the content availability of the system
+    // What: assign an existing textbook to an existing course
+    // Available for content managers
+    // Related reply signal: updateCompleted() --- returns courseId in id arg.
+    QUuid linkTextbook(qint32 courseId, qint32 textId);
+
+    // What: remove a linked textbook from course.
+    // Available for content managers
+    // Related reply signal: updateCompleted() --- returns courseId in id arg.
+    QUuid unlinkTextbook(qint32 courseId, qint32 textId);
+
+    // Add new items routines.
+    // Available for content managers.
+    // Related reply signal: updateCompleted(QUuid, int, InvocationDescriptor, qint32)
     QUuid addBook(Textbook&);
+    QUuid addChapter(qint32 textId, Chapter&);
+    QUuid addSection(qint32 textId, qint32 chId, Section&);
+
+
+    // What: removing items routines
+    // Available for content managers.
+    // Related reply signal: updateCompleted(QUuid, int, InvocationDescriptor, qint32)
+    QUuid removeBook(qint32 id);
+    QUuid removeChapter(qint32 id);
+    QUuid removeSection(qint32 id);
+
+    // What: course removal routine
+    // Available for content managers
+    // Related reply signal: updateCompleted(QUuid, int, InvocationDescriptor, qint32)
+    QUuid removeCourse(qint32 id);
+
+    // CONTENT MANAGERS + ADMINISTRATOR OPERATIONS
+
+    // What: add a new student user to the system.
+    // Available for: ContentManagers, Administrators.
+    // Reletaed reply: updateCompete()
+    QUuid addStudentUser(Student&, QString passwd);
+
+    // ADMINISTRATOR OPERATIONS
+
+    // What: flags user as inactive. 
+    // Available for: administrators
+    // Related reply: updateCompleted()
+    QUuid banUser(qint32 uid);
 
     // Access modifiers for the state of the connection to the server
     QTcpSocket::SocketState getSocketState() const;
@@ -102,10 +161,13 @@ signals:
     void loginSuccessful(QUuid requestId, Role userRole);
     void loginFailed(QUuid requestId);
     void orderStatusReceived(QUuid requestId, int code);
-    void updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid requestId, int code);
+    void updateCompleted(QUuid requestId, int code, InvocationDescriptor invo, qint32 id);
+
     // Books in vector are created using new. Delete them using delete after use.
-    void textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*>* books);
-    void textbookLookupCompleted(QUuid requestId, int code, QVector<qint32>* booksIds);
+    void requiredBooksReceived(QUuid requestId, int code, QMap<Course*, QList<Textbook*>*>*);
+    void textbookReceived(QUuid requestId, int code, Textbook* text);
+    void textbookListReceived(QUuid requestId, int code, QList<Textbook*>*);
+    void courseListReceived(QUuid requestId, int code, QList<Course*>*);
 
 public slots:
     // Event handlers for events emitted by the TCP socket object
@@ -122,7 +184,6 @@ private:
     bool loggedIn;
     // Block size for reads from the connection
     qint16 blockSize;
-
 };
 
 #endif // CLIENTNETWORKHANDLER_H

@@ -1,5 +1,9 @@
 #include "BillingInfo.h"
 
+BillingInfo::BillingInfo()
+{
+}
+
 BillingInfo::BillingInfo(QString name, QString email, QString addr, QString number) {
     billingName    = name;
     emailAddress   = email;

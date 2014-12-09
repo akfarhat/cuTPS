@@ -10,7 +10,6 @@
 
 #include "libcutps_global.h"
 
-#include <memory>
 #include <QString>
 
 #include "BillingInfo.h"
@@ -18,6 +17,7 @@
 class LIBCUTPS_EXPORT CreditCardInfo : public BillingInfo
 {
 public:
+    CreditCardInfo();
     CreditCardInfo(QString name, QString email, QString addr, QString pnumber,
                    QString cholder, QString cnumber, QString expiry, QString sCode);
     virtual inline ~CreditCardInfo() {}
@@ -32,6 +32,10 @@ public:
 
     virtual QString getPaymentDetails() const;
     virtual CreditCardInfo* clone() const;
+
+    // Serialization routines
+    friend QDataStream& operator<<(QDataStream& os, const CreditCardInfo& d); // output
+    friend QDataStream& operator>>(QDataStream& is, CreditCardInfo& d); // input
 
 private:
     // QString type; >> no need; it is very easy to determine card type by its number

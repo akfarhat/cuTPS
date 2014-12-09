@@ -1,7 +1,8 @@
 #include "ContentManager.h"
 
-ContentManager::ContentManager(int id, QString name, QString username) : User(id, name, username) {
-
+ContentManager::ContentManager(qint32 id, QString name, QString username)
+    : User(id, name, username)
+{
 }
 
 ContentManager::~ContentManager() {}

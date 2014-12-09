@@ -2,27 +2,43 @@
 // Type: Control
 // Description:
 //     This class is responsible for invoking the client
-//     side API method in the network handler for requesting
+//     side API method in the Cart Request API for requesting
 //     the list of available books for the current user
 
 #ifndef VIEWREQUIREDBOOKSCONTROL_H
 #define VIEWREQUIREDBOOKSCONTROL_H
 
-#include "Utils.h"
+#include <QUuid>
+#include <QMap>
+#include <QList>
+#include <QVector>
+#include <QObject>
 #include "ClientNetworkHandler.h"
+#include "CartRequestsAPI.h"
+#include "AvailableItemWindow.h"
 
-class ViewRequiredBooksControl {
+class ViewRequiredBooksControl: public QObject {
+    Q_OBJECT
 
-    private:
-        ClientNetworkHandler &network;
+public:
+    ViewRequiredBooksControl(CartRequestsAPI *);
+    ~ViewRequiredBooksControl();
 
-    public:
-        ViewRequiredBooksControl(ClientNetworkHandler &);
-        ~ViewRequiredBooksControl();
+    // Get the list of required books for this user
+    QUuid getRequiredBooks();
+    void launchAvailableItemWindow();
 
-        // Get the list of required books for this user,
-        // store the request identifier
-        void getRequiredBooks(QUuid &, QString&);
+signals:
+    void viewBooksControlFinished();
+
+private slots:
+    void requiredBooksReceived(QUuid requestId, int code, QMap<Course*, QList<Textbook*>*>* cmap);
+    void availableItemWindowClosed();
+
+private:
+
+    CartRequestsAPI *requestAPI;
+    AvailableItemWindow *itemWindow;
 
 };
 

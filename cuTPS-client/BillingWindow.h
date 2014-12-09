@@ -31,6 +31,9 @@ class BillingWindow : public QDialog
 
         PlaceOrderControl *placeOrderCtrl;
 
+        void setError(QString);
+        bool validateData();
+
 };
 
 #endif // BILLINGWINDOW_H

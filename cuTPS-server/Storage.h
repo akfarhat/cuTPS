@@ -12,9 +12,6 @@
 #include "Entity/Chapter.h"
 #include "Entity/Section.h"
 
-// TODO: remove this
-#include "Utils.h"
-
 class Storage : public QObject
 {
     Q_OBJECT

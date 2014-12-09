@@ -11,16 +11,15 @@
 
 #include <QDialog>
 #include <QString>
-#include "ClientNetworkHandler.h"
-#include "Utils.h"
 
+#include "ClientNetworkHandler.h"
+#include "Defines.h"
 #include "LoginControl.h"
 #include "ViewRequiredBooksControl.h"
 #include "ViewBookDetailsControl.h"
 #include "SubmitOrderControl.h"
 #include "AddCourseControl.h"
 #include "AddBookControl.h"
-#include "Defines.h"
 
 namespace Ui {
     class Tests;
@@ -54,7 +53,7 @@ class Tests : public QDialog
 
         void orderStatusReceived(QUuid, int);
 
-        void updateCompleted(TPSNetProtocolDefs::InvocationDescriptor, QUuid, int);
+        void updateCompleted(TPSNetProtocolDef::InvocationDescriptor, QUuid, int);
 
         void textbookDetailsReceived(QUuid, int, QVector<Textbook*>*);
 

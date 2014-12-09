@@ -63,7 +63,7 @@ QString Order::getFormattedPaymentInfo()
 
 QDataStream& operator<<(QDataStream& os, const Order& o)
 {
-    os.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    os.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     os << *o.deliveryInfo;
     os << dynamic_cast<CreditCardInfo*>(o.billingInfo)->getPaymentDetails();
@@ -79,7 +79,7 @@ QDataStream& operator<<(QDataStream& os, const Order& o)
 
 QDataStream& operator>>(QDataStream& is, Order& o)
 {
-    is.setVersion(TPSNetProtocolDefs::PROTOCOL_VER);
+    is.setVersion(TPSNetProtocolDef::PROTOCOL_VER);
 
     DeliveryInfo dInfo;
     QString paymentStr;

@@ -10,7 +10,7 @@
 #ifndef ADDCOURSECONTROL_H
 #define ADDCOURSECONTROL_H
 
-#include "Utils.h"
+#include "Defines.h"
 #include "CourseRequestAPI.h"
 #include "Entity/Course.h"
 

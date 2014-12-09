@@ -12,7 +12,6 @@ TEMPLATE = lib
 DEFINES += LIBCUTPS_LIBRARY
 
 HEADERS += \
-    Utils.h \
     Entity/BillingInfo.h \
     Entity/Chapter.h \
     Entity/ContentManager.h \

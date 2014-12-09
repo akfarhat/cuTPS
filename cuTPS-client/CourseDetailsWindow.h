@@ -35,7 +35,15 @@ public:
                                  CourseRequestAPI *api = NULL);
     ~CourseDetailsWindow();
 
-    void displayCourseList();
+    void refreshCourseList();
+
+public slots:
+    // server responses with requested data
+    void textbookListReceived(QUuid requestId, int code, QList<Textbook*>*);
+    void courseListReceived(QUuid requestId, int code, QList<Course*>*);
+    void updateCompleted(QUuid requestId, int code,
+                         InvocationDescriptor invo, qint32 id);
+
 
 private slots:
     void on_backButton_clicked();
@@ -54,15 +62,20 @@ private slots:
 
     void on_addBookButton_clicked();
 
+    void on_courseList_currentRowChanged(int currentRow);
+
 private:
     Ui::CourseDetailsWindow *ui;
     ManageCourseControl *manageCourseCtrl;
     CourseRequestAPI *requestAPI;
-    QVector<Course*> *courses;
     AddCourseWindow *addCourseWin;
     AddRequiredBookWindow *addReqBooksWin;
 
+    QList<Course*> *courses;
+
     void displayCourseDetails(Course *);
+    Course *getSelectedCourse();
+    void displayCourseList();
 };
 
 #endif // COURSEDETAILSWINDOW_H

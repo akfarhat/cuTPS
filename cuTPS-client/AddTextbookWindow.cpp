@@ -3,8 +3,9 @@
 
 #include <QDebug>
 
-AddTextbookWindow::AddTextbookWindow(QWidget *parent) :
+AddTextbookWindow::AddTextbookWindow(QWidget *parent, int bookID) :
     QDialog(parent),
+    bookId(bookID),
     ui(new Ui::AddTextbookWindow)
 {
     ui->setupUi(this);
@@ -36,7 +37,22 @@ void AddTextbookWindow::on_addButton_clicked()
 
     QString isbn = this->ui->isbnEdit->text();
 
-    emit addTextbook(name, priceCents, available, isbn);
+    QString edition = this->ui->editionEdit->text();
+
+    QString authors = this->ui->authorEdit->text();
+
+    emit addTextbook(name, edition, authors, bookId, priceCents, available, isbn);
 
     this->close();
+}
+
+void AddTextbookWindow::populateValues(Textbook *book)
+{
+    this->ui->nameEdit->setText(book->getName());
+    this->ui->editionEdit->setText(book->getEdition());
+    this->ui->authorEdit->setText(book->getAuthors());
+    this->ui->isbnEdit->setText(book->getISBN());
+    this->ui->priceEdit->setText(QString::number(
+                                     book->getPriceCents() / 100));
+    this->ui->avaiBox->setChecked(book->getAvailability());
 }

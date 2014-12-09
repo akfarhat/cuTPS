@@ -17,7 +17,7 @@ void NetMessage::setRequestId(QUuid id)
     requestId = id;
 }
 
-void NetMessage::setInvocation(TPSNetProtocolDefs::InvocationDescriptor invo)
+void NetMessage::setInvocation(TPSNetProtocolDef::InvocationDescriptor invo)
 {
     invocation = invo;
 }
@@ -36,7 +36,7 @@ QUuid NetMessage::getRequestId() const
     return requestId;
 }
 
-TPSNetProtocolDefs::InvocationDescriptor NetMessage::getInvocation() const
+TPSNetProtocolDef::InvocationDescriptor NetMessage::getInvocation() const
 {
     return invocation;
 }

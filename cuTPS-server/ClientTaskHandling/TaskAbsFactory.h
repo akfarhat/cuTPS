@@ -13,7 +13,7 @@ public:
     TaskAbsFactory();
     virtual ~TaskAbsFactory();
     virtual WorkerTask* createTask(Server* srvInst,
-                           TPSNetProtocolDefs::InvocationDescriptor invoc) = 0;
+                           TPSNetProtocolDef::InvocationDescriptor invoc) = 0;
 
     class PermissionDeniedExc : std::exception
     {

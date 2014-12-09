@@ -52,7 +52,7 @@ void GetBookDetailsTask::run()
 
         response->setData(responseDataBytes);
     } else {
-        outData << (qint32)0;
+        outData << static_cast<qint32>(0);
     }
 
     emit result(response->getResponseCode(), response);
