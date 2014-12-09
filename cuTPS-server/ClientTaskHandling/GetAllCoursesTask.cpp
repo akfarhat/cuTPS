@@ -21,13 +21,12 @@ void GetAllCoursesTask::run()
 
     QVector<Course> courses;
 
-    // TODO: handle the result of getAllCourses
-    ServerResponse getCourses = server->getAllCourses(sessionId, courses);
+    ServerResponse r = server->getAllCourses(sessionId, courses);
 
     NetResponse* response = new NetResponse();
     response->setInvocation(request->getInvocation());
     response->setRequestId(request->getRequestId());
-    response->setResponseCode(getCourses.code == Fail ? 0x0 : 0x1);
+    response->setResponseCode(r.code == Fail ? 0x0 : 0x1);
     response->setSessionId(sessionId);
 
     QByteArray responseDataBytes;
