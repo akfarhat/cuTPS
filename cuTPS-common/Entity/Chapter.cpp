@@ -65,7 +65,7 @@ QString Chapter::getDetails() const {
     QString bookName = parentTextbook == NULL
             ? "NULL" : parentTextbook->getName();
     QString details = "";
-    details += "Type: Chapter\nID: ";
+    details += "Item ID: ";
     details += QString::number(this->getId());
     details += "\nChapter Name: ";
     details += this->getName();
@@ -75,7 +75,7 @@ QString Chapter::getDetails() const {
     details += bookName;
     details += "\nPrice: $";
     details += QString::number(this->getPriceCents() / 100.00f);
-    details += "\nAvailable: ";
+    details += "\nAvailable for Sale: ";
     details += (this->getAvailability() == true) ? "yes" : "no";
     return details;
 }
