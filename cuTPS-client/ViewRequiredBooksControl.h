@@ -9,6 +9,8 @@
 #define VIEWREQUIREDBOOKSCONTROL_H
 
 #include <QUuid>
+#include <QMap>
+#include <QList>
 #include <QVector>
 #include <QObject>
 #include "ClientNetworkHandler.h"
@@ -30,7 +32,7 @@ signals:
     void viewBooksControlFinished();
 
 private slots:
-    void requiredBooksReceived(QUuid requestId, int code, QMap<Course*, QList<Textbook*>*>*);
+    void requiredBooksReceived(QUuid requestId, int code, QMap<Course*, QList<Textbook*>*>* cmap);
     void availableItemWindowClosed();
 
 private:

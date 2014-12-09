@@ -28,13 +28,13 @@ void ViewRequiredBooksControl::launchAvailableItemWindow()
 
 }
 
-void ViewRequiredBooksControl::requiredBooksReceived(QUuid requestId, int code, QMap<Course*, QList<Textbook*>*>*)
+void ViewRequiredBooksControl::requiredBooksReceived(QUuid requestId, int code, QMap<Course*, QList<Textbook*>*>* cmap)
 {
     qDebug() << "ViewRequiredBooksControl::requiredBooksReceived: Got response code " + QString::number(code) + " from server";
 
     // TODO Call request to get chapters and sections
 
-    // itemWindow = new AvailableItemWindow(0, requestAPI, books);
+    itemWindow = new AvailableItemWindow(0, requestAPI, cmap);
 
     QObject::connect(itemWindow, SIGNAL(availableItemWindowClosed()), this, SLOT(availableItemWindowClosed()));
 
