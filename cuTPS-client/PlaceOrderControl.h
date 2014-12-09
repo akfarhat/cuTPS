@@ -29,6 +29,9 @@ class PlaceOrderControl : public QObject
 
         Student* getStudent(); // Get the student from the requestAPI
 
+    signals:
+        void placeOrderControlFinished();
+
     private slots:
         void orderStatusReceived(QUuid, int);
 

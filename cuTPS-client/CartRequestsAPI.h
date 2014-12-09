@@ -24,6 +24,7 @@ class CartRequestsAPI: public QObject {
 
         QUuid getRequiredBooks(QString&);
         QUuid getBookDetails(int bookId);
+        QUuid getBookDetails(const QVector<qint32>& ids);
         QUuid submitOrder(Order&);
 
         Student* getStudent();

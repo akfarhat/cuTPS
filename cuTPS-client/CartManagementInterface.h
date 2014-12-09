@@ -16,7 +16,7 @@
 #include <QDialog>
 #include "ClientNetworkHandler.h"
 #include "Entity/Student.h"
-#include "ViewBookDetailsControl.h"
+#include "ViewRequiredBooksControl.h"
 #include "ViewCartControl.h"
 #include "CartRequestsAPI.h"
 
@@ -39,6 +39,9 @@ private slots:
     void on_viewCartButton_clicked();
     void on_viewBooksButton_clicked();
 
+    void viewBooksControlFinished();
+    void viewCartControlFinished();
+
 
 private:
     Ui::CartManagementInterface *ui;
@@ -47,6 +50,9 @@ private:
     CartRequestsAPI *requestAPI;
 
     Student *student;
+
+    ViewCartControl *viewCartCtrl;
+    ViewRequiredBooksControl *viewBooksCtrl;
 
 };
 

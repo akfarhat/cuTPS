@@ -34,10 +34,11 @@ void CartManagementInterface::on_viewCartButton_clicked()
 {
     qDebug() << "view cart button clicked...showing cart details window";
 
-    // Hide this window
-    this->hide();
 
-    ViewCartControl *viewCartCtrl = new ViewCartControl(this, requestAPI);
+    viewCartCtrl = new ViewCartControl(requestAPI);
+
+    // Make sure this class knows when ViewCartControl is done so it can free the viewCartCtrl pointer
+    QObject::connect(viewCartCtrl, SIGNAL(viewCartControlFinished()), this, SLOT(viewCartControlFinished()));
 
     viewCartCtrl->launchCartDetailsWindow();
 
@@ -45,5 +46,29 @@ void CartManagementInterface::on_viewCartButton_clicked()
 
 void CartManagementInterface::on_viewBooksButton_clicked()
 {
-    qDebug() << "View books button clicked...wooohooo!!";
+    qDebug() << "View books button clicked...showing the available item window";
+
+    viewBooksCtrl = new ViewRequiredBooksControl(requestAPI);
+
+    // Make sure this class knows when ViewRequiredBooksControl is done so it can free the viewBooksCtrl pointer
+    QObject::connect(viewBooksCtrl, SIGNAL(viewBooksControlFinished()), this, SLOT(viewBooksControlFinished()));
+
+    viewBooksCtrl->launchAvailableItemWindow();
 }
+
+
+void CartManagementInterface::viewCartControlFinished()
+{
+    delete viewCartCtrl;
+    qDebug() << "CartManagementInterface::viewCartControlFinished: deleted viewCartCtrl";
+    viewCartCtrl = NULL;
+}
+
+
+void CartManagementInterface::viewBooksControlFinished()
+{
+    delete viewBooksCtrl;
+    qDebug() << "CartManagementInterface::ViewBooksControlFinished: deleted viewBooksCtrl";
+    viewBooksCtrl = NULL;
+}
+

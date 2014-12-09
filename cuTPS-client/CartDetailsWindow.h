@@ -31,29 +31,31 @@ class PlaceOrderControl;
 class CartDetailsWindow : public QDialog {
     Q_OBJECT
 
+    friend class PlaceOrderControl;
+
     public:
          explicit CartDetailsWindow(QWidget *parent = 0, CartRequestsAPI *api = NULL);
         ~CartDetailsWindow();
 
-    void updateView();
-    void setError(QString);
-    void setMessage(QString);
-
     signals:
-        void cartNavigateBack();
+        void cartDetailsWindowClosed();
 
     private slots:
         void on_backButton_clicked();
         void on_cancelOrderButton_clicked();
         void on_placeOrderButton_clicked();
 
-
+        void placeOrderControlFinished();
 
     private:
         Ui::CartDetailsWindow *ui;
         CartRequestsAPI *requestAPI;
 
         PlaceOrderControl *placeOrderCtrl;
+
+        void updateView();
+        void setError(QString);
+        void setMessage(QString);
 
 };
 

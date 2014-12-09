@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>CartDetailsWindow</class>
- <widget class="QDialog" name="CartDetailsWindow2">
+ <widget class="QDialog" name="CartDetailsWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>547</width>
-    <height>421</height>
+    <height>426</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -147,8 +147,8 @@
   <widget class="QLabel" name="message">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>20</y>
+     <x>70</x>
+     <y>400</y>
      <width>401</width>
      <height>20</height>
     </rect>

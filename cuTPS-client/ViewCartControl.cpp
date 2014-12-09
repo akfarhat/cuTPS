@@ -1,21 +1,37 @@
 #include "ViewCartControl.h"
 
-#include "Entity/CreditCardInfo.h"
 
-ViewCartControl::ViewCartControl(QWidget *parent, CartRequestsAPI *api) : parentWidget(parent), requestAPI(api) {
-
+ViewCartControl::ViewCartControl(CartRequestsAPI *api) : requestAPI(api)
+{
 
 }
 
-ViewCartControl::~ViewCartControl() {
-    delete detailsWindow;
+ViewCartControl::~ViewCartControl()
+{
+    requestAPI = NULL;
+
+    if (detailsWindow != NULL)
+        delete detailsWindow;
 }
 
-void ViewCartControl::launchCartDetailsWindow() {
+void ViewCartControl::launchCartDetailsWindow()
+{
 
-    detailsWindow = new CartDetailsWindow(parentWidget, requestAPI);
+    detailsWindow = new CartDetailsWindow(0, requestAPI);
+
+    QObject::connect(detailsWindow, SIGNAL(cartDetailsWindowClosed()), this, SLOT(cartDetailsWindowClosed()));
 
     detailsWindow->exec();
 
+}
+
+
+void ViewCartControl::cartDetailsWindowClosed()
+{
+
+    detailsWindow = NULL;
+    requestAPI = NULL;
+
+    emit viewCartControlFinished();
 }
 

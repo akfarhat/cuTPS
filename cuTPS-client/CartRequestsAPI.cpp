@@ -33,6 +33,10 @@ QUuid CartRequestsAPI::getBookDetails(int bookId) {
     return network->getBookDetails(bookId);
 }
 
+QUuid CartRequestsAPI::getBookDetails(const QVector<qint32> &ids) {
+    return network->getBookDetails(ids);
+}
+
 QUuid CartRequestsAPI::submitOrder(Order &newOrder)
 {
     return network->submitOrder(newOrder);

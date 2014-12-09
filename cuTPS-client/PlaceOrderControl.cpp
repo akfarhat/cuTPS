@@ -9,12 +9,15 @@ PlaceOrderControl::PlaceOrderControl(CartDetailsWindow *window, CartRequestsAPI 
     QObject::connect(requestAPI->getNetwork(), SIGNAL(orderStatusReceived(QUuid, int)), this, SLOT(orderStatusReceived(QUuid, int)));
 }
 
-PlaceOrderControl::~PlaceOrderControl() {
-
+PlaceOrderControl::~PlaceOrderControl()
+{
+    requestAPI = NULL;
+    cartDetailsWindow = NULL;
     delete billingWindow;
 }
 
-Student* PlaceOrderControl::getStudent() {
+Student* PlaceOrderControl::getStudent()
+{
 
     if (requestAPI != NULL)
         return requestAPI->getStudent();
@@ -22,14 +25,16 @@ Student* PlaceOrderControl::getStudent() {
     return NULL;
 }
 
-void PlaceOrderControl::launchBillingWindow() {
+void PlaceOrderControl::launchBillingWindow()
+{
 
     billingWindow = new BillingWindow(0, this);
 
     billingWindow->exec();
 }
 
-void PlaceOrderControl::submitOrder() {
+void PlaceOrderControl::submitOrder()
+{
 
     QUuid requestId;
 
@@ -41,19 +46,18 @@ void PlaceOrderControl::submitOrder() {
                 itemIds.append(item->getId());
             }
 
-            //Order newOrder(&itemIds, this->getStudent()->getCreditCardInfo(), this->getStudent()->getDeliveryInfo());
+            Order newOrder(itemIds, *this->getStudent()->getCreditCardInfo(), *this->getStudent()->getDeliveryInfo());
 
-            //requestId = requestAPI->submitOrder(newOrder);
-
+            requestId = requestAPI->submitOrder(newOrder);
 
             qDebug() << "PlaceOrderControl::submitOrder: Submitted order request with request ID " << requestId << " to the server...";
         }
     }
 
-
 }
 
-void PlaceOrderControl::orderStatusReceived(QUuid requestId, int responseCode) {
+void PlaceOrderControl::orderStatusReceived(QUuid requestId, int responseCode)
+{
 
     if (responseCode == ResponseCode::Success) {
         this->getStudent()->getCart()->clearCart();
@@ -63,6 +67,7 @@ void PlaceOrderControl::orderStatusReceived(QUuid requestId, int responseCode) {
         cartDetailsWindow->setError("Error: Unable to submit your order. Please try again later.");
     }
 
+    emit placeOrderControlFinished();
 
 }
 

@@ -37,7 +37,8 @@ void BillingWindow::on_cancelButton_clicked()
 {
     qDebug() << "Cancel button was clicked in billing window";
 
-    BillingWindow::close();
+    placeOrderCtrl = NULL;
+    this->close();
 }
 
 void BillingWindow::on_submitButton_clicked()
@@ -46,5 +47,6 @@ void BillingWindow::on_submitButton_clicked()
 
     placeOrderCtrl->submitOrder();
 
-    this->hide();
+    placeOrderCtrl = NULL;
+    this->close();
 }
