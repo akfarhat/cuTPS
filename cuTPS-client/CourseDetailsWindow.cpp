@@ -233,6 +233,7 @@ void CourseDetailsWindow::on_courseList_currentRowChanged(int currentRow)
     if (currentRow < 0) {
         this->ui->deleteCourseButton->setEnabled(false);
         this->ui->saveCourseButton->setEnabled(false);
+        this->ui->addBookButton->setEnabled(false);
     }
 }
 
