@@ -899,7 +899,7 @@ ServerResponse Server::getStudentCourses(QUuid sessionID, const int& userID, QVe
 
     QString queryString = "";
 
-    queryString += "select user.id, course.code, course.name, course.term_section, course.term_year ";
+    queryString += "select course.id, course.code, course.name, course.term_section, course.term_year ";
     queryString += "from user, user_course, course ";
     queryString += "where user.id = user_course.user_id and user.id = ";
     queryString += QString::number(userID);
@@ -918,6 +918,25 @@ ServerResponse Server::getStudentCourses(QUuid sessionID, const int& userID, QVe
                                        query.value(2).toString(),
                                        query.value(3).toString(),
                                        query.value(4).toInt());
+
+            QSqlQuery query2;
+
+            QString queryString2 = "";
+            queryString2 += "select Course_Textbook.textbook_id ";
+            queryString2 += "from Course_Textbook ";
+            queryString2 += "where Course_Textbook.course_id = ";
+            queryString2 += QString::number(course->getId());
+            queryString2 += ";";
+
+            qDebug() << "query string: '" << queryString2 << "'";
+            bool result2 = dbManager->runQuery(queryString2, &query2);
+
+            if (result2) {
+                while(query2.next()) {
+                    course->addRequiredTextId(query2.value(0).toInt());
+                }
+            }
+
             courses.append(*course);
         }
 
