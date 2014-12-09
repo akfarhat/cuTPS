@@ -4,6 +4,8 @@
 #define MAX_ITEM_DEPTH 2
 
 #include <QDialog>
+#include <QModelIndex>
+
 #include "CartRequestsAPI.h"
 #include "Entity/SellableItem.h"
 #include "Entity/Textbook.h"
