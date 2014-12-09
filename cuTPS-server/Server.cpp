@@ -342,7 +342,8 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& 
         return response;
     }
 
-    queryString = "insert into Textbook (edition, authors, isbn) values (\"" +
+    queryString = "insert into Textbook (item_id, edition, authors, isbn) values (" +
+                  QString::number(newId) + ", \"" +
                   textbook.getEdition() + "\", \"" +
                   textbook.getAuthors() + "\", \"" +
                   textbook.getISBN() + "\");";
