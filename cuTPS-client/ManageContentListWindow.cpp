@@ -163,6 +163,8 @@ void ManageContentListWindow::displayBookList()
 {
     qDebug() << "Displaying book list";
 
+    this->contentDepth = 0;
+
     this->ui->modifyItemButton->setEnabled(false);
     this->ui->deleteItemButton->setEnabled(false);
 
@@ -442,18 +444,12 @@ SellableItem* ManageContentListWindow::getSelectedItem(int index)
 
     switch (this->contentDepth) {
         case 0:
-            qDebug() << "Getting book at index " << index
-                     << ", size of list " << this->textbookList->size();
             item = this->textbookList->at(index);
             break;
         case 1:
-            qDebug() << "Getting chapter at index " << index
-                     << ", size of list " << this->chapterList->size();
             item = this->chapterList->at(index);
             break;
         case 2:
-            qDebug() << "Getting section at index " << index
-                     << ", size of list " << this->sectionList->size();
             item = this->sectionList->at(index);
             break;
     }
