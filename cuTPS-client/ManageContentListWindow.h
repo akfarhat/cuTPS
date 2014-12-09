@@ -34,6 +34,8 @@ public:
                                      ContentRequestAPI *api = NULL);
     ~ManageContentListWindow();
 
+    void refreshContents();
+
 signals:
     void navigateBack();
     void deleteItem(int, QString);
@@ -41,6 +43,8 @@ signals:
 public slots:
     // Response from networking for getAllBooks()
     void textbookListReceived(QUuid,int,QList<Textbook*>*);
+    void updateCompleted(QUuid requestId, int code,
+                         InvocationDescriptor invo, qint32 id);
 
 private slots:
     void on_backButton_clicked();
@@ -87,7 +91,6 @@ private:
 
     SellableItem *getSelectedItem();
     SellableItem *getSelectedItem(int);
-    void refreshContents();
     void displayBookList();
     void displayChapterList(Textbook*);
     void displaySectionList(Chapter*);

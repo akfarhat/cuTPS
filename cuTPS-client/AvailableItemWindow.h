@@ -7,6 +7,7 @@
 #include <QMap>
 #include <QList>
 #include <QModelIndex>
+
 #include "CartRequestsAPI.h"
 #include "Entity/SellableItem.h"
 #include "Entity/Textbook.h"

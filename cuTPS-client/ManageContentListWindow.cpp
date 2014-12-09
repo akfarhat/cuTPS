@@ -291,6 +291,14 @@ void ManageContentListWindow::on_newContentButton_clicked()
     }
 }
 
+void ManageContentListWindow::updateCompleted(QUuid requestId, int code, InvocationDescriptor invo, qint32 id)
+{
+    qDebug() << "ManageContentListWindow::updateCompleted!! "
+             << requestId << " code=" << code;
+
+    this->refreshContents();
+}
+
 void ManageContentListWindow::addTextbook()
 {
     qDebug() << "ManageContentListWindow::addTextbook";

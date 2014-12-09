@@ -262,6 +262,7 @@ ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32& newId)
             QString::number(course.getTermYear()) + ");";
     }
 
+
     qDebug() << "About to insert Course, query'"
              << queryString << "'";
 
@@ -339,8 +340,8 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& 
     }
 
     queryString = "insert into Textbook (edition, authors, isbn) values (\"" +
-                  textbook.getEdition() + "\", ";
-                  textbook.getEdition() + "\", ";
+                  textbook.getEdition() + "\", \"" +
+                  textbook.getEdition() + "\", \"" +
                   textbook.getISBN() + "\");";
 
     result = dbManager->runQuery(queryString, &query);

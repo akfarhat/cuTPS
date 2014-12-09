@@ -26,6 +26,9 @@ ManageContentControl::ManageContentControl(ContentManagementInterface *backWin,
     // Connect networking responses to the window managers that require the data
     connect(networking, SIGNAL(textbookListReceived(QUuid,int,QList<Textbook*>*)),
             contentManagementWin, SLOT(textbookListReceived(QUuid,int,QList<Textbook*>*)));
+
+    connect(networking, SIGNAL(updateCompleted(QUuid,int,InvocationDescriptor,qint32)),
+            contentManagementWin, SLOT(updateCompleted(QUuid,int,InvocationDescriptor,qint32)));
 }
 
 ManageContentControl::~ManageContentControl()

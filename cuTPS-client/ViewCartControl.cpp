@@ -1,7 +1,8 @@
 #include "ViewCartControl.h"
 
 
-ViewCartControl::ViewCartControl(CartRequestsAPI *api) : requestAPI(api)
+ViewCartControl::ViewCartControl(CartRequestsAPI *api)
+    : requestAPI(api)
 {
 
 }
