@@ -686,10 +686,9 @@ void ClientNetworkHandler::readyRead()
 
     case IGetRequiredBooks: {
         QDataStream in(response.getData(), QIODevice::ReadOnly);
-
         QMap<Course*, QList<Textbook*>*>* cmap = new QMap<Course*, QList<Textbook*>*>();
-
         qint32 numCourses;
+
         in >> numCourses;
 
         while (numCourses > 0) {
@@ -720,8 +719,10 @@ void ClientNetworkHandler::readyRead()
     }
 
     case IGetAllCourses: {
+        QDataStream in(response.getData(), QIODevice::ReadOnly);
         QList<Course*>* clist = new QList<Course*>();
         qint32 count;
+
         in >> count;
 
         while (count > 0) {
