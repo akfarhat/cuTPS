@@ -50,24 +50,34 @@ public:
 
     // All Users
     ServerResponse authenticateUser(QUuid, Role&, UserCredentials);
+    ServerResponse getSessionRole(QUuid, Role&);
 
     // Content Manager request API. Each of these requests
     // adds some content into the system availability
 
     // TODO: make server return ids for created items (i.e. set newId)
-    ServerResponse addCourse(QUuid, Course&, qint32* newId);
-    ServerResponse addTextbook(QUuid, Textbook&, qint32* newId);
-    ServerResponse addChapter(QUuid, Chapter&, qint32* newId);
-    ServerResponse addSection(QUuid, Section&, qint32* newId);
+    ServerResponse addCourse(QUuid, Course&, qint32& newId);
+    ServerResponse addTextbook(QUuid, Textbook&, qint32& newId);
+    ServerResponse addChapter(QUuid, Chapter&, qint32& newId);
+    ServerResponse addSection(QUuid, Section&, qint32& newId);
 
     ServerResponse replaceCourse(QUuid, qint32 id, Course&);
     ServerResponse replaceTextbook(QUuid, qint32 id, Textbook&);
     ServerResponse replaceChapter(QUuid, qint32 id, Chapter&);
     ServerResponse replaceSection(QUuid, qint32 id, Section&);
 
+    ServerResponse removeCourse(QUuid, qint32 id);
+    ServerResponse removeSellableItem(QUuid, qint32 id);
+
     ServerResponse registerStudentUser(QUuid, Student& usr, QString pwd, qint32* id);
 
+    ServerResponse getAllTextbooks(QUuid, QVector<Textbook>&);
+    ServerResponse getAllCourses(QUuid, QVector<Course>&);
+
     // Student request API.
+
+    // Get the list of courses a student is registered in
+    ServerResponse getStudentCourses(QUuid, const QString&, QVector<Course>&);
 
     // Get the list of required textbooks for a user
     ServerResponse getRequiredTextbooks(QUuid, const QString&, QVector<int>*);
@@ -91,7 +101,7 @@ signals:
 public slots:
 
 private:
-    QVector<QUuid> openSessions;
+    QMap<QUuid, int> openSessions;
     DatabaseManager* dbManager;
 
 private:

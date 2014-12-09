@@ -20,6 +20,7 @@ using namespace std;
 class LIBCUTPS_EXPORT Course
 {
 public:
+    Course(qint32, QString, QString, QString, qint32);
     Course(const QString ccode="UKWN0000", const QString cname="<NO_COURSE_NAME>");
     ~Course();
 

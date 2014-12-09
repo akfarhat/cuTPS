@@ -23,7 +23,7 @@ void AddCourseTask::run()
     courseId = course.getId();
 
     if (courseId < 0) {
-        r = server->addCourse(sessionId, course, &courseId);
+        r = server->addCourse(sessionId, course, courseId);
     } else {
         r = server->replaceCourse(sessionId, courseId, course);
     }

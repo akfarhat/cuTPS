@@ -32,7 +32,7 @@ void AddItemTask::run()
 
         if (itemId < 0) {
             // Add a new textbook
-            r = server->addTextbook(sessionId, text, &itemId);
+            r = server->addTextbook(sessionId, text, itemId);
         } else {
             // Replace an existing one
             r = server->replaceTextbook(sessionId, itemId, text);
@@ -48,7 +48,7 @@ void AddItemTask::run()
         itemId = ch.getId();
 
         if (itemId < 0) {
-            r = server->addChapter(sessionId, ch, &itemId);
+            r = server->addChapter(sessionId, ch, itemId);
         } else {
             r = server->replaceChapter(sessionId, itemId, ch);
         }
@@ -64,7 +64,7 @@ void AddItemTask::run()
         itemId = s.getId();
 
         if (itemId < 0) {
-            r = server->addSection(sessionId, s, &itemId);
+            r = server->addSection(sessionId, s, itemId);
         } else {
             r = server->replaceSection(sessionId, itemId, s);
         }

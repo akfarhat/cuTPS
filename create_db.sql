@@ -10,23 +10,23 @@ create table if not exists Student(
     user_id integer primary key not null,
     student_num int not null,
     email char(255),
-    foreign key(user_id) references User(id)
+    foreign key(user_id) references User(id) on delete cascade
 );
 
 create table if not exists ContentManager(
     user_id integer primary key not null,
-    foreign key(user_id) references User(id)
+    foreign key(user_id) references User(id) on delete cascade
 );
 
 create table if not exists Administrator(
     user_id integer primary key not null,
-    foreign key(user_id) references User(id)
+    foreign key(user_id) references User(id) on delete cascade 
 );
 
 create table if not exists DeliveryInfo(
     user_id integer primary key not null,
     email char(255) not null,
-    foreign key(user_id) references User(id)
+    foreign key(user_id) references User(id) on delete cascade
 );
 
 create table if not exists CreditCardInfo(
@@ -35,15 +35,15 @@ create table if not exists CreditCardInfo(
     number char(19) not null,
     expiry_date text not null,
     security_code text not null,
-    foreign key(user_id) references User(id)
+    foreign key(user_id) references User(id) on delete cascade
 );
 
 create table if not exists User_Course(
     user_id int not null,
     course_id int  not null,
     primary key( user_id, course_id ),
-    foreign key(user_id) references User(id),
-    foreign key(course_id) references Course(id)
+    foreign key(user_id) references User(id) on delete cascade,
+    foreign key(course_id) references Course(id) on delete cascade
 );
 
 create table if not exists Course(
@@ -58,8 +58,8 @@ create table if not exists Course_Textbook(
     course_id int not null,
     textbook_id int not null,
     primary key( course_id, textbook_id ),
-    foreign key(course_id) references Course(id),
-    foreign key(textbook_id) references Textbook(id)
+    foreign key(course_id) references Course(id) on delete cascade,
+    foreign key(textbook_id) references Textbook(id) on delete cascade
 );
 
 create table if not exists SellableItem(
@@ -71,24 +71,26 @@ create table if not exists SellableItem(
 
 create table if not exists Textbook(
     item_id integer primary key not null,
+    edition text,
+    authors text,
     isbn text,
-    foreign key(item_id) references SellableItem(id)
+    foreign key(item_id) references SellableItem(id) on delete cascade
 );
 
 create table if not exists Chapter(
     item_id integer primary key not null,
     textbook_id int not null,
     chapter_num int not null,
-    foreign key(textbook_id) references Textbook(id),
-    foreign key(item_id) references SellableItem(id)
+    foreign key(textbook_id) references Textbook(id) on delete cascade,
+    foreign key(item_id) references SellableItem(id) on delete cascade
 );
 
 create table if not exists Section(
     item_id integer primary key not null,
     chapter_id int not null,
     section_num int not null,
-    foreign key(chapter_id) references Chapter(id),
-    foreign key(item_id) references SellableItem(id)
+    foreign key(chapter_id) references Chapter(id) on delete cascade,
+    foreign key(item_id) references SellableItem(id) on delete cascade
 );
 
 create table if not exists Report(

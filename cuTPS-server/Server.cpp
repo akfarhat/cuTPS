@@ -41,7 +41,7 @@ bool Server::generateSessionID(QUuid& sessionID, QString& errorMessage)
     }
 
     if (i < 10) {
-        openSessions.append(id);
+        openSessions.insert(id, -1);
         sessionID = id;
         return true;
     }
@@ -69,10 +69,9 @@ ServerResponse Server::closeSession(QUuid sessionID)
 {
     ServerResponse response;
 
-    int index = openSessions.indexOf(sessionID);
+    int numRemoved = openSessions.remove(sessionID);
 
-    if (index > -1) {
-        openSessions.remove(index);
+    if (numRemoved > 0) {
         response.code = Success;
         response.message = "";
     }
@@ -124,7 +123,7 @@ ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCre
     QSqlQuery query;
 
     // Get password hash from db
-    QString queryString = "select password, role from User where username = \""
+    QString queryString = "select id, password, role from User where username = \""
             + creds.username + "\";";
 
     bool result = dbManager->runQuery(queryString,
@@ -132,13 +131,13 @@ ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCre
 
     if (result) {
         if (query.first()) {
-            QString hash = query.value(0).toString();
+            QString hash = query.value(1).toString();
             bool success = security.validatePassword(creds.username,
                                                      creds.password,
                                                      hash);
             if (success) {
                 response.code = Success;
-                int uRole = query.value(1).toInt();
+                int uRole = query.value(2).toInt();
 
                 switch (uRole) {
                 case 0:
@@ -151,6 +150,10 @@ ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCre
                     userRole = Role::StudentUser;
                     break;
                 }
+
+                //update openSessions to indicate that this session belongs to
+                // authenticated user
+                openSessions.insert(sessionID, query.value(0));
 
             } else {
                 response.code = Fail;
@@ -168,7 +171,56 @@ ServerResponse Server::authenticateUser(QUuid sessionID, Role &userRole, UserCre
     return response;
 }
 
-ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32* newId)
+ServerResponse Server::getSessionRole(QUuid sessionID, Role& userRole)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    int userID = openSessions.value(sessionID, -1);
+
+    if (userID < 0) {
+        response.code = Fail;
+        response.message = "session not found or doesn't have associated user";
+        return response;
+    }
+
+    QString queryString = "select role from User where id = " + userID + ";";
+
+    bool result = dbManager->runQuery(queryString,
+                                      &query);
+
+    if (result) {
+        if (query.first()) {
+            response.code = Success;
+            int uRole = query.value(0).toInt();
+
+            switch (uRole) {
+            case 0:
+                userRole = Role::AdministratorUser;
+                break;
+            case 1:
+                userRole = Role::ContentManagerUser;
+                break;
+            case 2:
+                userRole = Role::StudentUser;
+                break;
+            }
+        } else {
+            response.code = Fail;
+        }
+    } else {
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to auth user: " << response.message;
+        response.code = Fail;
+    }
+
+    return response;
+}
+
+ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32& newId)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -189,6 +241,7 @@ ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32* newId)
     if (result) {
         response.code = Success;
         response.message = "";
+        newId = query.lastInsertId().toInt();
     }
     else {
         response.code = Fail;
@@ -227,7 +280,7 @@ ServerResponse Server::addCourse(QUuid sessionID, Course& course, qint32* newId)
     return response;
 }
 
-ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32* newId)
+ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32& newId)
 {
     // TODO: For every chapter in textbook (i.e. textbook.getChapterList()) -- add them all as well.
     //       Same goes for every section of every chapter (i.e. chapter.getSectionList())
@@ -244,13 +297,10 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32* 
     qDebug() << "Server::addTextbook running query: '" << queryString << "'";
     bool result = dbManager->runQuery(queryString, &query);
 
-    // if that doesn't work, use query "select seq from sqlite_sequence where name="table_name""
-    qint32 lastInsertId = query.lastInsertId().toInt();
-
     if (result) {
         response.code = Success;
         response.message = "";
-        *newId = lastInsertId;
+        newId = query.lastInsertId().toInt();
     }
     else {
         response.code = Fail;
@@ -290,7 +340,7 @@ ServerResponse Server::addTextbook(QUuid sessionID, Textbook& textbook, qint32* 
     return response;
 }
 
-ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32* newId)
+ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32& newId)
 {
     // TODO: Also add every section of the chapter -- i.e. chapter.getSectionList()
     ServerResponse response;
@@ -309,6 +359,7 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32* new
 
     if (result) {
         response.code = Success;
+        newId = query.lastInsertId().toInt();
     } else {
         response.code = Fail;
         qDebug() << "Error while adding chapter: " << query.lastError().text();
@@ -336,7 +387,7 @@ ServerResponse Server::addChapter(QUuid sessionID, Chapter& chapter, qint32* new
     return response;
 }
 
-ServerResponse Server::addSection(QUuid sessionID, Section& section, qint32* newId)
+ServerResponse Server::addSection(QUuid sessionID, Section& section, qint32& newId)
 {
     ServerResponse response;
     response.sessionID = sessionID;
@@ -355,6 +406,7 @@ ServerResponse Server::addSection(QUuid sessionID, Section& section, qint32* new
 
     if (result) {
         response.code = Success;
+        newId = query.lastInsertId().toInt();
     } else {
         response.code = Fail;
         qDebug() << "Error while adding section: " << query.lastError().text();
@@ -410,6 +462,70 @@ ServerResponse Server::replaceSection(QUuid sessionID, qint32 id, Section& c)
     ServerResponse response;
     response.sessionID = sessionID;
     response.code = Fail;
+    return response;
+}
+
+ServerResponse Server::removeCourse(QUuid sessionID, qint32 id)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "delete from Course where id = ";
+    queryString += id;
+    queryString += ";";
+
+    qDebug() << "About to delete Course, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to delete course: " << response.message;
+        return response;
+    }
+
+    return response;
+}
+
+ServerResponse Server::removeSellableItem(QUuid sessionID, qint32 id)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "delete from SellableItem where id = ";
+    queryString += id;
+    queryString += ";";
+
+    qDebug() << "About to delete SellableItem, query'"
+             << queryString << "'";
+
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        response.code = Fail;
+        response.message = query.lastError().text();
+
+        qDebug() << "Failed to delete SellableItem: " << response.message;
+        return response;
+    }
+
     return response;
 }
 
@@ -486,6 +602,126 @@ ServerResponse Server::registerStudentUser(QUuid sessionID, Student& usr, QStrin
     return response;
 }
 
+ServerResponse Server::getAllTextbooks(QUuid sessionID, QVector<Textbook> &textbooks)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select id, name, edition, authors, price_cents, available, isbn from Textbook, SellableItem;";
+
+    qDebug() << "query string: '" << queryString << "'";
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        qDebug() << "Query for all texts successful. Rows: " << query.size();
+
+        while(query.next()) {
+            Textbook textbook = new Textbook(query.value(0),
+                                             query.value(1),
+                                             query.value(2),
+                                             query.value(3),
+                                             query.value(4),
+                                             query.value(5),
+                                             query.value(6));
+            textbooks.append(textbook);
+        }
+
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        qDebug() << "Query for all texts failed.";
+
+        response.code = Fail;
+        response.message = query.lastError().text();
+    }
+
+    return response;
+}
+
+ServerResponse Server::getAllCourses(QUuid sessionID, QVector<Course>& courses)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select id, code, name, term_section, term_year from Course;";
+
+    qDebug() << "query string: '" << queryString << "'";
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        qDebug() << "Query for all courses successful. Rows: " << query.size();
+
+        while(query.next()) {
+            Course course = new Course(query.value(0),
+                                       query.value(1),
+                                       query.value(2),
+                                       query.value(3),
+                                       query.value(4));
+            courses.append(course);
+        }
+
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        qDebug() << "Query for all courses failed.";
+
+        response.code = Fail;
+        response.message = query.lastError().text();
+    }
+
+    return response;
+}
+
+ServerResponse Server::getStudentCourses(QUuid sessionID, const QString& username, QVector<Course>& courses)
+{
+    ServerResponse response;
+    response.sessionID = sessionID;
+
+    QSqlQuery query;
+
+    QString queryString = "";
+    queryString += "select Course.id, Course.code, Course.name, Course.termSection, Course.termYear ";
+    queryString += "from User join User_Course on User.id = User_Course.user_id ";
+    queryString += "where User.username = \"";
+    queryString += username;
+    queryString += "\";";
+
+    qDebug() << "query string: '" << queryString << "'";
+    bool result = dbManager->runQuery(queryString, &query);
+
+    if (result) {
+        qDebug() << "Query for registered courses successful. Rows: " << query.size();
+
+        while(query.next()) {
+            Course course = new Course(query.value(0),
+                                       query.value(1),
+                                       query.value(2),
+                                       query.value(3),
+                                       query.value(4));
+            courses.append(course);
+        }
+
+        response.code = Success;
+        response.message = "";
+    }
+    else {
+        qDebug() << "Query for registered courses failed.";
+
+        response.code = Fail;
+        response.message = query.lastError().text();
+    }
+
+    return response;
+}
+
 ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& username, QVector<int>* textbookIDs)
 {
     ServerResponse response;
@@ -510,8 +746,6 @@ ServerResponse Server::getRequiredTextbooks(QUuid sessionID,const QString& usern
         while(query.next()) {
             textbookIDs->append(query.value(0).toInt());
         }
-
-        // TODO : send textbookIDs to client
 
         response.code = Success;
         response.message = "";

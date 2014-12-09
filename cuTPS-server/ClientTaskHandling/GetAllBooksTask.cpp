@@ -19,9 +19,8 @@ void GetAllBooksTask::run()
              << "Request: " << request->getRequestId();
 
     QVector<Textbook> books;
-
-    // TODO: Implement Server::getAllTextbooks(QVector<Textbook>&);
-    //ServerResponse getBooks = server->getAllTextbooks(ids);
+    //TODO: use the result of getAllTextbooks and probably need to remove the two appends below
+    ServerResponse getBooks = server->getAllTextbooks(sessionId, books);
     books.append(Textbook(13, "Everything I Want To Do Is Illegal", "1st", "me", 999, true, "123123123123"));
     books.append(Textbook(666, "The Zen of Farting", "10th", "george lucas", 1, true, "321321321321"));
 

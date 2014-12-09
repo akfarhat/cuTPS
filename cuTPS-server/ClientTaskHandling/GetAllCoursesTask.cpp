@@ -21,7 +21,9 @@ void GetAllCoursesTask::run()
 
     QVector<Course> courses;
 
-    // TODO: implement get all courses on the server
+    // TODO: handle the result of getAllCourses and probably remove the course 42 below
+    ServerResponse getCourses = server->getAllCourses(sessionId, courses);
+
     Course c;
     c.setId(42);
     courses.append(c);

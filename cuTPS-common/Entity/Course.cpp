@@ -1,6 +1,11 @@
 #include "Course.h"
 #include "Defines.h"
 
+Course::Course(qint32 cid, QString ccode, QString cname, QString csection, qint32 cyear)
+    : id(cid), code(ccode), name(cname), termSection(csection), termYear(cyear)
+{
+}
+
 Course::Course(const QString course,
                const QString courseName)
     : id(-1), code(course), name(courseName)

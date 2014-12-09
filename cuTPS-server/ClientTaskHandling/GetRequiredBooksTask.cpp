@@ -22,8 +22,9 @@ void GetRequiredBooksTask::run()
 
     QDataStream in(request->getData(), QIODevice::ReadOnly);
 
-    // TODO: get list of actual user's courses
     QVector<Course> courses;
+    // TODO: get list of actual user's courses
+    //ServerResponse getCourses = server->getStudentCourses(sessionId, username, courses)
     Course c;
     c.setId(42);
     c.addRequiredTextId(1);
