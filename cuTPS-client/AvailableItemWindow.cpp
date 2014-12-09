@@ -19,6 +19,8 @@ AvailableItemWindow::AvailableItemWindow(QWidget *parent, CartRequestsAPI *api, 
     this->bookId = -1;
     this->chapterId = -1;
 
+    this->selectedItem = NULL;
+
     listedBooks = new QList<Textbook*>();
 
     QMap<Course*, QList<Textbook*>*>::Iterator i;
@@ -137,7 +139,6 @@ void AvailableItemWindow::displaySectionList(int chapterId)
 void AvailableItemWindow::on_backButton_clicked()
 {
     requestAPI = NULL;
-    selectedItem = NULL;
     this->close();
     emit availableItemWindowClosed();
 }
