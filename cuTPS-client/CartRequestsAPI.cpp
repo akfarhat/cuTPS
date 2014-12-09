@@ -22,8 +22,7 @@ Student* CartRequestsAPI::getStudent() {
     return student;
 }
 
-// TODO: Remove 'username' parameter
-QUuid CartRequestsAPI::getRequiredBooks(QString &username)
+QUuid CartRequestsAPI::getRequiredBooks()
 {
     return network->getRequiredBooks();
 }

@@ -11,43 +11,32 @@
 #include <QUuid>
 #include <QVector>
 #include <QObject>
-#include "Entity/Student.h"
 #include "ClientNetworkHandler.h"
 #include "CartRequestsAPI.h"
 #include "AvailableItemWindow.h"
 
 class ViewRequiredBooksControl: public QObject {
-    Q_OBJECT;
+    Q_OBJECT
 
+public:
+    ViewRequiredBooksControl(CartRequestsAPI *);
+    ~ViewRequiredBooksControl();
 
-    public:
-        ViewRequiredBooksControl(CartRequestsAPI *);
-        ~ViewRequiredBooksControl();
+    // Get the list of required books for this user
+    QUuid getRequiredBooks();
+    void launchAvailableItemWindow();
 
-        // Get the list of required books for this user
-        QUuid getRequiredBooks(QString&);
+signals:
+    void viewBooksControlFinished();
 
-        // Request the details of a particular textbook id
-        QUuid getBookDetails(const qint32 id);
+private slots:
+    void requiredBooksReceived(QUuid requestId, int code, QMap<Course*, QList<Textbook*>*>*);
+    void availableItemWindowClosed();
 
-        // Request details for a list of textbook ids
-        QUuid getBookDetails(const QVector<qint32>& ids);
+private:
 
-        void launchAvailableItemWindow();
-
-
-    signals:
-        void viewBooksControlFinished();
-
-    private slots:
-        void textbookLookupCompleted(QUuid requestId, int code, QVector<qint32>* booksIds);
-        void textbookDetailsReceived(QUuid requestId, int code, QVector<Textbook*>* books);
-
-        void availableItemWindowClosed();
-    private:
-        CartRequestsAPI *requestAPI;
-
-        AvailableItemWindow *itemWindow;
+    CartRequestsAPI *requestAPI;
+    AvailableItemWindow *itemWindow;
 
 };
 

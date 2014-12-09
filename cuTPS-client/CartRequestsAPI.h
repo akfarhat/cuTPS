@@ -22,7 +22,7 @@ class CartRequestsAPI: public QObject {
         explicit CartRequestsAPI(QObject *parent = 0, ClientNetworkHandler *net = NULL, Student *stu = NULL);
         ~CartRequestsAPI();
 
-        QUuid getRequiredBooks(QString&);
+        QUuid getRequiredBooks();
         QUuid getBookDetails(int bookId);
         QUuid getBookDetails(const QVector<qint32>& ids);
         QUuid submitOrder(Order&);
@@ -34,7 +34,6 @@ class CartRequestsAPI: public QObject {
     private:
         ClientNetworkHandler *network;
         Student *student;
-
 
 };
 
