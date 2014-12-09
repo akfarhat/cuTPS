@@ -894,6 +894,7 @@ ServerResponse Server::getStudentCourses(QUuid sessionID, const int& userID, QVe
     QSqlQuery query;
 
     QString queryString = "";
+
     queryString += "select user.id, course.code, course.name, course.term_section, course.term_year ";
     queryString += "from user, user_course, course ";
     queryString += "where user.id = user_course.user_id and user.id = ";
