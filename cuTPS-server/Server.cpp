@@ -828,8 +828,12 @@ ServerResponse Server::getAllTextbooks(QUuid sessionID, QVector<Textbook> &textb
                                              query.value(4).toInt(),
                                              query.value(5).toBool(),
                                              query.value(6).toString());
+
+            getTextbookChapters(sessionID, textbook->getId(), textbook);
+
             textbooks.append(*textbook);
         }
+
 
         response.code = Success;
         response.message = "";
@@ -1016,12 +1020,7 @@ ServerResponse Server::getTextbookDetails(QUuid sessionID, int textbookID, Textb
         }
 
         if (found) {
-            QVector<Chapter> chapters;
             getTextbookChapters(sessionID, (*textbook)->getId(), *textbook);
-
-            for(Chapter c : chapters) {
-                (*textbook)->addChapter(c);
-            }
 
             response.code = Success;
             response.message = "";
@@ -1054,8 +1053,8 @@ ServerResponse Server::getTextbookChapters(QUuid sessionID, int textbookID, Text
     QSqlQuery query;
 
     QString queryString = "";
-    queryString += "select Chapter.item_id, Chapter.chapter_num, SellableItem.name, SellableItem.price, SellableItem.available from Chapter ";
-    queryString += "where Chapter.textbook_id = ";
+    queryString += "select Chapter.item_id, Chapter.chapter_num, SellableItem.name, SellableItem.price_cents, SellableItem.available from Chapter ";
+    queryString += "join SellableItem on Chapter.item_id = SellableItem.id where Chapter.textbook_id = ";
     queryString += QString::number(textbookID);
     queryString += ";";
 
@@ -1106,8 +1105,8 @@ ServerResponse Server::getChapterSections(QUuid sessionID, int chapterID, QVecto
     QSqlQuery query;
 
     QString queryString = "";
-    queryString += "select Section.item_id, Section.section_num, SellableItem.name, SellableItem.price, SellableItem.available from Section ";
-    queryString += "where Section.chapter_id = ";
+    queryString += "select Section.item_id, Section.section_num, SellableItem.name, SellableItem.price_cents, SellableItem.available from Section ";
+    queryString += "join SellableItem on Section.item_id=SellableItem.id where Section.chapter_id = ";
     queryString += QString::number(chapterID);
     queryString += ";";
 
