@@ -23,6 +23,7 @@ public:
     explicit CourseRequestAPI(QObject *parent = 0,
                               ClientNetworkHandler *net = NULL);
     QUuid getAllCourses();
+    QUuid getAllBooks();
     QUuid getBookDetails(const QVector<qint32> &) const;
     QUuid addCourse(Course&);
     QUuid modifyCourse(Course &);

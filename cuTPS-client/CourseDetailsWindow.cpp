@@ -67,6 +67,14 @@ void CourseDetailsWindow::textbookListReceived(QUuid requestId, int code,
 {
     if (bookList == NULL) return;
 
+    if (this->addReqBooksWin != NULL && !this->addReqBooksWin->isHidden()) {
+        qDebug() << "All books are going to the reqAddBookWin";
+
+        this->addReqBooksWin->populateBooks(bookList);
+
+        return;
+    }
+
     qDebug() << "CourseDetailsWindow::textbookListReceived(" << requestId
              << ", " << code << ", size=" <<bookList->size() << ")";
 
@@ -77,10 +85,6 @@ void CourseDetailsWindow::textbookListReceived(QUuid requestId, int code,
     }
 
     this->ui->deleteBookButton->setEnabled(false);
-
-    for (Textbook *book: *bookList) {
-        delete book;
-    }
 
     delete bookList;
 }
