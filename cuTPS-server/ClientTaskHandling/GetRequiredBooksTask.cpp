@@ -34,14 +34,17 @@ void GetRequiredBooksTask::run()
     {
         emit result(response->getResponseCode(), response);
         return;
+    } else {
+        response->setResponseCode(1);
     }
 
     r = server->getStudentCourses(sessionId, sessionUserId, courses);
 
+
     QByteArray responseDataBytes;
     QDataStream outData(&responseDataBytes, QIODevice::WriteOnly);
 
-    if (response->getResponseCode() > 0)
+    if (courses.size() > 0)
     {
         // Format:
         // |numcourses=n|(|course||numbooks||..books..|)(|course||numbooks|...books..|)..n
@@ -56,7 +59,7 @@ void GetRequiredBooksTask::run()
             for (qint32 textId : course.getRequiredTextIds())
             {
                 Textbook* tPtr;
-                ServerResponse r = server->getTextbookDetails(sessionId, textId, &tPtr);
+                r = server->getTextbookDetails(sessionId, textId, &tPtr);
                 outData << *tPtr;
                 delete tPtr;
             }
