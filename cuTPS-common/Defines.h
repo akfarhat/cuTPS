@@ -13,6 +13,7 @@
 
 namespace TPSNetProtocolDef {
 
+static const QString remoteServerIp = "127.0.0.1";
 static const QDataStream::Version PROTOCOL_VER = QDataStream::Qt_4_8;
 static const qint32 PROTOCOL_MAGIC = 0xDEADBEEF;
 

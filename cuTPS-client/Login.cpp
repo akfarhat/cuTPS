@@ -22,6 +22,22 @@ Login::~Login()
 
 void Login::on_loginButton_clicked()
 {
+    // Connect the network handler to the server
+    QHostAddress address(TPSNetProtocolDef::remoteServerIp);
+    network->connectToServer(address, 12754);
+
+    connect(network, SIGNAL(connectedToServer()), this, SLOT(on_connected()));
+}
+
+void Login::on_cancelButton_clicked()
+{
+    qDebug() << "Cancel button selected. Goodbye cruel world.";
+
+    this->close();
+}
+
+void Login::on_connected()
+{
     UserCredentials userCreds;
     userCreds.username = ui->usernameField->text();
     userCreds.password = ui->passwordField->text();
@@ -35,13 +51,6 @@ void Login::on_loginButton_clicked()
     QUuid requestId;
 
     loginCtrl->login(requestId, userCreds);
-}
-
-void Login::on_cancelButton_clicked()
-{
-    qDebug() << "Cancel button selected. Goodbye cruel world.";
-
-    this->close();
 }
 
 void Login::clearFields() {

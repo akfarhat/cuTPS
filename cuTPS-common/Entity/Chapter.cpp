@@ -2,7 +2,10 @@
 #include "Section.h"
 #include "Defines.h"
 
-Chapter::Chapter() {}
+Chapter::Chapter()
+{
+    number = 1;
+}
 
 Chapter::Chapter(Chapter& src)
     : SellableItem(src.getId(),

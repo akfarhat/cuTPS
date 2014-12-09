@@ -6,8 +6,7 @@
 #ifndef ERRORCODES_H
 #define ERRORCODES_H
 
-namespace TPSErrorCode {
-
-}
+#define E_OK    0x1
+#define E_ERR   0x0
 
 #endif // ERRORCODES_H
