@@ -39,14 +39,6 @@ enum InvocationDescriptor {
     IGoodbye
 };
 
-enum UsrPermissionGroup {
-    UsrStu,
-    UsrCm,
-    UsrAdm,
-    UsrAnonymous,
-    UsrSuperuser
-};
-
 }
 
 namespace TPSDef {
@@ -57,10 +49,11 @@ enum ResponseCode {
 };
 
 enum Role {
-    None,
+    Anonymous,
     StudentUser,
     ContentManagerUser,
-    AdministratorUser
+    AdministratorUser,
+    SuperUser
 };
 
 // Information returned by the server for requests
